@@ -1,0 +1,79 @@
+API 서버
+  1. dependencies
+    'org.springframework.boot:spring-boot-starter-web' > 스프링 웹서비스를 만들기위한 메인 패키지
+    'org.springframework.boot:spring-boot-starter-test' > 스프링 테스트 코드를 작성하기위한 패키지
+    'org.springframework.boot:spring-boot-devtools' > 개발시 코드의 변화를 감지하여 서버를 자동 실행하는 패키지(live server)
+    'org.projectlombok:lombok' > 편의성 코드의 작성을 도와주는 패키지
+    'org.springframework.boot:spring-boot-starter-data-jpa' > 스프링진영 대표 OOP 패키지
+    'org.postgresql:postgresql' > postgresql 데이터베이스 드라이버 패키지
+
+  2. gradle
+    gradle은 빌드 자동화 툴이고 각종 명령어를 통해 빌드할 수 있습니다
+    gradlew는 gradle을 설치하지 않고 명령어를 실행하며 프로젝트를 만든 시점의 gradle버전이 유지되기에 gradlew를 사용해야 합니다
+      ./gradlew bootRun > 프로젝트 실행
+      ./gradlew build > 프로젝트 빌드
+      ./gradlew jar > 프로젝트 패키징
+      ./gradlew clean > 빌드파일을 초기화 합니다
+      ./gradlew dependencies > 설치된 패키지 정보를 보여줍니다
+
+  3. 웹 애플리케이션 계층구조
+    controller > http 요청과 응답을 담당
+    service > 핵심 비즈니스 로직
+    domain > 비즈니스 객체
+    repository > 데이터베이스에 점근
+
+  4. java 명령어
+    java -jar [파일명] > '파일명'의 .jar 파일을 실행합니다 
+
+Front-End
+  react를 설치하고 webpack을 사용하기위한 셋팅방법
+  1. 패키지 생성
+    npm init > 패키지 초기화
+    license는 MIT로 설정해줍니다
+    MIT -> 오픈소스
+
+  2. react 설치하기
+    npm i react react-dom react-router-dom styled-components
+      - 'react'는 react의 주요기능을 사용하기 위한 패키지 입니다
+      - 'react-dom'은 태그와 관련된 jsx전용 문법을 이해할 수 있도록 도와줍니다
+      - 'react-router-dom'은 페이지 전환 구분 패키지
+      - 'styled-components'는 css-in-js 패키지
+    ※ 추가지식
+    'react-router'는 'react-router-dom' 안에 포함되어 있기 때문에 굳이 설치하지 않아도 됩니다
+
+  3. babel 설치하기
+  npm i -D @babel/core @babel/cli @babel/preset-env @babel/preset-react core-js@3
+  babel은 최신문법으로 작성된 javascript 소스를 안정적인 문법으로 변경하는 transcompiler 입니다
+    - '@babel/core'는 babel 기능을 사용시 필요한 필수 기능들의 집합입니다
+    - '@babel/cli'는 babel을 커맨드라인으로 사용하기 위함입니다
+    - '@babel/preset-env'는 트랜스 파일에 필요한 모든 옵션들의 집합입니다
+    - '@babel/preset-react'는 바벨이 jsx문법을 이해할 수 있도록합니다
+    - 'core-js'는 문법적으로 현재의 문법이 과거에 존재하지 않아 과거의 문법을 토대로 1:1로 대응하도록 생성되어있는 함수 또는 클래스의 집합입니다
+
+  4. webpack 설치하기
+  npm i -D webpack webpack-cli
+  webpack은 여러파일을 하나의 파일로 합쳐주는 번들러입니다
+    - 'webpack'는 webpack 기능을 사용시 필요한 필수 기능들의 집합입니다
+    - 'webpack-cli'는 webpack-cli을 커맨드라인으로 사용하기 위함입니다
+
+  5. 웹팩 설정 추가 기능
+  npm i -D babel-loader html-webpack-plugin webpack-dev-server
+    - 'babel-loader'은 번들링 babel을 이요하여 트랜스파일링과 함께 번들링을 실행합니다
+    - 'html-webpack-plugin'은 베이스가 되는 html파일과 함께 번들링을 실행합니다
+    - 'webpack-dev-server'은 번들링 파일을 만들지 않고 개발서버 상태로 코드작성시 변경상태를 바로 반영합니다
+
+  7. 그외 패키지
+  npm i axios
+  npm i -D cross-env
+    - 'axios'는 http 비동기 통신 패키지 입니다
+    - 'cross-env'는 서로다른 환경에서 환경변수 설정 명령어를 통일 시켜주는 패키지입니다
+
+  8. 패키지 명령어 정리
+  npx webpack 
+    > 'webpack' 번들링 실행
+  npx webpack serve 
+    > 'webpack-dev-server' 실행
+
+  9. npm 배포
+  npm update 
+    > pakage.json 내의 모든 패키지들을 samver 표기법에 의해 업데이트합니다
