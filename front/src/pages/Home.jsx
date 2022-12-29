@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { DefaultButton, DefaultLink } from '../styles/defaultButtons';
 import { deleteApi, getApi } from '../utils/Api';
 
 const Aticle = styled.article`
@@ -30,26 +30,10 @@ align-items: baseline;
 const Message = styled.div`
 margin: 0 .2rem;
 `;
-const Button = styled.button`
-display: block;
-color: rgb(20, 20, 20);
-padding: .5rem 1rem;
-background-color: darkgray;
-border-radius: .5rem;
-font-weight: bolder;
-text-align: center;
+const Button = styled(DefaultButton)`
 margin: 0 .2rem;
-border: none;
 `;
-const StyledLink = styled(Link)`
-display: block;
-color: rgb(20, 20, 20);
-padding: .5rem 1rem;
-background-color: darkgray;
-border-radius: .5rem;
-font-weight: bolder;
-text-align: center;
-text-decoration-line: none;
+const StyledLink = styled(DefaultLink)`
 margin: 0 .2rem;
 `;
 
@@ -57,15 +41,11 @@ const Home = () => {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    getApi('/api/user/info')
-      .then(setUser)
-      .catch(console.error);
+    getApi('/api/user/info').then(setUser).catch(console.error);
   }, []);
 
   const onClickSignOut = useCallback(() => {
-    deleteApi('/api/user/sign-out')
-      .then(() => setUser(null))
-      .catch(console.error);
+    deleteApi('/api/user/sign-out').then(() => setUser(null)).catch(console.error);
   }, []);
 
   const signedInfo = useMemo(() => user

@@ -14,8 +14,8 @@ import kyh.api.domain.User;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
   private final String SESSION_KEY = "USER";
@@ -36,11 +36,11 @@ public class UserService {
       return checkUser;
 
     if (userRepository.findByName(user.getName()).size() > 0)
-      return new MessageBox<User>(MessageType.SUCCESS, "이미 존재하는 회원입니다.\n다른 아이디를 사용해주세요.");
+      return new MessageBox<User>(MessageType.FAILURE, "이미 존재하는 회원입니다.\n다른 아이디를 사용해주세요.");
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-
     User saveUser = userRepository.save(user);
+    userRepository.flush();
     saveUser.setPassword(null);
     return new MessageBox<User>(MessageType.SUCCESS, "회원가입에 성공하였습니다.", saveUser);
   }
@@ -55,7 +55,7 @@ public class UserService {
 
     for (User findUser : findUsers) {
       if (!passwordEncoder.matches(user.getPassword(), findUser.getPassword()))
-        return new MessageBox<User>(MessageType.SUCCESS, "회원 인증에 실패하였습니다.");
+        return new MessageBox<User>(MessageType.FAILURE, "회원 인증에 실패하였습니다.");
 
       findUser.setPassword(null);
       request.getSession().setAttribute(SESSION_KEY, findUser);
