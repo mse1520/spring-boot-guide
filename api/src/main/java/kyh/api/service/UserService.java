@@ -40,7 +40,7 @@ public class UserService {
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     User saveUser = userRepository.save(user);
-    userRepository.flush();
+
     saveUser.setPassword(null);
     return new MessageBox<User>(MessageType.SUCCESS, "회원가입에 성공하였습니다.", saveUser);
   }

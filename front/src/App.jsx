@@ -2,10 +2,12 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
+import Loading from './components/Loading';
 
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */'./pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */'./pages/SignUp'));
+const Board = lazy(() => import(/* webpackChunkName: 'Board' */ './pages/Board'));
 
 const GlobalStyle = createGlobalStyle`
 html, body, #root {
@@ -28,9 +30,11 @@ const App = () => {
   return <>
     <GlobalStyle />
     <BrowserRouter>
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home />}>
+            <Route path='/board' element={<Board />} />
+          </Route>
           <Route path='/sign-up' element={<SignUp />} />
           <Route path='/sign-in' element={<SignIn />} />
         </Routes>
