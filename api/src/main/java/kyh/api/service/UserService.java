@@ -7,14 +7,18 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kyh.api.domain.MessageBox;
 import kyh.api.domain.MessageType;
+import kyh.api.domain.SignDto;
 import kyh.api.domain.User;
+import kyh.api.domain.UserDto;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
 
@@ -24,45 +28,38 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
 
   /** 회원 정보 */
-  public User info(HttpServletRequest request) {
+  public UserDto info(HttpServletRequest request) {
     HttpSession session = request.getSession(false);
-    return session != null ? (User) session.getAttribute(SESSION_KEY) : null;
+    return session != null ? (UserDto) session.getAttribute(SESSION_KEY) : null;
   }
 
   /** 회원 가입 */
-  public MessageBox<User> signUp(User user) {
-    MessageBox<User> checkUser = parameterValidation(user);
-    if (checkUser.getType() == MessageType.FAILURE)
-      return checkUser;
+  @Transactional
+  public MessageBox<UserDto> signUp(SignDto signDto) {
+    if (userRepository.findByName(signDto.getName()).size() > 0)
+      return new MessageBox<>(MessageType.FAILURE, "이미 존재하는 회원입니다.\n다른 아이디를 사용해주세요.");
 
-    if (userRepository.findByName(user.getName()).size() > 0)
-      return new MessageBox<User>(MessageType.FAILURE, "이미 존재하는 회원입니다.\n다른 아이디를 사용해주세요.");
+    User user = new User(signDto.getName(), passwordEncoder.encode(signDto.getPassword()));
+    User savedUser = userRepository.save(user);
+    UserDto userDto = new UserDto(savedUser.getId(), savedUser.getName());
 
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    User saveUser = userRepository.save(user);
-
-    saveUser.setPassword(null);
-    return new MessageBox<User>(MessageType.SUCCESS, "회원가입에 성공하였습니다.", saveUser);
+    return new MessageBox<>(MessageType.SUCCESS, "회원가입에 성공하였습니다.", userDto);
   }
 
   /** 회원 인증 */
-  public MessageBox<User> signIn(User user, HttpServletRequest request) {
-    MessageBox<User> checkUser = parameterValidation(user);
-    if (checkUser.getType() == MessageType.FAILURE)
-      return checkUser;
-
-    List<User> findUsers = userRepository.findByName(user.getName());
+  public MessageBox<UserDto> signIn(SignDto signDto, HttpServletRequest request) {
+    List<User> findUsers = userRepository.findByName(signDto.getName());
 
     for (User findUser : findUsers) {
-      if (!passwordEncoder.matches(user.getPassword(), findUser.getPassword()))
-        return new MessageBox<User>(MessageType.FAILURE, "회원 인증에 실패하였습니다.");
+      if (!passwordEncoder.matches(signDto.getPassword(), findUser.getPassword()))
+        return new MessageBox<>(MessageType.FAILURE, "회원 인증에 실패하였습니다.");
 
-      findUser.setPassword(null);
-      request.getSession().setAttribute(SESSION_KEY, findUser);
-      return new MessageBox<User>(MessageType.SUCCESS, "회원 인증에 성공했습니다.", findUser);
+      UserDto userDto = new UserDto(findUser.getId(), findUser.getName());
+      request.getSession().setAttribute(SESSION_KEY, userDto);
+      return new MessageBox<>(MessageType.SUCCESS, "회원 인증에 성공했습니다.", userDto);
     }
 
-    return new MessageBox<User>(MessageType.FAILURE, "아이디를 찾을 수 없습니다.");
+    return new MessageBox<>(MessageType.FAILURE, "아이디를 찾을 수 없습니다.");
   }
 
   /** 로그아웃 */
@@ -73,16 +70,6 @@ public class UserService {
       session.invalidate();
 
     return new MessageBox<Object>(MessageType.SUCCESS, "로그아웃 성공.");
-  }
-
-  /** 입력 파라미터 유효성 검사 */
-  private MessageBox<User> parameterValidation(User user) {
-    if (user.getName().equals(""))
-      return new MessageBox<User>(MessageType.FAILURE, "아이디를 입력해야 합니다.");
-    if (user.getPassword().equals(""))
-      return new MessageBox<User>(MessageType.FAILURE, "비밀번호를 입력해야 합니다.");
-
-    return new MessageBox<User>(MessageType.SUCCESS);
   }
 
 }

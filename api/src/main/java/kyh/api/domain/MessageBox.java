@@ -1,5 +1,7 @@
 package kyh.api.domain;
 
+import org.springframework.validation.BindingResult;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,6 +20,15 @@ public class MessageBox<T> {
   public MessageBox(MessageType type, String message) {
     this.type = type;
     this.message = message;
+  }
+
+  public static <T> MessageBox<T> createFailedMessage(BindingResult bindingResult) {
+    String message = bindingResult.getAllErrors().stream()
+        .map(err -> err.getDefaultMessage())
+        .findFirst()
+        .orElseThrow();
+
+    return new MessageBox<>(MessageType.FAILURE, message);
   }
 
 }
