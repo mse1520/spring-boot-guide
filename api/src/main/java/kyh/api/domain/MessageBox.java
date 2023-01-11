@@ -22,6 +22,7 @@ public class MessageBox<T> {
     this.message = message;
   }
 
+  /** 실패 메시지를 생성합니다 */
   public static <T> MessageBox<T> createFailedMessage(BindingResult bindingResult) {
     String message = bindingResult.getAllErrors().stream()
         .map(err -> err.getDefaultMessage())

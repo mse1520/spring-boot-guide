@@ -25,6 +25,7 @@ module.exports = {
   },
   // 하나로 합쳐실 출력 파일의 설정입니다
   output: {
+    publicPath: '/',
     path: path.resolve('dist'),
     filename: '[name].js',
     clean: true

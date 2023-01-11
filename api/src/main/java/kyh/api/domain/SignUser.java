@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class SignDto {
+public class SignUser {
 
   @NotEmpty(message = "아이디를 입력해야 합니다.")
   private String name;

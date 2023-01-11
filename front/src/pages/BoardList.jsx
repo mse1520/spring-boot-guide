@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Board = () => {
+const BoardList = () => {
   return <>
     <div>게시판!!</div>
   </>;
 };
 
-export default Board;
+export default BoardList;

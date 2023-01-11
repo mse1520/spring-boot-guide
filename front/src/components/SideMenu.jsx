@@ -1,38 +1,34 @@
-import React, { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Nav = styled.nav`
-background-color: darkgray;
+background-color: rgb(39, 39, 39);
 width: 20rem;
 `;
-const StyledLink = styled(Link)`
+const StyledLink = styled(NavLink)`
 display: block;
 padding: 1rem;
-color: rgb(20, 20, 20);
+color: whitesmoke;
 border-radius: 1rem;
 font-weight: bolder;
 text-decoration-line: none;
 &.active,
 &:hover {
-  background-color: rgb(130, 130, 130);
+  color: rgb(30, 30, 30);
+  background-color: darkgray;
 }`;
 
 const Links = [
   { path: '/', text: '홈' },
-  { path: '/board', text: '게시글' },
+  { path: '/board/write', text: '게시글 작성' },
+  { path: '/board/list', text: '게시글' },
 ];
 
 const SideMene = () => {
-  const [path, setPath] = useState('/');
-
-  const activeClass = useCallback(_path => _path === path ? 'active' : '', [path]);
-
-  const onClickLink = useCallback(path => () => setPath(path), []);
-
   return <>
     <Nav>
-      {Links.map((v, i) => <StyledLink key={i} className={activeClass(v.path)} to={v.path} onClick={onClickLink(v.path)}>{v.text}</StyledLink>)}
+      {Links.map((v, i) => <StyledLink key={i} to={v.path}>{v.text}</StyledLink>)}
     </Nav>
   </>;
 };

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kyh.api.domain.MessageBox;
 import kyh.api.domain.MessageType;
-import kyh.api.domain.SignDto;
-import kyh.api.domain.UserDto;
+import kyh.api.domain.SignUser;
+import kyh.api.domain.UserInfo;
 import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -30,18 +30,18 @@ public class UserController {
 
   /** 회원 정보 */
   @GetMapping(value = "/info")
-  public UserDto userInfo(HttpServletRequest request) {
+  public UserInfo userInfo(HttpServletRequest request) {
     return userService.info(request);
   }
 
   /** 회원 가입 */
   @PostMapping(value = "/sign-up")
-  public ResponseEntity<MessageBox<UserDto>> SignUp(@RequestBody @Validated SignDto signDto,
+  public ResponseEntity<MessageBox<UserInfo>> SignUp(@RequestBody @Validated SignUser signUser,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.createFailedMessage(bindingResult));
 
-    MessageBox<UserDto> result = userService.signUp(signDto);
+    MessageBox<UserInfo> result = userService.signUp(signUser);
 
     return result.getType() == MessageType.SUCCESS
         ? ResponseEntity.ok().body(result)
@@ -50,12 +50,13 @@ public class UserController {
 
   /** 회원 인증 */
   @PostMapping(value = "/sign-in")
-  public ResponseEntity<MessageBox<UserDto>> signIn(HttpServletRequest request, @RequestBody @Validated SignDto signDto,
+  public ResponseEntity<MessageBox<UserInfo>> signIn(HttpServletRequest request,
+      @RequestBody @Validated SignUser signUser,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.createFailedMessage(bindingResult));
 
-    MessageBox<UserDto> result = userService.signIn(signDto, request);
+    MessageBox<UserInfo> result = userService.signIn(signUser, request);
 
     return result.getType() == MessageType.SUCCESS
         ? ResponseEntity.ok().body(result)

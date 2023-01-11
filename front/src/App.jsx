@@ -1,45 +1,51 @@
 
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Loading from './components/Loading';
 
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */'./pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */'./pages/SignUp'));
-const Board = lazy(() => import(/* webpackChunkName: 'Board' */ './pages/Board'));
+const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
+const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
 
 const GlobalStyle = createGlobalStyle`
 html, body, #root {
   margin: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgb(20, 20, 20);
+  background-color: rgb(30, 30, 30);
   color: whitesmoke;
-}
-#root {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 button {
   cursor: pointer;
 }`;
 
+const router = createBrowserRouter([{
+  path: '/',
+  element: <Home />,
+  children: [{
+    path: '/board/write',
+    element: <BoardWrite />
+  }, {
+    path: '/board/list',
+    element: <BoardList />
+  }]
+}, {
+  path: '/sign-up',
+  element: <SignUp />
+}, {
+  path: '/sign-in',
+  element: <SignIn />
+}]);
+
 const App = () => {
   return <>
     <GlobalStyle />
-    <BrowserRouter>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path='/' element={<Home />}>
-            <Route path='/board' element={<Board />} />
-          </Route>
-          <Route path='/sign-up' element={<SignUp />} />
-          <Route path='/sign-in' element={<SignIn />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <Suspense fallback={<Loading />}>
+      <RouterProvider router={router} />
+    </Suspense>
   </>;
 };
 

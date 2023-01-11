@@ -3,26 +3,28 @@ import styled from 'styled-components';
 
 export const DefaultButton = styled.button`
 display: block;
-color: rgb(20, 20, 20);
+color: rgb(30, 30, 30);
 padding: .5rem 1rem;
 background-color: darkgray;
 border-radius: .5rem;
 font-weight: bolder;
 text-align: center;
 border: none;
+font-size: medium;
 &:hover {
-  background-color: rgb(130, 130, 130);
+  background-color: dimgray;
 }`;
 
 export const DefaultLink = styled(Link)`
 display: block;
-color: rgb(20, 20, 20);
+color: rgb(30, 30, 30);
 padding: .5rem 1rem;
 background-color: darkgray;
 border-radius: .5rem;
 font-weight: bolder;
 text-align: center;
 text-decoration-line: none;
+font-size: medium;
 &:hover {
-  background-color: rgb(130, 130, 130);
+  background-color: dimgray;
 }`;

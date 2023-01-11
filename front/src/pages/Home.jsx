@@ -5,7 +5,6 @@ import Loading from '../components/Loading';
 import SideMene from '../components/SideMenu';
 import SignedButtonGroup from '../components/SignedButtonGroup';
 import UnsignedButtonGroup from '../components/UnSignedButtonGroup';
-import { DefaultLink } from '../styles/defaultButtons';
 import { deleteApi, getApi } from '../utils/Api';
 
 const Aticle = styled.article`
@@ -26,7 +25,7 @@ const Header = styled.header`
 display: flex;
 justify-content: end;
 padding: .5rem;
-background-color: dimgray;
+background-color: rgb(50, 50, 50);
 align-items: baseline;
 `;
 
