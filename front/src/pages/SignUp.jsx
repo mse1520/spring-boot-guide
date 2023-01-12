@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DefaultButton } from '../styles/defaultButtons';
+import { DefaultInput } from '../styles/defaultInputs';
 import { postApi } from '../utils/Api';
 
 const Aticle = styled.article`
@@ -36,16 +37,6 @@ font-size: larger;
 font-weight: bolder;
 margin-bottom: .5rem;
 `;
-const Input = styled.input`
-display: block;
-width: 100%;
-box-sizing: border-box;
-padding: .5rem;
-border-radius: .5rem;
-border: none;
-font-size: medium;
-background-color: whitesmoke;
-`;
 const ButtonWrap = styled.div`
 display: flex;
 justify-content: end;
@@ -75,11 +66,11 @@ const SignUp = () => {
           <H2>회원가입</H2>
           <InputWrap>
             <Label htmlFor='name'>아이디</Label>
-            <Input id='name' ref={nameRef} />
+            <DefaultInput id='name' ref={nameRef} />
           </InputWrap>
           <InputWrap>
             <Label htmlFor='password'>비밀번호</Label>
-            <Input id='password' type='password' ref={passwordRef} />
+            <DefaultInput id='password' type='password' ref={passwordRef} />
           </InputWrap>
         </div>
         <ButtonWrap>

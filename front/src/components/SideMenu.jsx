@@ -20,7 +20,7 @@ text-decoration-line: none;
 }`;
 
 const Links = [
-  { path: '/', text: '홈' },
+  { path: '/home', text: '홈' },
   { path: '/board/write', text: '게시글 작성' },
   { path: '/board/list', text: '게시글' },
 ];

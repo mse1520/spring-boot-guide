@@ -10,7 +10,7 @@ border-radius: .5rem;
 font-weight: bolder;
 text-align: center;
 border: none;
-font-size: medium;
+font-size: 1rem;
 &:hover {
   background-color: dimgray;
 }`;
@@ -24,7 +24,7 @@ border-radius: .5rem;
 font-weight: bolder;
 text-align: center;
 text-decoration-line: none;
-font-size: medium;
+font-size: 1rem;
 &:hover {
   background-color: dimgray;
 }`;

@@ -23,13 +23,18 @@ public class MessageBox<T> {
   }
 
   /** 실패 메시지를 생성합니다 */
-  public static <T> MessageBox<T> createFailedMessage(BindingResult bindingResult) {
+  public static <T> MessageBox<T> failed(BindingResult bindingResult) {
     String message = bindingResult.getAllErrors().stream()
         .map(err -> err.getDefaultMessage())
         .findFirst()
         .orElseThrow();
 
     return new MessageBox<>(MessageType.FAILURE, message);
+  }
+
+  /** 인증되지 않은 사용자에 대한 메세지 */
+  public static <T> MessageBox<T> unauthorized() {
+    return new MessageBox<>(MessageType.FAILURE, "인증되지 않은 사용자.");
   }
 
 }

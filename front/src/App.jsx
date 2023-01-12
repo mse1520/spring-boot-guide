@@ -4,9 +4,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Loading from './components/Loading';
 
+import Main from './layouts/Main';
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
-const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */'./pages/SignIn'));
-const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */'./pages/SignUp'));
+const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
+const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
 const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
 
@@ -24,8 +25,11 @@ button {
 
 const router = createBrowserRouter([{
   path: '/',
-  element: <Home />,
+  element: <Main />,
   children: [{
+    path: '/home',
+    element: <Home />
+  }, {
     path: '/board/write',
     element: <BoardWrite />
   }, {

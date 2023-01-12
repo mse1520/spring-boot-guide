@@ -2,6 +2,8 @@ package kyh.api.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -19,14 +21,18 @@ public class User extends BaseEntity {
   @Column(name = "user_id")
   private Long id;
 
-  @Column(unique = true)
+  @Column(unique = true, nullable = false)
   private String name;
 
   private String password;
 
-  public User(String name, String password) {
+  @Enumerated(EnumType.STRING)
+  private UserRole userRole;
+
+  public User(String name, String password, UserRole userRole) {
     this.name = name;
     this.password = password;
+    this.userRole = userRole;
   }
 
 }
