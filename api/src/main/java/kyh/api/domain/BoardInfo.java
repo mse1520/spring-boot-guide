@@ -2,6 +2,7 @@ package kyh.api.domain;
 
 import java.time.LocalDateTime;
 
+import kyh.api.domain.entity.Board;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -12,12 +13,12 @@ public class BoardInfo {
   private String title;
   private String content;
   private String userName;
-  private LocalDateTime creatDateTime;
+  private LocalDateTime createDateTime;
 
   public BoardInfo(Board board) {
     title = board.getTitle();
     content = board.getContent();
-    creatDateTime = board.getCreatedDate();
+    createDateTime = board.getCreatedDate();
     userName = board.getUser().getName();
   }
 

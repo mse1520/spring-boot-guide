@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,10 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
 
   @Id
@@ -22,7 +25,7 @@ public class Board extends BaseEntity {
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 5000)
   private String content;
 
   @ManyToOne(fetch = FetchType.LAZY)

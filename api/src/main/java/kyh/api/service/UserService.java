@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kyh.api.domain.MessageBox;
 import kyh.api.domain.MessageType;
 import kyh.api.domain.SignUserForm;
-import kyh.api.domain.User;
 import kyh.api.domain.UserInfo;
 import kyh.api.domain.UserRole;
+import kyh.api.domain.entity.User;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 

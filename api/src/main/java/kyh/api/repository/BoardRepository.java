@@ -2,7 +2,7 @@ package kyh.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kyh.api.domain.Board;
+import kyh.api.domain.entity.Board;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 }

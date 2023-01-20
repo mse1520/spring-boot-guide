@@ -10,6 +10,8 @@ import kyh.api.service.BoardService;
 import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping(value = "/board")
@@ -28,6 +31,7 @@ public class BoardController {
   private final UserService userService;
   private final BoardService boardService;
 
+  /** 게시글 작성 api */
   @PostMapping(value = "/write")
   public ResponseEntity<MessageBox<BoardInfo>> write(HttpServletRequest request,
       @RequestBody @Validated BoardWriteForm boardWriteForm, BindingResult bindingResult) {
@@ -39,6 +43,12 @@ public class BoardController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
 
     return ResponseEntity.ok(boardService.write(boardWriteForm, userInfo.getId()));
+  }
+
+  /** 게시글 조회 api */
+  @GetMapping(value = "/list")
+  public List<BoardInfo> list() {
+    return boardService.list();
   }
 
 }

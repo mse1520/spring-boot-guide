@@ -1,8 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { DefaultButton } from '../styles/defaultButtons';
-import { DefaultInput } from '../styles/defaultInputs';
+import { Card } from '../styles/box';
+import { DefaultButton } from '../styles/button';
+import { DefaultInput } from '../styles/input';
 import { postApi } from '../utils/Api';
 
 const Aticle = styled.article`
@@ -12,13 +13,10 @@ display: flex;
 justify-content: center;
 align-items: center;
 `;
-const Form = styled.form`
+const StyledCard = styled(Card)`
 display: flex;
 justify-content: space-between;
 flex-direction: column;
-background-color: rgb(39, 39, 39);
-padding: 1rem;
-border-radius: 1rem;
 width: 30rem;
 margin: 0 .5rem;
 min-height: 20rem;
@@ -47,7 +45,7 @@ const SignUp = () => {
   const passwordRef = useRef();
   const navigate = useNavigate();
 
-  const onClickSubmit = useCallback(e => {
+  const onSubmitForm = useCallback(e => {
     e.preventDefault();
 
     postApi('/api/user/sign-up', {
@@ -61,22 +59,24 @@ const SignUp = () => {
 
   return <>
     <Aticle>
-      <Form onSubmit={onClickSubmit}>
-        <div>
-          <H2>회원가입</H2>
-          <InputWrap>
-            <Label htmlFor='name'>아이디</Label>
-            <DefaultInput id='name' ref={nameRef} />
-          </InputWrap>
-          <InputWrap>
-            <Label htmlFor='password'>비밀번호</Label>
-            <DefaultInput id='password' type='password' ref={passwordRef} />
-          </InputWrap>
-        </div>
-        <ButtonWrap>
-          <DefaultButton>회원 가입</DefaultButton>
-        </ButtonWrap>
-      </Form>
+      <form onSubmit={onSubmitForm}>
+        <StyledCard>
+          <div>
+            <H2>회원가입</H2>
+            <InputWrap>
+              <Label htmlFor='name'>아이디</Label>
+              <DefaultInput id='name' ref={nameRef} />
+            </InputWrap>
+            <InputWrap>
+              <Label htmlFor='password'>비밀번호</Label>
+              <DefaultInput id='password' type='password' ref={passwordRef} />
+            </InputWrap>
+          </div>
+          <ButtonWrap>
+            <DefaultButton>회원 가입</DefaultButton>
+          </ButtonWrap>
+        </StyledCard>
+      </form>
     </Aticle>
   </>;
 };

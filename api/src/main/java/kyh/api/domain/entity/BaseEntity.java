@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.entity;
 
 import java.time.LocalDateTime;
 

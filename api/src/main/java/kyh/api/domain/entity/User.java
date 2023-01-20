@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,13 +7,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import kyh.api.domain.UserRole;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
   @Id
