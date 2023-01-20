@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import kyh.api.domain.BoardInfo;
 import kyh.api.domain.BoardWriteForm;
 import kyh.api.domain.MessageBox;
-import kyh.api.domain.MessageType;
 import kyh.api.domain.UserInfo;
 import kyh.api.service.BoardService;
 import kyh.api.service.UserService;
@@ -39,11 +38,7 @@ public class BoardController {
     if (userInfo == null)
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
 
-    MessageBox<BoardInfo> result = boardService.write(boardWriteForm, userInfo.getId());
-
-    return result.getType() == MessageType.SUCCESS
-        ? ResponseEntity.ok(result)
-        : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+    return ResponseEntity.ok(boardService.write(boardWriteForm, userInfo.getId()));
   }
 
 }
