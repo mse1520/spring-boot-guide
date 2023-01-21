@@ -1,6 +1,6 @@
 package kyh.api.domain;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import kyh.api.domain.entity.Board;
 import lombok.Getter;
@@ -13,13 +13,15 @@ public class BoardInfo {
   private String title;
   private String content;
   private String userName;
-  private LocalDateTime createDateTime;
+  private String createDateTime;
 
-  public BoardInfo(Board board) {
-    title = board.getTitle();
-    content = board.getContent();
-    createDateTime = board.getCreatedDate();
-    userName = board.getUser().getName();
+  public static BoardInfo generate(Board board) {
+    BoardInfo boardInfo = new BoardInfo();
+    boardInfo.title = board.getTitle();
+    boardInfo.content = board.getContent();
+    boardInfo.userName = board.getUser().getName();
+    boardInfo.createDateTime = board.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    return boardInfo;
   }
 
 }

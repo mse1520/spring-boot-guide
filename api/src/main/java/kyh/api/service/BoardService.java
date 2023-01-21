@@ -29,14 +29,14 @@ public class BoardService {
     User user = userRepository.findById(UserId).orElseThrow();
     Board board = new Board(boardWriteForm.getTitle(), boardWriteForm.getContent(), user);
     Board savedBoard = boardRepository.save(board);
-    BoardInfo boardInfo = new BoardInfo(savedBoard);
+    BoardInfo boardInfo = BoardInfo.generate(savedBoard);
 
     return new MessageBox<>(MessageType.SUCCESS, "게시글이 저장되었습니다.", boardInfo);
   }
 
   /** 모든 게시글(Board) */
   public List<BoardInfo> list() {
-    return boardRepository.findAll().stream().map(board -> new BoardInfo(board)).toList();
+    return boardRepository.findAll().stream().map(BoardInfo::generate).toList();
   }
 
 }

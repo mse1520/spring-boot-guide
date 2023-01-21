@@ -16,10 +16,12 @@ flex-direction: column;
 const Section = styled.section`
 display: flex;
 flex: 1;
+overflow: hidden;
 `;
 const ContentWrap = styled.section`
 flex: 1;
 padding: 1rem;
+overflow: auto;
 `;
 const Content = styled.section`
 @media (min-width: 80rem) {
