@@ -5,7 +5,7 @@ import Loading from '../components/Loading';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { getApi, postMessageApi } from '../utils/Api';
+import { getApi, postApi } from '../utils/Api';
 
 const Aticle = styled.article`
 width: 100%;
@@ -53,7 +53,7 @@ const SignIn = () => {
   const onSubmitForm = useCallback(e => {
     e.preventDefault();
 
-    postMessageApi('/api/user/sign-in', {
+    postApi('/api/user/sign-in', {
       name: nameRef.current.value,
       password: passwordRef.current.value
     })

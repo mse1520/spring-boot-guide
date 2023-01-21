@@ -10,10 +10,12 @@ public class UserInfo {
 
   private Long id;
   private String name;
+  private UserRole userRole;
 
   public UserInfo(User user) {
     id = user.getId();
     name = user.getName();
+    userRole = user.getUserRole();
   }
 
 }

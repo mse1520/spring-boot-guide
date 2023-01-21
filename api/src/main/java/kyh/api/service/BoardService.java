@@ -39,4 +39,30 @@ public class BoardService {
     return boardRepository.findAll().stream().map(BoardInfo::generate).toList();
   }
 
+  /** 단건 게시글(Board) */
+  public MessageBox<BoardInfo> info(Long boardId) {
+    Board findBoard = boardRepository.findById(boardId).orElse(null);
+
+    if (findBoard == null)
+      return new MessageBox<>(MessageType.FAILURE, "조회된 게시글이 없습니다.");
+
+    BoardInfo boardInfo = BoardInfo.generate(findBoard);
+    return new MessageBox<>(MessageType.SUCCESS, "조회 성공.", boardInfo);
+  }
+
+  /** 게시글(Board) 삭제 */
+  @Transactional
+  public MessageBox<BoardInfo> delete(Long boardId, String userName) {
+    Board findBoard = boardRepository.findById(boardId).orElse(null);
+
+    if (findBoard == null)
+      return new MessageBox<>(MessageType.FAILURE, "존재하지 않는 게시글 입니다.");
+    if (!findBoard.getUser().getName().equals(userName))
+      return new MessageBox<>(MessageType.FAILURE, "게시글을 삭제할 권한이 없습니다.");
+
+    boardRepository.delete(findBoard);
+    BoardInfo boardInfo = BoardInfo.generate(findBoard);
+    return new MessageBox<>(MessageType.SUCCESS, "게시글이 삭제 되었습니다.", boardInfo);
+  }
+
 }

@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput, DefaultTextarea } from '../styles/input';
-import { postMessageApi } from '../utils/Api';
+import { postApi } from '../utils/Api';
 
 const Header = styled.header`
 display: flex;
@@ -16,7 +16,7 @@ const BoardWrite = () => {
   const contentRef = useRef();
 
   const onClickCreate = useCallback(() => {
-    postMessageApi('/api/board/write', {
+    postApi('/api/board/write', {
       title: titleRef.current.value,
       content: contentRef.current.innerText
     })

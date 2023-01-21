@@ -9,7 +9,8 @@ const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
-const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
+const BoardInfo = lazy(() => import(/* webpackChunkName: 'BoardInfo' */ './pages/BoardInfo'));
+const BoardDetail = lazy(() => import(/* webpackChunkName: 'BoardDetail' */ './pages/BoardDetail'));
 
 const GlobalStyle = createGlobalStyle`
 html, body, #root {
@@ -18,6 +19,10 @@ html, body, #root {
   height: 100vh;
   background-color: rgb(30, 30, 30);
   color: whitesmoke;
+  color-scheme: dark;
+}
+input {
+  color: rgb(30, 30, 30);
 }
 button {
   cursor: pointer;
@@ -33,8 +38,11 @@ const router = createBrowserRouter([{
     path: '/board/write',
     element: <BoardWrite />
   }, {
-    path: '/board/list',
-    element: <BoardList />
+    path: '/board/info',
+    element: <BoardInfo />
+  }, {
+    path: '/board/info/:boardId',
+    element: <BoardDetail />
   }]
 }, {
   path: '/sign-up',

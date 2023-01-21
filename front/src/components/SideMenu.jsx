@@ -22,7 +22,7 @@ text-decoration-line: none;
 const Links = [
   { path: '/home', text: '홈' },
   { path: '/board/write', text: '게시글 작성' },
-  { path: '/board/list', text: '게시글' },
+  { path: '/board/info', text: '게시글' },
 ];
 
 const SideMene = () => {

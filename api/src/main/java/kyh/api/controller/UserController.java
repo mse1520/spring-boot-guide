@@ -44,7 +44,7 @@ public class UserController {
     MessageBox<UserInfo> result = userService.signUp(signUserForm);
 
     return result.getType() == MessageType.SUCCESS
-        ? ResponseEntity.ok().body(result)
+        ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
@@ -58,7 +58,7 @@ public class UserController {
     MessageBox<UserInfo> result = userService.signIn(signUserForm, request);
 
     return result.getType() == MessageType.SUCCESS
-        ? ResponseEntity.ok().body(result)
+        ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
