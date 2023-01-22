@@ -1,7 +1,9 @@
 package kyh.api.domain.dto.board;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import kyh.api.domain.dto.comment.CommentInfo;
 import kyh.api.domain.entity.Board;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +20,7 @@ public class BoardInfo {
   private String content;
   private String userName;
   private String createdDate;
+  private List<CommentInfo> comments;
 
   public static BoardInfo generate(Board board) {
     BoardInfo boardInfo = new BoardInfo();
@@ -26,6 +29,12 @@ public class BoardInfo {
     boardInfo.content = board.getContent();
     boardInfo.userName = board.getUser().getName();
     boardInfo.createdDate = board.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    return boardInfo;
+  }
+
+  public static BoardInfo generate(Board board, List<CommentInfo> commentInfos) {
+    BoardInfo boardInfo = generate(board);
+    boardInfo.comments = commentInfos;
     return boardInfo;
   }
 

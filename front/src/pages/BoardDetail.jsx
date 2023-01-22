@@ -33,6 +33,9 @@ margin: 1rem 0;
 border: none;
 border-bottom: .1rem solid dimgray;
 `;
+const CommentGroup = styled.div`
+margin: 1rem 0;
+`;
 const WriteCommentGroup = styled.div`
 display: flex;
 flex-direction: column;
@@ -73,18 +76,27 @@ const BoardDetail = () => {
 
   return <>
     <Header>
-      <h2>{board?.title}</h2>
+      <h2>{board.title}</h2>
       <DetailInfo>
         <div>
-          <UserName>{board?.userName}</UserName>
-          <CreatedDate>{board?.createdDate}</CreatedDate>
+          <UserName>{board.userName}</UserName>
+          <CreatedDate>{board.createdDate}</CreatedDate>
         </div>
         <div>댓글수: 0</div>
       </DetailInfo>
     </Header>
     <section>
-      <Content>{board?.content}</Content>
+      <Content>{board.content}</Content>
       <Hr />
+      <CommentGroup>
+        {board.comments.map((comment, i) =>
+          <div key={i}>
+            <div>{comment.userName}</div>
+            <div>{comment.content}</div>
+            <div>{comment.updatedDate}</div>
+          </div>
+        )}
+      </CommentGroup>
       <WriteCommentGroup>
         <StyledTextarea ref={commentRef} placeholder='댓글을 남겨보세요.' />
         <DefaultButton onClick={onClickNewComment}>등록</DefaultButton>
