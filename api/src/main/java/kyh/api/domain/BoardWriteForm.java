@@ -1,6 +1,7 @@
 package kyh.api.domain;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ public class BoardWriteForm {
   private String title;
 
   @NotEmpty(message = "내용은 필수 입력입니다.")
+  @Size(max = 5000)
   private String content;
 
 }

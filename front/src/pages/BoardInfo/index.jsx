@@ -42,7 +42,7 @@ const BoardInfo = () => {
           <ContentWrap>
             <Content>{board.content}</Content>
             <UserName>{board.userName}</UserName>
-            <div>{board.createDateTime}</div>
+            <div>{board.createdDate}</div>
           </ContentWrap>
         </StyledCard>
       )}

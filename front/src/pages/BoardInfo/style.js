@@ -7,6 +7,8 @@ export const Header = styled.header`
 display: flex;
 justify-content: space-between;
 align-items: center;
+border-bottom: .1rem solid dimgray;
+margin-bottom: 1rem;
 `;
 
 export const SearchGroup = styled.div`
@@ -35,6 +37,7 @@ box-sizing: border-box;
 min-width: 19rem;
 flex: 1;
 position: relative;
+cursor: pointer;
 &:hover {
   transform: translateY(-.2rem);
   box-shadow: 0 .7rem 2rem rgba(0, 0, 0, .3);

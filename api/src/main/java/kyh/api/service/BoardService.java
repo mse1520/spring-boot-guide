@@ -36,7 +36,7 @@ public class BoardService {
 
   /** 모든 게시글(Board) */
   public List<BoardInfo> list() {
-    return boardRepository.findAll().stream().map(BoardInfo::generate).toList();
+    return boardRepository.findAllWithUser().stream().map(BoardInfo::generate).toList();
   }
 
   /** 단건 게시글(Board) */

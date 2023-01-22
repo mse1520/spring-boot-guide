@@ -1,7 +1,8 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
+import Textarea from '../components/Textarea';
 import { DefaultButton } from '../styles/button';
-import { DefaultInput, DefaultTextarea } from '../styles/input';
+import { DefaultInput } from '../styles/input';
 import { postApi } from '../utils/Api';
 
 const Header = styled.header`
@@ -9,6 +10,11 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 border-bottom: .1rem solid dimgray;
+margin-bottom: 1rem;
+`;
+const StyledTextarea = styled(Textarea)`
+min-height: 20rem;
+margin: 1rem 0;
 `;
 
 const BoardWrite = () => {
@@ -30,7 +36,7 @@ const BoardWrite = () => {
       <DefaultButton onClick={onClickCreate}>등록</DefaultButton>
     </Header>
     <DefaultInput ref={titleRef} placeholder='제목을 입력하세요.' />
-    <DefaultTextarea ref={contentRef} placeholder='내용을 입력하세요.' contentEditable />
+    <StyledTextarea ref={contentRef} placeholder='내용을 입력하세요.' />
   </>;
 };
 
