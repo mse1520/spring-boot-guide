@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import DeleteButton from '../../components/DeleteButton';
 import { Card } from '../../styles/box';
 import { DefaultButton } from '../../styles/button';
 import { DefaultInput } from '../../styles/input';
@@ -47,21 +48,11 @@ export const FakeCard = styled(StyledCard)`
 opacity: 0;
 `;
 
-export const Img = styled.img`
-filter: invert(100%);
-max-width: 1.2rem;
-max-height: 1.2rem;
-cursor: pointer;
-padding: .3rem;
-border-radius: .5rem;
-transition: .2s;
+export const StyledDeleteButton = styled(DeleteButton)`
 position: absolute;
 top: .5rem;
 right: .5rem;
-&:hover {
-  filter: invert(0%);
-  background-color: gray;
-}`;
+`;
 
 export const Title = styled.h3`
 margin: 1rem 0;
