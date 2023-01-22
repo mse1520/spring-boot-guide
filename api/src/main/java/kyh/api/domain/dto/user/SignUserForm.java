@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.dto.user;
 
 import javax.validation.constraints.NotEmpty;
 

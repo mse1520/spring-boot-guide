@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.dto.board;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;

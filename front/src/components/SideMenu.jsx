@@ -25,7 +25,7 @@ const Links = [
   { path: '/board/info', text: '게시글' },
 ];
 
-const SideMene = () => {
+const SideMenu = () => {
   return <>
     <Nav>
       {Links.map((v, i) => <StyledLink key={i} to={v.path}>{v.text}</StyledLink>)}
@@ -33,4 +33,4 @@ const SideMene = () => {
   </>;
 };
 
-export default SideMene;
+export default SideMenu;

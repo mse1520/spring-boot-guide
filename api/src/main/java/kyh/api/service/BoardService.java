@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kyh.api.domain.BoardInfo;
-import kyh.api.domain.BoardWriteForm;
-import kyh.api.domain.MessageBox;
-import kyh.api.domain.MessageType;
+import kyh.api.domain.dto.board.BoardInfo;
+import kyh.api.domain.dto.board.BoardWriteForm;
+import kyh.api.domain.dto.common.MessageBox;
+import kyh.api.domain.dto.common.MessageType;
 import kyh.api.domain.entity.Board;
 import kyh.api.domain.entity.User;
 import kyh.api.repository.BoardRepository;
@@ -36,12 +36,12 @@ public class BoardService {
 
   /** 모든 게시글(Board) */
   public List<BoardInfo> list() {
-    return boardRepository.findAllWithUser().stream().map(BoardInfo::generate).toList();
+    return boardRepository.findWithUserAll().stream().map(BoardInfo::generate).toList();
   }
 
   /** 단건 게시글(Board) */
   public MessageBox<BoardInfo> info(Long boardId) {
-    Board findBoard = boardRepository.findById(boardId).orElse(null);
+    Board findBoard = boardRepository.findWithUserById(boardId).orElse(null);
 
     if (findBoard == null)
       return new MessageBox<>(MessageType.FAILURE, "조회된 게시글이 없습니다.");
@@ -56,7 +56,7 @@ public class BoardService {
     Board findBoard = boardRepository.findById(boardId).orElse(null);
 
     if (findBoard == null)
-      return new MessageBox<>(MessageType.FAILURE, "존재하지 않는 게시글 입니다.");
+      return new MessageBox<>(MessageType.FAILURE, "존재하지 않는 게시글입니다.");
     if (!findBoard.getUser().getName().equals(userName))
       return new MessageBox<>(MessageType.FAILURE, "게시글을 삭제할 권한이 없습니다.");
 

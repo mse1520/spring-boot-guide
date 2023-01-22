@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.dto.common;
 
 import org.springframework.validation.BindingResult;
 
@@ -34,7 +34,7 @@ public class MessageBox<T> {
 
   /** 인증되지 않은 사용자에 대한 메세지 */
   public static <T> MessageBox<T> unauthorized() {
-    return new MessageBox<>(MessageType.FAILURE, "인증되지 않은 사용자 입니다.");
+    return new MessageBox<>(MessageType.FAILURE, "인증되지 않은 사용자입니다.");
   }
 
 }

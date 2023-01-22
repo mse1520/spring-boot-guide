@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.dto.board;
 
 import java.time.format.DateTimeFormatter;
 

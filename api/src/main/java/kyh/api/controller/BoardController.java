@@ -2,11 +2,11 @@ package kyh.api.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import kyh.api.domain.BoardInfo;
-import kyh.api.domain.BoardWriteForm;
-import kyh.api.domain.MessageBox;
-import kyh.api.domain.MessageType;
-import kyh.api.domain.UserInfo;
+import kyh.api.domain.dto.board.BoardInfo;
+import kyh.api.domain.dto.board.BoardWriteForm;
+import kyh.api.domain.dto.common.MessageBox;
+import kyh.api.domain.dto.common.MessageType;
+import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.BoardService;
 import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class BoardController {
   /** 게시글 작성 api */
   @PostMapping(value = "/write")
   public ResponseEntity<MessageBox<BoardInfo>> write(HttpServletRequest request,
-      @RequestBody @Validated BoardWriteForm boardWriteForm, BindingResult bindingResult) {
+      @RequestBody @Validated BoardWriteForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
 
@@ -45,7 +45,7 @@ public class BoardController {
     if (userInfo == null)
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
 
-    return ResponseEntity.ok(boardService.write(boardWriteForm, userInfo.getId()));
+    return ResponseEntity.ok(boardService.write(form, userInfo.getId()));
   }
 
   /** 게시글 조회 api */

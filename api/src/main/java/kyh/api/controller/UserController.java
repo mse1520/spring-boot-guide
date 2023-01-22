@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kyh.api.domain.MessageBox;
-import kyh.api.domain.MessageType;
-import kyh.api.domain.SignUserForm;
-import kyh.api.domain.UserInfo;
+import kyh.api.domain.dto.common.MessageBox;
+import kyh.api.domain.dto.common.MessageType;
+import kyh.api.domain.dto.user.SignUserForm;
+import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -36,12 +36,12 @@ public class UserController {
 
   /** 회원 가입 */
   @PostMapping(value = "/sign-up")
-  public ResponseEntity<MessageBox<UserInfo>> SignUp(@RequestBody @Validated SignUserForm signUserForm,
+  public ResponseEntity<MessageBox<UserInfo>> SignUp(@RequestBody @Validated SignUserForm form,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
 
-    MessageBox<UserInfo> result = userService.signUp(signUserForm);
+    MessageBox<UserInfo> result = userService.signUp(form);
 
     return result.getType() == MessageType.SUCCESS
         ? ResponseEntity.ok(result)
@@ -51,11 +51,11 @@ public class UserController {
   /** 회원 인증 */
   @PostMapping(value = "/sign-in")
   public ResponseEntity<MessageBox<UserInfo>> signIn(HttpServletRequest request,
-      @RequestBody @Validated SignUserForm signUserForm, BindingResult bindingResult) {
+      @RequestBody @Validated SignUserForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
 
-    MessageBox<UserInfo> result = userService.signIn(signUserForm, request);
+    MessageBox<UserInfo> result = userService.signIn(form, request);
 
     return result.getType() == MessageType.SUCCESS
         ? ResponseEntity.ok(result)

@@ -2,7 +2,7 @@ import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'reac
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/Loading';
-import SideMene from '../components/SideMenu';
+import SideMenu from '../components/SideMenu';
 import SignedButtonGroup from '../components/SignedButtonGroup';
 import UnsignedButtonGroup from '../components/UnSignedButtonGroup';
 import { deleteApi, getApi } from '../utils/Api';
@@ -62,7 +62,7 @@ const Main = () => {
     <Aticle>
       <Header>{signedInfo}</Header>
       <Section>
-        <SideMene />
+        <SideMenu />
         <ContentWrap>
           <Content>
             <Suspense fallback={<Loading />}>

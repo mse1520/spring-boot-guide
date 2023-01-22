@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/Loading';
 import Textarea from '../components/Textarea';
 import { DefaultButton } from '../styles/button';
-import { getApi } from '../utils/Api';
+import { getApi, postApi } from '../utils/Api';
 
 const Header = styled.header`
 border-bottom: .1rem solid dimgray;
@@ -46,14 +46,30 @@ height: 5rem;
 const BoardDetail = () => {
   const { boardId } = useParams();
   const [board, setBoard] = useState();
+  const [error, setError] = useState();
+  const commentRef = useRef();
 
   useEffect(() => {
     getApi(`/api/board/info/${boardId}`)
       .then(v => setBoard(v.body))
-      .catch(console.error)
+      .catch(err => {
+        console.error(err);
+        setError(err);
+        setBoard(null)
+      });
+  }, []);
+
+  const onClickNewComment = useCallback(() => {
+    postApi('/api/comment/write', {
+      boardId,
+      content: commentRef.current.innerText
+    })
+      .then(console.log)
+      .catch(err => err.message ? alert(err.message) : console.error(err));
   }, []);
 
   if (board === undefined) return <Loading />;
+  if (!board) return <div>{error.message}</div>;
 
   return <>
     <Header>
@@ -70,8 +86,8 @@ const BoardDetail = () => {
       <Content>{board?.content}</Content>
       <Hr />
       <WriteCommentGroup>
-        <StyledTextarea placeholder='댓글을 남겨보세요.' />
-        <DefaultButton>등록</DefaultButton>
+        <StyledTextarea ref={commentRef} placeholder='댓글을 남겨보세요.' />
+        <DefaultButton onClick={onClickNewComment}>등록</DefaultButton>
       </WriteCommentGroup>
     </section>
   </>;

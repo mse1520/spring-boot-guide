@@ -1,5 +1,6 @@
-package kyh.api.domain;
+package kyh.api.domain.dto.user;
 
+import kyh.api.domain.UserRole;
 import kyh.api.domain.entity.User;
 import lombok.Getter;
 import lombok.ToString;

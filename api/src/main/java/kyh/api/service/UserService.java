@@ -7,11 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kyh.api.domain.MessageBox;
-import kyh.api.domain.MessageType;
-import kyh.api.domain.SignUserForm;
-import kyh.api.domain.UserInfo;
 import kyh.api.domain.UserRole;
+import kyh.api.domain.dto.common.MessageBox;
+import kyh.api.domain.dto.common.MessageType;
+import kyh.api.domain.dto.user.SignUserForm;
+import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.domain.entity.User;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +34,11 @@ public class UserService {
 
   /** 회원 가입 */
   @Transactional
-  public MessageBox<UserInfo> signUp(SignUserForm signUserForm) {
-    if (userRepository.findByName(signUserForm.getName()).orElse(null) != null)
+  public MessageBox<UserInfo> signUp(SignUserForm form) {
+    if (userRepository.findByName(form.getName()).orElse(null) != null)
       return new MessageBox<>(MessageType.FAILURE, "이미 존재하는 회원입니다.\n다른 아이디를 사용해주세요.");
 
-    User user = new User(signUserForm.getName(), passwordEncoder.encode(signUserForm.getPassword()), UserRole.USER);
+    User user = new User(form.getName(), passwordEncoder.encode(form.getPassword()), UserRole.USER);
     User savedUser = userRepository.save(user);
     UserInfo userInfo = new UserInfo(savedUser);
 
@@ -46,12 +46,12 @@ public class UserService {
   }
 
   /** 회원 인증 */
-  public MessageBox<UserInfo> signIn(SignUserForm signUserForm, HttpServletRequest request) {
-    User findUser = userRepository.findByName(signUserForm.getName()).orElse(null);
+  public MessageBox<UserInfo> signIn(SignUserForm form, HttpServletRequest request) {
+    User findUser = userRepository.findByName(form.getName()).orElse(null);
 
     if (findUser == null)
       return new MessageBox<>(MessageType.FAILURE, "아이디를 찾을 수 없습니다.");
-    if (!passwordEncoder.matches(signUserForm.getPassword(), findUser.getPassword()))
+    if (!passwordEncoder.matches(form.getPassword(), findUser.getPassword()))
       return new MessageBox<>(MessageType.FAILURE, "회원 인증에 실패하였습니다.");
 
     UserInfo userInfo = new UserInfo(findUser);
