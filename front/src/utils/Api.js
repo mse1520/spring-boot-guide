@@ -33,7 +33,7 @@ export const postApi = (url, data) => axios.post(url, data)
  * @param {any} data 요청 데이터
  * @returns {Promise<any>} 비동기 응답
  */
-export const deleteApi = (url, data) => axios.delete(url, data)
+export const deleteApi = url => axios.delete(url)
   .then(res => ({ type: HttpStatus.Success, body: res.data }))
   .catch(err => ({ type: HttpStatus.Failure, body: err.response.data }))
   .then(res => res.type === HttpStatus.Success ? res.body : Promise.reject(res.body));

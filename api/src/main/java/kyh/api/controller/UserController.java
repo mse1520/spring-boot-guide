@@ -28,13 +28,13 @@ public class UserController {
 
   private final UserService userService;
 
-  /** 회원 정보 */
+  /** 회원 정보 api */
   @GetMapping(value = "/info")
   public UserInfo userInfo(HttpServletRequest request) {
     return userService.info(request);
   }
 
-  /** 회원 가입 */
+  /** 회원 가입 api */
   @PostMapping(value = "/sign-up")
   public ResponseEntity<MessageBox<UserInfo>> SignUp(@RequestBody @Validated SignUserForm form,
       BindingResult bindingResult) {
@@ -48,7 +48,7 @@ public class UserController {
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
-  /** 회원 인증 */
+  /** 회원 인증 api */
   @PostMapping(value = "/sign-in")
   public ResponseEntity<MessageBox<UserInfo>> signIn(HttpServletRequest request,
       @RequestBody @Validated SignUserForm form, BindingResult bindingResult) {
@@ -62,7 +62,7 @@ public class UserController {
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
-  /** 로그아웃 */
+  /** 로그아웃 api */
   @DeleteMapping(value = "/sign-out")
   public MessageBox<Object> signOut(HttpServletRequest request) {
     return userService.signOut(request);

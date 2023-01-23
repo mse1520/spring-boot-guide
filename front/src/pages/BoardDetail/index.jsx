@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import { DefaultButton } from '../../styles/button';
-import { getApi, postApi } from '../../utils/Api';
+import { deleteApi, getApi, postApi } from '../../utils/Api';
 import {
   CommentCard, CommentCardLeft, CommentGroup, BoardContent, Date, DetailInfo, Header, Hr, StyledTextarea, UserName, WriteCommentGroup, CommentContent,
   CommentCardRight, StyledDeleteButton
@@ -29,13 +29,19 @@ const BoardDetail = () => {
       boardId,
       content: commentRef.current.innerText
     })
-      .then(console.log)
+      .then(v => v.body)
+      .then(newComment => ({ ...board, comments: [...board.comments, newComment] }))
+      .then(setBoard)
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, []);
+  }, [board]);
 
   const onClickDeleteComment = useCallback(commentId => () => {
-    console.log('onClickDeleteComment:', commentId);
-  }, []);
+    deleteApi(`/api/comment/info/${commentId}`)
+      .then(() => ({ ...board, comments: board.comments.filter(v => v.commentId !== commentId) }))
+      .then(v => (console.log(v), v))
+      .then(setBoard)
+      .catch(err => err.message ? alert(err.message) : console.error(err));
+  }, [board]);
 
   if (board === undefined) return <Loading />;
   if (!board) return <div>{error.message}</div>;

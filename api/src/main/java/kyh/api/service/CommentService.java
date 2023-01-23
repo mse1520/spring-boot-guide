@@ -39,4 +39,19 @@ public class CommentService {
     return new MessageBox<>(MessageType.SUCCESS, "저장 성공.", commentInfo);
   }
 
+  @Transactional
+  public MessageBox<CommentInfo> delete(Long commentId, Long userId) {
+    Comment findComment = commentRepository.findWithUserById(commentId).orElse(null);
+    User findUser = userRepository.findById(userId).orElse(new User(null, null, null));
+
+    if (findComment == null)
+      return new MessageBox<>(MessageType.FAILURE, "존재하지 않는 댓글입니다.");
+    if (findComment.getUser() != findUser)
+      return new MessageBox<>(MessageType.FAILURE, "댓글을 삭제할 권한이 없습니다.");
+
+    commentRepository.delete(findComment);
+    CommentInfo commentInfo = CommentInfo.generate(findComment);
+    return new MessageBox<>(MessageType.SUCCESS, "삭제 성공.", commentInfo);
+  }
+
 }
