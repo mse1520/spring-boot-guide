@@ -1,8 +1,9 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
-import deleteImg from '../../resources/img/x.png';
+import deleteImg from '../../resources/img/x';
 
 export const Img = styled.img`
+display: block;
 filter: invert(100%);
 max-width: 1.2rem;
 max-height: 1.2rem;
@@ -15,6 +16,6 @@ transition: .2s;
   background-color: gray;
 }`;
 
-const DeleteButton = forwardRef((props, ref) => <Img ref={ref} {...props} src={deleteImg} />);
+const DeleteImg = forwardRef((props, ref) => <Img ref={ref} {...props} src={deleteImg} />);
 
-export default DeleteButton;
+export default DeleteImg;

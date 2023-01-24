@@ -15,6 +15,6 @@ min-height: 2.4rem;
   color: dimgray;
 }`;
 
-const Textarea = forwardRef((props, ref) => <StyledTextarea contentEditable ref={ref} {...props} />);
+const Textarea = forwardRef((props, ref) => <StyledTextarea contentEditable suppressContentEditableWarning ref={ref} {...props} />);
 
 export default Textarea;

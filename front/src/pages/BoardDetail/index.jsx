@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import Comment from '../../components/BoardDetail/Comment';
 import Loading from '../../components/common/Loading';
 import { DefaultButton } from '../../styles/button';
+import CommentMode from '../../types/BoardDetail/CommentMode';
 import { deleteApi, getApi, postApi } from '../../utils/Api';
-import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer, ButtonWrap, ButtonInnerWrap } from './style';
+import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer } from './style';
 
 const BoardDetail = () => {
   const { boardId } = useParams();
@@ -42,6 +43,24 @@ const BoardDetail = () => {
       .catch(err => err.message ? alert(err.message) : console.error(err));
   }, [board]);
 
+  const onClickModifyComment = useCallback(commentId => {
+    setBoard({
+      ...board,
+      comments: board.comments.map(comment => ({
+        ...comment,
+        mode: comment.commentId === commentId ? CommentMode.MODIFYING : CommentMode.DONE
+      }))
+    });
+  }, [board]);
+
+  const onClickModifyCommentConfirm = useCallback((result, commentId) => {
+    if (!result) {
+      const findComment = board.comments.find(comment => comment.commentId === commentId);
+      findComment.mode = CommentMode.DONE;
+      setBoard({ ...board });
+    }
+  }, [board]);
+
   if (board === undefined) return <Loading />;
   if (!board) return <div>{error.message}</div>;
 
@@ -59,7 +78,14 @@ const BoardDetail = () => {
     <section>
       <Content>{board.content}</Content>
       <Hr />
-      <Comment boardUserName={board.userName} comments={board.comments} onClickDelete={onClickDeleteComment} />
+      {board.comments.map((comment, i) => <Comment
+        key={i}
+        boardUserName={board.userName}
+        comment={comment}
+        onClickDelete={onClickDeleteComment}
+        onClickModify={onClickModifyComment}
+        onClickModifyConfirm={onClickModifyCommentConfirm}
+      />)}
     </section>
     <Footer>
       <StyledTextarea ref={commentRef} placeholder='댓글을 남겨보세요.' />

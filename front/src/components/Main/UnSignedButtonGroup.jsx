@@ -6,10 +6,10 @@ const StyledLink = styled(DefaultLink)`
 margin: 0 .2rem;
 `;
 
-const UnsignedButtonGroup = () => {
+const UnsignedButtonGroup = ({ signInTo, signUpTo }) => {
   return <>
-    <StyledLink to='sign-in'>로그인</StyledLink>
-    <StyledLink to='sign-up'>회원가입</StyledLink>
+    <StyledLink to={signInTo}>로그인</StyledLink>
+    <StyledLink to={signUpTo}>회원가입</StyledLink>
   </>;
 };
 

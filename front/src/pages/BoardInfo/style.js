@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import DeleteButton from '../../components/common/DeleteButton';
+import DeleteImg from '../../components/common/DeleteImg';
 import { Card } from '../../styles/box';
 import { DefaultButton } from '../../styles/button';
 import { DefaultInput } from '../../styles/input';
@@ -48,7 +48,7 @@ export const FakeCard = styled(StyledCard)`
 opacity: 0;
 `;
 
-export const StyledDeleteButton = styled(DeleteButton)`
+export const StyledDeleteImg = styled(DeleteImg)`
 position: absolute;
 top: .5rem;
 right: .5rem;

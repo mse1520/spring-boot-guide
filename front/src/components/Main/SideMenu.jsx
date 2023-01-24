@@ -19,16 +19,10 @@ text-decoration-line: none;
   background-color: darkgray;
 }`;
 
-const Links = [
-  { path: '/home', text: '홈' },
-  { path: '/board/write', text: '게시글 작성' },
-  { path: '/board/info', text: '게시글' },
-];
-
-const SideMenu = () => {
+const SideMenu = ({ links }) => {
   return <>
     <Nav>
-      {Links.map((v, i) => <StyledLink key={i} to={v.path}>{v.text}</StyledLink>)}
+      {links.map((v, i) => <StyledLink key={i} to={v.path}>{v.text}</StyledLink>)}
     </Nav>
   </>;
 };

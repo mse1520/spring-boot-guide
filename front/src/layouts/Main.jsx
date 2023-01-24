@@ -23,7 +23,7 @@ flex: 1;
 padding: 1rem;
 overflow: auto;
 `;
-const Content = styled.div`
+const Content = styled.article`
 @media (min-width: 80rem) {
   & {
     max-width: 80rem;
@@ -37,6 +37,12 @@ padding: .5rem;
 background-color: rgb(50, 50, 50);
 align-items: baseline;
 `;
+
+const LINKS = [
+  { path: '/home', text: '홈' },
+  { path: '/board/write', text: '게시글 작성' },
+  { path: '/board/info', text: '게시글' },
+];
 
 const Main = () => {
   const [user, setUser] = useState();
@@ -56,13 +62,13 @@ const Main = () => {
 
   const signedInfo = useMemo(() => user
     ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
-    : <UnsignedButtonGroup />, [user]);
+    : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />, [user]);
 
   return <>
     <Aticle>
       <Header>{signedInfo}</Header>
       <Section>
-        <SideMenu />
+        <SideMenu links={LINKS} />
         <ContentWrap>
           <Content>
             <Suspense fallback={<Loading />}>

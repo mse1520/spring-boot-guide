@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { deleteApi, getApi } from '../../utils/Api';
-import deleteImg from '../../resources/img/x.png';
 import { useNavigate } from 'react-router-dom';
-import { Content, ContentWrap, FakeCard, Header, StyledDeleteButton, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, UserName } from './style';
+import { Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, UserName } from './style';
 
 const BoardInfo = () => {
   const [boards, setBoards] = useState([]);
@@ -37,7 +36,7 @@ const BoardInfo = () => {
     <Section>
       {boards.map((board, i) =>
         <StyledCard key={i} onClick={onClickCard(board.boardId)}>
-          <StyledDeleteButton src={deleteImg} onClick={onClickDelete(board.boardId)} />
+          <StyledDeleteImg onClick={onClickDelete(board.boardId)} />
           <Title>{board.title}</Title>
           <ContentWrap>
             <Content>{board.content}</Content>

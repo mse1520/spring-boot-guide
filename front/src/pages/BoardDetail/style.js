@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import DeleteButton from '../../components/common/DeleteButton';
+import DeleteImg from '../../components/common/DeleteImg';
 import Textarea from '../../components/common/Textarea';
 
 export const Header = styled.header`
@@ -38,7 +38,7 @@ border: none;
 border-bottom: .1rem solid dimgray;
 `;
 
-export const StyledDeleteButton = styled(DeleteButton)`
+export const StyledDeleteImg = styled(DeleteImg)`
 max-width: 1rem;
 max-height: 1rem;
 margin-bottom: .5rem;
