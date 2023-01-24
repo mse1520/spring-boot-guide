@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DefaultButton } from '../styles/button';
+import { DefaultButton } from '../../styles/button';
 
 const Message = styled.div`
 margin: 0 .2rem;

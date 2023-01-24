@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import DeleteButton from '../../components/DeleteButton';
+import DeleteButton from '../../components/common/DeleteButton';
 import { Card } from '../../styles/box';
 import { DefaultButton } from '../../styles/button';
 import { DefaultInput } from '../../styles/input';

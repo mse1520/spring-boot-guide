@@ -1,4 +1,4 @@
-package kyh.api.domain;
+package kyh.api.domain.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

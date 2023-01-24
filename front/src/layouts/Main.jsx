@@ -1,10 +1,10 @@
 import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Loading from '../components/Loading';
-import SideMenu from '../components/SideMenu';
-import SignedButtonGroup from '../components/SignedButtonGroup';
-import UnsignedButtonGroup from '../components/UnSignedButtonGroup';
+import Loading from '../components/common/Loading';
+import SideMenu from '../components/Main/SideMenu';
+import SignedButtonGroup from '../components/Main/SignedButtonGroup';
+import UnsignedButtonGroup from '../components/Main/UnSignedButtonGroup';
 import { deleteApi, getApi } from '../utils/Api';
 
 const Aticle = styled.article`
@@ -23,7 +23,7 @@ flex: 1;
 padding: 1rem;
 overflow: auto;
 `;
-const Content = styled.section`
+const Content = styled.div`
 @media (min-width: 80rem) {
   & {
     max-width: 80rem;

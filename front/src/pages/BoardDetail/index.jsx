@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Loading from '../../components/Loading';
+import Comment from '../../components/BoardDetail/Comment';
+import Loading from '../../components/common/Loading';
 import { DefaultButton } from '../../styles/button';
 import { deleteApi, getApi, postApi } from '../../utils/Api';
-import {
-  CommentCard, CommentCardLeft, CommentGroup, BoardContent, Date, DetailInfo, Header, Hr, StyledTextarea, UserName, WriteCommentGroup, CommentContent,
-  CommentCardRight, StyledDeleteButton
-} from './style';
+import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer, ButtonWrap, ButtonInnerWrap } from './style';
 
 const BoardDetail = () => {
   const { boardId } = useParams();
@@ -32,10 +30,11 @@ const BoardDetail = () => {
       .then(v => v.body)
       .then(newComment => ({ ...board, comments: [...board.comments, newComment] }))
       .then(setBoard)
+      .then(() => commentRef.current.innerText = '')
       .catch(err => err.message ? alert(err.message) : console.error(err));
   }, [board]);
 
-  const onClickDeleteComment = useCallback(commentId => () => {
+  const onClickDeleteComment = useCallback(commentId => {
     deleteApi(`/api/comment/info/${commentId}`)
       .then(() => ({ ...board, comments: board.comments.filter(v => v.commentId !== commentId) }))
       .then(v => (console.log(v), v))
@@ -49,43 +48,23 @@ const BoardDetail = () => {
   return <>
     <Header>
       <h2>{board.title}</h2>
-      <DetailInfo>
+      <BoardInfo>
         <div>
           <UserName>{board.userName}</UserName>
-          <Date>{board.createdDate}</Date>
+          <CreatedDate>{board.createdDate}</CreatedDate>
         </div>
         <div>댓글수: {board.comments.length}</div>
-      </DetailInfo>
+      </BoardInfo>
     </Header>
     <section>
-      <BoardContent>{board.content}</BoardContent>
+      <Content>{board.content}</Content>
       <Hr />
-      <CommentGroup>
-        {board.comments.map((comment, i) =>
-          board.userName === comment.userName
-            ? <CommentCardRight key={i}>
-              <StyledDeleteButton onClick={onClickDeleteComment(comment.commentId)} />
-              <CommentCard>
-                <UserName>{comment.userName}</UserName>
-                <CommentContent>{comment.content}</CommentContent>
-                <Date>{comment.updatedDate}</Date>
-              </CommentCard>
-            </CommentCardRight>
-            : <CommentCardLeft key={i}>
-              <CommentCard>
-                <UserName>{comment.userName}</UserName>
-                <CommentContent>{comment.content}</CommentContent>
-                <Date>{comment.updatedDate}</Date>
-              </CommentCard>
-              <StyledDeleteButton onClick={onClickDeleteComment(comment.commentId)} />
-            </CommentCardLeft>
-        )}
-      </CommentGroup>
-      <WriteCommentGroup>
-        <StyledTextarea ref={commentRef} placeholder='댓글을 남겨보세요.' />
-        <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
-      </WriteCommentGroup>
+      <Comment boardUserName={board.userName} comments={board.comments} onClickDelete={onClickDeleteComment} />
     </section>
+    <Footer>
+      <StyledTextarea ref={commentRef} placeholder='댓글을 남겨보세요.' />
+      <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
+    </Footer>
   </>;
 };
 

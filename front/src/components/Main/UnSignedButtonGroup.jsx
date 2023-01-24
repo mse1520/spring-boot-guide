@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DefaultLink } from '../styles/button';
+import { DefaultLink } from '../../styles/button';
 
 const StyledLink = styled(DefaultLink)`
 margin: 0 .2rem;

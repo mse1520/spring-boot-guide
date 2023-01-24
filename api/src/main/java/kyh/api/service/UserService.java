@@ -7,12 +7,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kyh.api.domain.UserRole;
 import kyh.api.domain.dto.common.MessageBox;
 import kyh.api.domain.dto.common.MessageType;
 import kyh.api.domain.dto.user.SignUserForm;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.domain.entity.User;
+import kyh.api.domain.type.UserRole;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 

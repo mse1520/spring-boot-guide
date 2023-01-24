@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
-import Textarea from '../components/Textarea';
+import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
 import { postApi } from '../utils/Api';

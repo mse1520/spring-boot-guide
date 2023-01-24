@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
-import deleteImg from '../resources/img/x.png';
+import deleteImg from '../../resources/img/x.png';
 
 export const Img = styled.img`
 filter: invert(100%);

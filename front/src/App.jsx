@@ -2,7 +2,7 @@
 import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
-import Loading from './components/Loading';
+import Loading from './components/common/Loading';
 
 import Main from './layouts/Main';
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
