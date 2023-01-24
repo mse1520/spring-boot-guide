@@ -4,7 +4,7 @@ import Comment from '../../components/BoardDetail/Comment';
 import Loading from '../../components/common/Loading';
 import { DefaultButton } from '../../styles/button';
 import CommentMode from '../../types/BoardDetail/CommentMode';
-import { deleteApi, getApi, postApi } from '../../utils/Api';
+import { deleteApi, getApi, patchApi, postApi } from '../../utils/Api';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer } from './style';
 
 const BoardDetail = () => {
@@ -44,6 +44,7 @@ const BoardDetail = () => {
   }, [board]);
 
   const onClickModifyComment = useCallback(commentId => {
+    console.log(board.comments);
     setBoard({
       ...board,
       comments: board.comments.map(comment => ({
@@ -53,12 +54,20 @@ const BoardDetail = () => {
     });
   }, [board]);
 
-  const onClickModifyCommentConfirm = useCallback((result, commentId) => {
+  const onClickModifyCommentConfirm = useCallback((result, commentId, content) => {
     if (!result) {
       const findComment = board.comments.find(comment => comment.commentId === commentId);
       findComment.mode = CommentMode.DONE;
-      setBoard({ ...board });
+      return setBoard({ ...board });
     }
+
+    patchApi(`/api/comment/info/${commentId}`, { content: content })
+      .then(v => v.body)
+      .then(newComment => setBoard({
+        ...board,
+        comments: board.comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)
+      }))
+      .catch(err => err.message ? alert(err.message) : console.error(err));
   }, [board]);
 
   if (board === undefined) return <Loading />;

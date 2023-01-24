@@ -10,6 +10,7 @@ padding: .5rem;
 border-radius: .5rem;
 font-size: 1rem;
 min-height: 2.4rem;
+white-space: pre-wrap;
 &[placeholder]:empty:before {
   content: attr(placeholder);
   color: dimgray;

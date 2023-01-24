@@ -54,4 +54,20 @@ public class CommentService {
     return new MessageBox<>(MessageType.SUCCESS, "삭제 성공.", commentInfo);
   }
 
+  @Transactional
+  public MessageBox<CommentInfo> modify(Long commentId, Long userId, String content) {
+    Comment findComment = commentRepository.findWithUserById(commentId).orElse(null);
+    User findUser = userRepository.findById(userId).orElse(new User(null, null, null));
+
+    if (findComment == null)
+      return new MessageBox<>(MessageType.FAILURE, "존재하지 않는 댓글입니다.");
+    if (findComment.getUser() != findUser)
+      return new MessageBox<>(MessageType.FAILURE, "댓글을 수정할 권한이 없습니다.");
+
+    findComment.changeContent(content);
+    Comment savedComment = commentRepository.save(findComment);
+    CommentInfo commentInfo = CommentInfo.generate(savedComment);
+    return new MessageBox<>(MessageType.SUCCESS, "수정 성공.", commentInfo);
+  }
+
 }

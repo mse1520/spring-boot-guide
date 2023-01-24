@@ -17,20 +17,19 @@ export const CommentContext = createContext({
   },
   onClickDelete: commentId => { },
   onClickModify: commentId => { },
-  onClickModifyConfirm: (result, commentId) => { }
+  onClickModifyConfirm: (result, commentId, content) => { }
 });
 
 const Comment = ({ boardUserName, comment, onClickDelete, onClickModify, onClickModifyConfirm }) => {
-  const onClickInnerDelete = useCallback(commentId => () => onClickDelete(commentId), [comment]);
-  const onClickInnerModify = useCallback(commentId => () => onClickModify(commentId), [comment]);
-  const onClickInnerModifyConfirm = useCallback((result, commentId) => () => onClickModifyConfirm(result, commentId), []);
+  const onClickInnerDelete = useCallback(commentId => () => onClickDelete(commentId), [onClickDelete]);
+  const onClickInnerModify = useCallback(commentId => () => onClickModify(commentId), [onClickModify]);
 
   return <>
     <CommentContext.Provider value={{
       comment,
       onClickDelete: onClickInnerDelete,
       onClickModify: onClickInnerModify,
-      onClickModifyConfirm: onClickInnerModifyConfirm
+      onClickModifyConfirm
     }}>
       <Wrap>
         {boardUserName === comment.userName ? <RightCard /> : <LeftCard />}

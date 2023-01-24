@@ -3,6 +3,7 @@ package kyh.api.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import kyh.api.domain.dto.comment.CommentInfo;
+import kyh.api.domain.dto.comment.CommentModifyForm;
 import kyh.api.domain.dto.comment.CommentWriteForm;
 import kyh.api.domain.dto.common.MessageBox;
 import kyh.api.domain.dto.common.MessageType;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +59,23 @@ public class CommentController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
 
     MessageBox<CommentInfo> result = commentService.delete(commentId, userInfo.getId());
+    return result.getType() == MessageType.SUCCESS
+        ? ResponseEntity.ok(result)
+        : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+  }
+
+  /** 댓글 수정 api */
+  @PatchMapping(value = "/info/{commentId}")
+  public ResponseEntity<MessageBox<CommentInfo>> modify(HttpServletRequest request, @PathVariable Long commentId,
+      @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult) {
+    if (bindingResult.hasErrors())
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
+
+    UserInfo userInfo = userService.info(request);
+    if (userInfo == null)
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
+
+    MessageBox<CommentInfo> result = commentService.modify(commentId, userInfo.getId(), form.getContent());
     return result.getType() == MessageType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
