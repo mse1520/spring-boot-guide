@@ -10,7 +10,7 @@ flex-direction: column;
 gap: .5rem;
 `;
 const StyledTextarea = styled(Textarea)`
-height: 5rem;
+min-height: 5rem;
 border: .1rem solid dimgray;
 `;
 const ButtonWrap = styled.div`

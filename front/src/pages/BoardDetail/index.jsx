@@ -44,7 +44,6 @@ const BoardDetail = () => {
   }, [board]);
 
   const onClickModifyComment = useCallback(commentId => {
-    console.log(board.comments);
     setBoard({
       ...board,
       comments: board.comments.map(comment => ({

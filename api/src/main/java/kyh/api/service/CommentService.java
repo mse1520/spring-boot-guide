@@ -65,7 +65,7 @@ public class CommentService {
       return new MessageBox<>(MessageType.FAILURE, "댓글을 수정할 권한이 없습니다.");
 
     findComment.changeContent(content);
-    Comment savedComment = commentRepository.save(findComment);
+    Comment savedComment = commentRepository.saveAndFlush(findComment);
     CommentInfo commentInfo = CommentInfo.generate(savedComment);
     return new MessageBox<>(MessageType.SUCCESS, "수정 성공.", commentInfo);
   }
