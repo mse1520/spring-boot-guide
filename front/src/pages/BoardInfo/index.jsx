@@ -1,15 +1,35 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { deleteApi, getApi } from '../../utils/Api';
 import { useNavigate } from 'react-router-dom';
 import { Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, UserName } from './style';
 
 const BoardInfo = () => {
-  const [boards, setBoards] = useState([]);
   const navigate = useNavigate();
+  const [boards, setBoards] = useState([]);
+  const [page, setPage] = useState();
+  const [isLast, setIsLast] = useState(false);
+  const lastCardRef = useRef();
 
   useEffect(() => {
-    getApi('/api/board/list').then(setBoards).catch(console.error);
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      console.log('IntersectionObserver');
+      setPage(prev => prev === undefined ? 0 : prev + 1);
+    });
+
+    observer.observe(lastCardRef.current);
+    return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (page === undefined) return;
+    if (isLast) return;
+
+    getApi('/api/board/list', { page })
+      .then(v => (setIsLast(v.isLast), v.body))
+      .then(curr => setBoards(prev => [...prev, ...curr]))
+      .catch(console.error);
+  }, [page]);
 
   const onClickCard = useCallback(boardId => () => navigate(`/board/info/${boardId}`), []);
 
@@ -47,7 +67,7 @@ const BoardInfo = () => {
       )}
       <FakeCard />
       <FakeCard />
-      <FakeCard />
+      <FakeCard ref={lastCardRef} />
     </Section>
   </>;
 };

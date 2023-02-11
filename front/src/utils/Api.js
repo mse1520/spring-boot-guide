@@ -11,7 +11,7 @@ const HttpStatus = {
  * @param {string} url 요청 url
  * @returns {Promise<any>} 비동기 응답
  */
-export const getApi = url => axios.get(url)
+export const getApi = (url, params) => axios.get(url, { params })
   .then(res => ({ type: HttpStatus.Success, body: res.data }))
   .catch(err => ({ type: HttpStatus.Failure, body: err.response.data }))
   .then(res => res.type === HttpStatus.Success ? res.body : Promise.reject(res.body));

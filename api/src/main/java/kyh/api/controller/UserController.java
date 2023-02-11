@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kyh.api.domain.dto.common.MessageBox;
-import kyh.api.domain.dto.common.MessageType;
+import kyh.api.domain.dto.common.DataBox;
+import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.dto.user.SignUserForm;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.UserService;
@@ -36,35 +36,35 @@ public class UserController {
 
   /** 회원 가입 api */
   @PostMapping(value = "/sign-up")
-  public ResponseEntity<MessageBox<UserInfo>> SignUp(@RequestBody @Validated SignUserForm form,
+  public ResponseEntity<DataBox<UserInfo>> SignUp(@RequestBody @Validated SignUserForm form,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    MessageBox<UserInfo> result = userService.signUp(form);
+    DataBox<UserInfo> result = userService.signUp(form);
 
-    return result.getType() == MessageType.SUCCESS
+    return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
   /** 회원 인증 api */
   @PostMapping(value = "/sign-in")
-  public ResponseEntity<MessageBox<UserInfo>> signIn(HttpServletRequest request,
+  public ResponseEntity<DataBox<UserInfo>> signIn(HttpServletRequest request,
       @RequestBody @Validated SignUserForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    MessageBox<UserInfo> result = userService.signIn(form, request);
+    DataBox<UserInfo> result = userService.signIn(form, request);
 
-    return result.getType() == MessageType.SUCCESS
+    return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
   /** 로그아웃 api */
   @DeleteMapping(value = "/sign-out")
-  public MessageBox<Object> signOut(HttpServletRequest request) {
+  public DataBox<Object> signOut(HttpServletRequest request) {
     return userService.signOut(request);
   }
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MessageType {
+public enum DataBoxType {
   SUCCESS("SUCCESS"),
   FAILURE("FAILURE");
 

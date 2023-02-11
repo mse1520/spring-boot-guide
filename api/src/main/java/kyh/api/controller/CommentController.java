@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import kyh.api.domain.dto.comment.CommentInfo;
 import kyh.api.domain.dto.comment.CommentModifyForm;
 import kyh.api.domain.dto.comment.CommentWriteForm;
-import kyh.api.domain.dto.common.MessageBox;
-import kyh.api.domain.dto.common.MessageType;
+import kyh.api.domain.dto.common.DataBox;
+import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.CommentService;
 import kyh.api.service.UserService;
@@ -35,48 +35,48 @@ public class CommentController {
 
   /** 댓글 작성 api */
   @PostMapping(value = "/write")
-  public ResponseEntity<MessageBox<CommentInfo>> write(HttpServletRequest request,
+  public ResponseEntity<DataBox<CommentInfo>> write(HttpServletRequest request,
       @RequestBody @Validated CommentWriteForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
     UserInfo userInfo = userService.info(request);
     if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
 
-    MessageBox<CommentInfo> result = commentService.wirte(form, userInfo.getId());
+    DataBox<CommentInfo> result = commentService.wirte(form, userInfo.getId());
 
-    return result.getType() == MessageType.SUCCESS
+    return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
   }
 
   /** 댓글 삭제 api */
   @DeleteMapping(value = "/info/{commentId}")
-  public ResponseEntity<MessageBox<CommentInfo>> delete(HttpServletRequest request, @PathVariable Long commentId) {
+  public ResponseEntity<DataBox<CommentInfo>> delete(HttpServletRequest request, @PathVariable Long commentId) {
     UserInfo userInfo = userService.info(request);
     if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
 
-    MessageBox<CommentInfo> result = commentService.delete(commentId, userInfo.getId());
-    return result.getType() == MessageType.SUCCESS
+    DataBox<CommentInfo> result = commentService.delete(commentId, userInfo.getId());
+    return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
   }
 
   /** 댓글 수정 api */
   @PatchMapping(value = "/info/{commentId}")
-  public ResponseEntity<MessageBox<CommentInfo>> modify(HttpServletRequest request, @PathVariable Long commentId,
+  public ResponseEntity<DataBox<CommentInfo>> modify(HttpServletRequest request, @PathVariable Long commentId,
       @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageBox.failed(bindingResult));
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
     UserInfo userInfo = userService.info(request);
     if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageBox.unauthorized());
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
 
-    MessageBox<CommentInfo> result = commentService.modify(commentId, userInfo.getId(), form.getContent());
-    return result.getType() == MessageType.SUCCESS
+    DataBox<CommentInfo> result = commentService.modify(commentId, userInfo.getId(), form.getContent());
+    return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
   }
