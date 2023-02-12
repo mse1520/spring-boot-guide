@@ -9,13 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kyh.api.domain.dto.board.BoardInfo;
 import kyh.api.domain.dto.board.BoardWriteForm;
-import kyh.api.domain.dto.comment.CommentInfo;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.entity.Board;
 import kyh.api.domain.entity.User;
 import kyh.api.repository.BoardRepository;
-import kyh.api.repository.CommentRepository;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +24,6 @@ public class BoardService {
 
   private final UserRepository userRepository;
   private final BoardRepository boardRepository;
-  private final CommentRepository commentRepository;
 
   /** 게시글(Board) 작성 */
   @Transactional
@@ -55,10 +52,7 @@ public class BoardService {
     if (findBoard == null)
       return new DataBox<>(DataBoxType.FAILURE, "조회된 게시글이 없습니다.");
 
-    List<CommentInfo> commentInfos = commentRepository.findWithUserByBoard(findBoard).stream()
-        .map(CommentInfo::generate).toList();
-
-    BoardInfo boardInfo = BoardInfo.generate(findBoard, commentInfos);
+    BoardInfo boardInfo = BoardInfo.generate(findBoard);
     return new DataBox<>(DataBoxType.SUCCESS, "조회 성공.", boardInfo);
   }
 

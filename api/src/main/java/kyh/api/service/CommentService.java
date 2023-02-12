@@ -1,5 +1,9 @@
 package kyh.api.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,19 @@ public class CommentService {
     CommentInfo commentInfo = CommentInfo.generate(savedComment);
 
     return new DataBox<>(DataBoxType.SUCCESS, "저장 성공.", commentInfo);
+  }
+
+  public DataBox<List<CommentInfo>> list(Long boardId, Integer page) {
+    PageRequest pageRequest = PageRequest.of(page, 20);
+    Board board = boardRepository.findById(boardId).orElse(null);
+
+    if (board == null)
+      return new DataBox<>(DataBoxType.FAILURE, "조회된 게시글이 없습니다.");
+
+    Page<Comment> pageComment = commentRepository.findWithUserByBoard(board, pageRequest);
+    List<CommentInfo> commentInfos = pageComment.map(CommentInfo::generate).toList();
+
+    return new DataBox<>(DataBoxType.SUCCESS, pageComment.isLast(), pageComment.getTotalElements(), commentInfos);
   }
 
   @Transactional

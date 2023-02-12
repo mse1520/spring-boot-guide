@@ -38,12 +38,12 @@ export const deleteApi = url => axios.delete(url)
   .then(res => res.type === HttpStatus.Success ? res.body : Promise.reject(res.body));
 
 /**
- * patch 요청을 보냅니다
+ * put 요청을 보냅니다
  * @param {string} url 요청 url
  * @param {any} data 요청 데이터
  * @returns {Promise<any>} 비동기 응답
  */
-export const patchApi = (url, data) => axios.patch(url, data)
+export const putApi = (url, data) => axios.put(url, data)
   .then(res => ({ type: HttpStatus.Success, body: res.data }))
   .catch(err => ({ type: HttpStatus.Failure, body: err.response.data }))
   .then(res => res.type === HttpStatus.Success ? res.body : Promise.reject(res.body));

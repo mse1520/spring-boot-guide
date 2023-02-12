@@ -2,16 +2,33 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Comment from '../../components/BoardDetail/Comment';
 import Loading from '../../components/common/Loading';
+import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
 import CommentMode from '../../types/BoardDetail/CommentMode';
-import { deleteApi, getApi, patchApi, postApi } from '../../utils/Api';
+import { deleteApi, getApi, putApi, postApi } from '../../utils/Api';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer } from './style';
 
 const BoardDetail = () => {
   const { boardId } = useParams();
   const [board, setBoard] = useState();
+  const [comments, setComments] = useState([]);
+  const [page, setPage] = useState(0);
+  const [isLast, setIsLast] = useState(0);
+  const [total, setTotal] = useState(0);
   const [error, setError] = useState();
-  const commentRef = useRef();
+  const textareaRef = useRef();
+  const loaderRef = useRef();
+
+  useIntersection(loaderRef, ([entry]) => {
+    if (!entry.isIntersecting) return;
+    if (isLast) return;
+
+    getApi(`/api/comment/list/${boardId}`, { page })
+      .then(v => (setIsLast(v.isLast), v))
+      .then(v => (setPage(page + 1), v.body))
+      .then(v => setComments([...comments, ...v]))
+      .catch(console.error);
+  }, [loaderRef.current, comments, page]);
 
   useEffect(() => {
     getApi(`/api/board/info/${boardId}`)
@@ -21,53 +38,54 @@ const BoardDetail = () => {
         setError(err);
         setBoard(null)
       });
+
+    getApi(`/api/comment/list/${boardId}`, { page })
+      .then(v => (setTotal(v.total), v))
+      .then(v => (setIsLast(v.isLast), v))
+      .then(v => (setPage(page + 1), v.body))
+      .then(setComments)
+      .catch(console.error);
   }, []);
 
   const onClickCreateComment = useCallback(() => {
     postApi('/api/comment/write', {
       boardId,
-      content: commentRef.current.innerText
+      content: textareaRef.current.innerText
     })
       .then(v => v.body)
-      .then(newComment => ({ ...board, comments: [...board.comments, newComment] }))
-      .then(setBoard)
-      .then(() => commentRef.current.innerText = '')
+      .then(v => setComments([...comments, v]))
+      .then(() => textareaRef.current.innerText = '')
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [board]);
+  }, [comments]);
 
   const onClickDeleteComment = useCallback(commentId => {
     deleteApi(`/api/comment/info/${commentId}`)
-      .then(() => ({ ...board, comments: board.comments.filter(v => v.commentId !== commentId) }))
-      .then(v => (console.log(v), v))
-      .then(setBoard)
+      .then(() => comments.filter(v => v.commentId !== commentId))
+      .then(setComments)
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [board]);
+  }, [comments]);
 
   const onClickModifyComment = useCallback(commentId => {
-    setBoard({
-      ...board,
-      comments: board.comments.map(comment => ({
-        ...comment,
-        mode: comment.commentId === commentId ? CommentMode.MODIFYING : CommentMode.DONE
-      }))
-    });
-  }, [board]);
+    const newComments = comments.map(comment => ({
+      ...comment,
+      mode: comment.commentId === commentId ? CommentMode.MODIFYING : CommentMode.DONE
+    }));
+
+    setComments(newComments);
+  }, [comments]);
 
   const onClickModifyCommentConfirm = useCallback((result, commentId, content) => {
     if (!result) {
-      const findComment = board.comments.find(comment => comment.commentId === commentId);
+      const findComment = comments.find(comment => comment.commentId === commentId);
       findComment.mode = CommentMode.DONE;
-      return setBoard({ ...board });
+      return setComments([...comments]);
     }
 
-    patchApi(`/api/comment/info/${commentId}`, { content: content })
+    putApi(`/api/comment/info/${commentId}`, { content })
       .then(v => v.body)
-      .then(newComment => setBoard({
-        ...board,
-        comments: board.comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)
-      }))
+      .then(newComment => setComments(comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)))
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [board]);
+  }, [comments]);
 
   if (board === undefined) return <Loading />;
   if (!board) return <div>{error.message}</div>;
@@ -80,13 +98,13 @@ const BoardDetail = () => {
           <UserName>{board.userName}</UserName>
           <CreatedDate>{board.createdDate}</CreatedDate>
         </div>
-        <div>댓글수: {board.comments.length}</div>
+        <div>댓글수: {total}</div>
       </BoardInfo>
     </Header>
     <section>
       <Content>{board.content}</Content>
       <Hr />
-      {board.comments.map((comment, i) => <Comment
+      {comments.map((comment, i) => <Comment
         key={i}
         boardUserName={board.userName}
         comment={comment}
@@ -94,9 +112,10 @@ const BoardDetail = () => {
         onClickModify={onClickModifyComment}
         onClickModifyConfirm={onClickModifyCommentConfirm}
       />)}
+      <div ref={loaderRef} />
     </section>
     <Footer>
-      <StyledTextarea ref={commentRef} placeholder='댓글을 남겨보세요.' />
+      <StyledTextarea ref={textareaRef} placeholder='댓글을 남겨보세요.' />
       <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
     </Footer>
   </>;

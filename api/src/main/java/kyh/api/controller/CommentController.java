@@ -12,6 +12,8 @@ import kyh.api.service.CommentService;
 import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -19,11 +21,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(value = "/comment")
@@ -51,6 +55,17 @@ public class CommentController {
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
   }
 
+  /** 댓글 리스트 api */
+  @GetMapping(value = "/list/{boardId}")
+  public ResponseEntity<DataBox<List<CommentInfo>>> list(HttpServletRequest request, @PathVariable Long boardId,
+      @RequestParam Integer page) {
+    DataBox<List<CommentInfo>> result = commentService.list(boardId, page);
+
+    return result.getType() == DataBoxType.SUCCESS
+        ? ResponseEntity.ok(result)
+        : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+  }
+
   /** 댓글 삭제 api */
   @DeleteMapping(value = "/info/{commentId}")
   public ResponseEntity<DataBox<CommentInfo>> delete(HttpServletRequest request, @PathVariable Long commentId) {
@@ -65,7 +80,7 @@ public class CommentController {
   }
 
   /** 댓글 수정 api */
-  @PatchMapping(value = "/info/{commentId}")
+  @PutMapping(value = "/info/{commentId}")
   public ResponseEntity<DataBox<CommentInfo>> modify(HttpServletRequest request, @PathVariable Long commentId,
       @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())

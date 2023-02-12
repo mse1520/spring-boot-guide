@@ -14,6 +14,7 @@ public class DataBox<T> {
   private DataBoxType type;
   private String message;
   private Boolean isLast;
+  private Long total;
   private T body;
 
   public DataBox(DataBoxType type) {
@@ -34,6 +35,13 @@ public class DataBox<T> {
   public DataBox(DataBoxType type, Boolean isLast, T body) {
     this.type = type;
     this.isLast = isLast;
+    this.body = body;
+  }
+
+  public DataBox(DataBoxType type, Boolean isLast, Long total, T body) {
+    this.type = type;
+    this.isLast = isLast;
+    this.total = total;
     this.body = body;
   }
 

@@ -1,35 +1,26 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { deleteApi, getApi } from '../../utils/Api';
 import { useNavigate } from 'react-router-dom';
 import { Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, UserName } from './style';
+import useIntersection from '../../hooks/useIntersection';
 
 const BoardInfo = () => {
   const navigate = useNavigate();
   const [boards, setBoards] = useState([]);
-  const [page, setPage] = useState();
+  const [page, setPage] = useState(0);
   const [isLast, setIsLast] = useState(false);
   const lastCardRef = useRef();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      console.log('IntersectionObserver');
-      setPage(prev => prev === undefined ? 0 : prev + 1);
-    });
-
-    observer.observe(lastCardRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (page === undefined) return;
+  useIntersection(lastCardRef, ([entry]) => {
+    if (!entry.isIntersecting) return;
     if (isLast) return;
 
     getApi('/api/board/list', { page })
       .then(v => (setIsLast(v.isLast), v.body))
-      .then(curr => setBoards(prev => [...prev, ...curr]))
+      .then(v => setBoards([...boards, ...v]))
+      .then(() => setPage(page + 1))
       .catch(console.error);
-  }, [page]);
+  }, [boards, page, isLast]);
 
   const onClickCard = useCallback(boardId => () => navigate(`/board/info/${boardId}`), []);
 

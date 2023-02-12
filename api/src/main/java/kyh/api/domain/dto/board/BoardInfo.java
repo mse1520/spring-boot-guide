@@ -32,10 +32,4 @@ public class BoardInfo {
     return boardInfo;
   }
 
-  public static BoardInfo generate(Board board, List<CommentInfo> commentInfos) {
-    BoardInfo boardInfo = generate(board);
-    boardInfo.comments = commentInfos;
-    return boardInfo;
-  }
-
 }
