@@ -53,10 +53,12 @@ const SignIn = () => {
   const onSubmitForm = useCallback(e => {
     e.preventDefault();
 
-    postApi('/api/user/sign-in', {
-      name: nameRef.current.value,
-      password: passwordRef.current.value
-    })
+    const form = new FormData();
+    form.append('name', nameRef.current.value);
+    form.append('password', passwordRef.current.value);
+
+    postApi('/api/user/sign-in', form)
+      .then(v => (console.log(v), v))
       .then(data => (alert(data.message), data.body))
       .then(setUser)
       .catch(data => alert(data.message));

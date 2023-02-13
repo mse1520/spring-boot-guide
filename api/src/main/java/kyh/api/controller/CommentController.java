@@ -9,7 +9,6 @@ import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.CommentService;
-import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,18 +35,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CommentController {
 
   private final CommentService commentService;
-  private final UserService userService;
 
   /** 댓글 작성 api */
   @PostMapping(value = "/write")
-  public ResponseEntity<DataBox<CommentInfo>> write(HttpServletRequest request,
-      @RequestBody @Validated CommentWriteForm form, BindingResult bindingResult) {
+  public ResponseEntity<DataBox<CommentInfo>> write(@RequestBody @Validated CommentWriteForm form,
+      BindingResult bindingResult, @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
-
-    UserInfo userInfo = userService.info(request);
-    if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
 
     DataBox<CommentInfo> result = commentService.wirte(form, userInfo.getId());
 
@@ -68,12 +63,10 @@ public class CommentController {
 
   /** 댓글 삭제 api */
   @DeleteMapping(value = "/info/{commentId}")
-  public ResponseEntity<DataBox<CommentInfo>> delete(HttpServletRequest request, @PathVariable Long commentId) {
-    UserInfo userInfo = userService.info(request);
-    if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
-
+  public ResponseEntity<DataBox<CommentInfo>> delete(@PathVariable Long commentId,
+      @AuthenticationPrincipal UserInfo userInfo) {
     DataBox<CommentInfo> result = commentService.delete(commentId, userInfo.getId());
+
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
@@ -81,16 +74,14 @@ public class CommentController {
 
   /** 댓글 수정 api */
   @PutMapping(value = "/info/{commentId}")
-  public ResponseEntity<DataBox<CommentInfo>> modify(HttpServletRequest request, @PathVariable Long commentId,
-      @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult) {
+  public ResponseEntity<DataBox<CommentInfo>> modify(@PathVariable Long commentId,
+      @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult,
+      @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    UserInfo userInfo = userService.info(request);
-    if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
-
     DataBox<CommentInfo> result = commentService.modify(commentId, userInfo.getId(), form.getContent());
+
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);

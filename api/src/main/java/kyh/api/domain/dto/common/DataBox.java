@@ -26,6 +26,11 @@ public class DataBox<T> {
     this.message = message;
   }
 
+  public DataBox(DataBoxType type, T body) {
+    this.type = type;
+    this.body = body;
+  }
+
   public DataBox(DataBoxType type, String message, T body) {
     this.type = type;
     this.message = message;

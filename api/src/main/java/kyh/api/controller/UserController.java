@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,8 +32,14 @@ public class UserController {
 
   /** 회원 정보 api */
   @GetMapping(value = "/info")
-  public UserInfo userInfo(HttpServletRequest request) {
-    return userService.info(request);
+  public DataBox<UserInfo> info(@AuthenticationPrincipal UserInfo userInfo) {
+    return new DataBox<>(DataBoxType.SUCCESS, userInfo);
+  }
+
+  /** 로그인 실패 api */
+  @GetMapping(value = "/error")
+  public DataBox<UserInfo> error(@RequestParam String msg) {
+    return new DataBox<>(DataBoxType.FAILURE, msg);
   }
 
   /** 회원 가입 api */
@@ -42,20 +50,6 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
     DataBox<UserInfo> result = userService.signUp(form);
-
-    return result.getType() == DataBoxType.SUCCESS
-        ? ResponseEntity.ok(result)
-        : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
-  }
-
-  /** 회원 인증 api */
-  @PostMapping(value = "/sign-in")
-  public ResponseEntity<DataBox<UserInfo>> signIn(HttpServletRequest request,
-      @RequestBody @Validated SignUserForm form, BindingResult bindingResult) {
-    if (bindingResult.hasErrors())
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
-
-    DataBox<UserInfo> result = userService.signIn(form, request);
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

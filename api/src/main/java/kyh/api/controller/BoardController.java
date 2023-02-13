@@ -8,15 +8,13 @@ import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.BoardService;
-import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,19 +30,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class BoardController {
 
-  private final UserService userService;
   private final BoardService boardService;
 
   /** 게시글 작성 api */
   @PostMapping(value = "/write")
-  public ResponseEntity<DataBox<BoardInfo>> write(HttpServletRequest request,
-      @RequestBody @Validated BoardWriteForm form, BindingResult bindingResult) {
+  public ResponseEntity<DataBox<BoardInfo>> write(@RequestBody @Validated BoardWriteForm form,
+      BindingResult bindingResult, @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
-
-    UserInfo userInfo = userService.info(request);
-    if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
 
     return ResponseEntity.ok(boardService.write(form, userInfo.getId()));
   }
@@ -67,11 +60,8 @@ public class BoardController {
 
   /** 게시글 삭제 api */
   @DeleteMapping(value = "/info/{boardId}")
-  public ResponseEntity<DataBox<BoardInfo>> delete(@PathVariable Long boardId, HttpServletRequest request) {
-    UserInfo userInfo = userService.info(request);
-    if (userInfo == null)
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DataBox.unauthorized());
-
+  public ResponseEntity<DataBox<BoardInfo>> delete(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserInfo userInfo) {
     DataBox<BoardInfo> result = boardService.delete(boardId, userInfo.getName());
 
     return result.getType() == DataBoxType.SUCCESS
