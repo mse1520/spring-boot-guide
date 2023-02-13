@@ -5,7 +5,7 @@ import Loading from '../components/common/Loading';
 import SideMenu from '../components/Main/SideMenu';
 import SignedButtonGroup from '../components/Main/SignedButtonGroup';
 import UnsignedButtonGroup from '../components/Main/UnSignedButtonGroup';
-import { deleteApi, getApi } from '../utils/Api';
+import { getApi, postApi } from '../utils/Api';
 
 const Aticle = styled.article`
 width: 100%;
@@ -57,7 +57,7 @@ const Main = () => {
   }, []);
 
   const onClickSignOut = useCallback(() => {
-    deleteApi('/api/user/sign-out').then(() => setUser(null)).catch(console.error);
+    postApi('/api/user/sign-out').then(() => setUser(null)).catch(console.error);
   }, []);
 
   const signedInfo = useMemo(() => user

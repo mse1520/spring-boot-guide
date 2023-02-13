@@ -1,8 +1,5 @@
 package kyh.api.service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -38,16 +35,6 @@ public class UserService implements UserDetailsService {
     UserInfo userInfo = new UserInfo(savedUser);
 
     return new DataBox<>(DataBoxType.SUCCESS, "회원가입에 성공하였습니다.", userInfo);
-  }
-
-  /** 로그아웃 */
-  public DataBox<Object> signOut(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-
-    if (session != null)
-      session.invalidate();
-
-    return new DataBox<>(DataBoxType.SUCCESS, "로그아웃 성공.");
   }
 
   @Override

@@ -1,6 +1,7 @@
 package kyh.api.config;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +24,25 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    String accessDeniedMessage = URLEncoder.encode("인증되지 않은 사용자입니다.", "UTF-8");
+
     return http
         .csrf(csrf -> csrf.disable())
+        .authorizeRequests(auth -> auth
+            .antMatchers("/board/write").authenticated()
+            .anyRequest().permitAll())
+        .exceptionHandling(exception -> exception
+            .accessDeniedHandler(null))
         .formLogin(form -> form
             .usernameParameter("name")
             .passwordParameter("password")
             .loginProcessingUrl("/user/sign-in")
-            .defaultSuccessUrl("/user/info")
+            .defaultSuccessUrl("/user/sign-in")
             .failureHandler(authenticationFailureHandler()))
+        .logout(logout -> logout
+            .logoutUrl("/user/sign-out")
+            .logoutSuccessUrl("/user/info")
+            .deleteCookies("JSESSIONID"))
         .build();
   }
 
@@ -49,16 +61,17 @@ public class SecurityConfig {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception) throws IOException, ServletException {
-      String errMsg = "";
+      String errorMessage = "";
 
-      if (exception instanceof BadCredentialsException)
-        errMsg = "회원 인증에 실패하였습니다.";
-      else if (exception instanceof UsernameNotFoundException)
-        errMsg = "아이디를 찾을 수 없습니다.";
+      if (exception instanceof UsernameNotFoundException)
+        errorMessage = exception.getMessage();
+      else if (exception instanceof BadCredentialsException)
+        errorMessage = "회원 인증에 실패하였습니다.";
       else
-        errMsg = "알 수 없는 이유로 로그인에 실패하였습니다.";
+        errorMessage = "알 수 없는 이유로 회원 인증에 실패하였습니다.";
 
-      setDefaultFailureUrl("/user/error?msg=" + errMsg);
+      errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
+      setDefaultFailureUrl("/user/error?access=1&message=" + errorMessage);
 
       super.onAuthenticationFailure(request, response, exception);
     }

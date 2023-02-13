@@ -1,13 +1,10 @@
 package kyh.api.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,14 +29,14 @@ public class UserController {
 
   /** 회원 정보 api */
   @GetMapping(value = "/info")
-  public DataBox<UserInfo> info(@AuthenticationPrincipal UserInfo userInfo) {
-    return new DataBox<>(DataBoxType.SUCCESS, userInfo);
+  public UserInfo info(@AuthenticationPrincipal UserInfo userInfo) {
+    return userInfo;
   }
 
-  /** 로그인 실패 api */
-  @GetMapping(value = "/error")
-  public DataBox<UserInfo> error(@RequestParam String msg) {
-    return new DataBox<>(DataBoxType.FAILURE, msg);
+  /** 인증 성공 api */
+  @GetMapping(value = "/sign-in")
+  public DataBox<UserInfo> signIn(@AuthenticationPrincipal UserInfo userInfo) {
+    return new DataBox<>(DataBoxType.SUCCESS, "회원 인증에 성공했습니다.", userInfo);
   }
 
   /** 회원 가입 api */
@@ -56,10 +53,11 @@ public class UserController {
         : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
   }
 
-  /** 로그아웃 api */
-  @DeleteMapping(value = "/sign-out")
-  public DataBox<Object> signOut(HttpServletRequest request) {
-    return userService.signOut(request);
+  /** 인증 실패 api */
+  @GetMapping(value = "/error")
+  public ResponseEntity<DataBox<String>> error(@RequestParam Long access, @RequestParam String message) {
+    HttpStatus httpStatus = access == 1 ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED;
+    return ResponseEntity.status(httpStatus).body(new DataBox<>(DataBoxType.FAILURE, message));
   }
 
 }
