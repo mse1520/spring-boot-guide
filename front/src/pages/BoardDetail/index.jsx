@@ -23,7 +23,7 @@ const BoardDetail = () => {
     if (!entry.isIntersecting) return;
     if (isLast) return;
 
-    getApi(`/api/comment/list/${boardId}`, { page })
+    getApi(`/api/comment/${boardId}/info`, { page })
       .then(v => (setIsLast(v.isLast), v))
       .then(v => (setPage(page + 1), v.body))
       .then(v => setComments([...comments, ...v]))
@@ -31,7 +31,7 @@ const BoardDetail = () => {
   }, [loaderRef.current, comments, page]);
 
   useEffect(() => {
-    getApi(`/api/board/info/${boardId}`)
+    getApi(`/api/board/${boardId}/info`)
       .then(v => setBoard(v.body))
       .catch(err => {
         console.error(err);
@@ -39,7 +39,7 @@ const BoardDetail = () => {
         setBoard(null)
       });
 
-    getApi(`/api/comment/list/${boardId}`, { page })
+    getApi(`/api/comment/${boardId}/info`, { page })
       .then(v => (setTotal(v.total), v))
       .then(v => (setIsLast(v.isLast), v))
       .then(v => (setPage(page + 1), v.body))
@@ -59,7 +59,7 @@ const BoardDetail = () => {
   }, [comments]);
 
   const onClickDeleteComment = useCallback(commentId => {
-    deleteApi(`/api/comment/info/${commentId}`)
+    deleteApi(`/api/comment/${commentId}/info`)
       .then(() => comments.filter(v => v.commentId !== commentId))
       .then(setComments)
       .catch(err => err.message ? alert(err.message) : console.error(err));
@@ -81,7 +81,7 @@ const BoardDetail = () => {
       return setComments([...comments]);
     }
 
-    putApi(`/api/comment/info/${commentId}`, { content })
+    putApi(`/api/comment/${commentId}/info`, { content })
       .then(v => v.body)
       .then(newComment => setComments(comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)))
       .catch(err => err.message ? alert(err.message) : console.error(err));

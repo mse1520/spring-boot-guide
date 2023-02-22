@@ -58,7 +58,6 @@ const SignIn = () => {
     form.append('password', passwordRef.current.value);
 
     postApi('/api/user/sign-in', form)
-      .then(v => (console.log(v), v))
       .then(data => (alert(data.message), data.body))
       .then(setUser)
       .catch(data => alert(data.message));

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,15 +25,18 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    String accessDeniedMessage = URLEncoder.encode("인증되지 않은 사용자입니다.", "UTF-8");
+    String unAuthMessage = URLEncoder.encode("인증되지 않은 사용자입니다.", "UTF-8");
 
     return http
         .csrf(csrf -> csrf.disable())
         .authorizeRequests(auth -> auth
-            .antMatchers("/board/write").authenticated()
+            .antMatchers("/board/write", "/comment/write").authenticated()
+            .antMatchers(HttpMethod.DELETE, "/board/*/info", "/comment/*/info").authenticated()
+            .antMatchers(HttpMethod.PUT, "/board/*/info", "/comment/*/info").authenticated()
             .anyRequest().permitAll())
         .exceptionHandling(exception -> exception
-            .accessDeniedHandler(null))
+            .authenticationEntryPoint((request, response, authException) -> response
+                .sendRedirect(request.getContextPath() + "/user/error?message=" + unAuthMessage)))
         .formLogin(form -> form
             .usernameParameter("name")
             .passwordParameter("password")
@@ -56,7 +60,7 @@ public class SecurityConfig {
     return new CustomAuthFailureHandler();
   }
 
-  private final static class CustomAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+  private static class CustomAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -71,7 +75,7 @@ public class SecurityConfig {
         errorMessage = "알 수 없는 이유로 회원 인증에 실패하였습니다.";
 
       errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
-      setDefaultFailureUrl("/user/error?access=1&message=" + errorMessage);
+      setDefaultFailureUrl("/user/error?message=" + errorMessage);
 
       super.onAuthenticationFailure(request, response, exception);
     }

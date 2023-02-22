@@ -54,10 +54,9 @@ public class UserController {
   }
 
   /** 인증 실패 api */
-  @GetMapping(value = "/error")
-  public ResponseEntity<DataBox<String>> error(@RequestParam Long access, @RequestParam String message) {
-    HttpStatus httpStatus = access == 1 ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED;
-    return ResponseEntity.status(httpStatus).body(new DataBox<>(DataBoxType.FAILURE, message));
+  @RequestMapping(value = "/error")
+  public ResponseEntity<DataBox<String>> error(@RequestParam String message) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new DataBox<>(DataBoxType.FAILURE, message));
   }
 
 }
