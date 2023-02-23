@@ -13,21 +13,26 @@ const BoardDetail = () => {
   const [board, setBoard] = useState();
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(0);
-  const [isLast, setIsLast] = useState(0);
+  const [isLast, setIsLast] = useState(false);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState();
   const textareaRef = useRef();
   const loaderRef = useRef();
 
+  const loadComments = useCallback((boardId, page, comments) =>
+    getApi(`/api/comment/${boardId}/info`, { page })
+      .then(v => (setTotal(v.total), v))
+      .then(v => (setIsLast(v.isLast), v))
+      .then(v => (setPage(page + 1), v.body))
+      .then(v => setComments([...comments, ...v]))
+      .catch(console.error),
+    []);
+
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
     if (isLast) return;
 
-    getApi(`/api/comment/${boardId}/info`, { page })
-      .then(v => (setIsLast(v.isLast), v))
-      .then(v => (setPage(page + 1), v.body))
-      .then(v => setComments([...comments, ...v]))
-      .catch(console.error);
+    loadComments(boardId, page, comments);
   }, [loaderRef.current, comments, page]);
 
   useEffect(() => {
@@ -39,15 +44,10 @@ const BoardDetail = () => {
         setBoard(null)
       });
 
-    getApi(`/api/comment/${boardId}/info`, { page })
-      .then(v => (setTotal(v.total), v))
-      .then(v => (setIsLast(v.isLast), v))
-      .then(v => (setPage(page + 1), v.body))
-      .then(setComments)
-      .catch(console.error);
+    loadComments(boardId, page, comments);
   }, []);
 
-  const onClickCreateComment = useCallback(() => {
+  const onClickCreateComment = useCallback(() =>
     postApi('/api/comment/write', {
       boardId,
       content: textareaRef.current.innerText
@@ -55,15 +55,15 @@ const BoardDetail = () => {
       .then(v => v.body)
       .then(v => setComments([...comments, v]))
       .then(() => textareaRef.current.innerText = '')
-      .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [comments]);
+      .catch(err => err.message ? alert(err.message) : console.error(err)),
+    [comments]);
 
-  const onClickDeleteComment = useCallback(commentId => {
+  const onClickDeleteComment = useCallback(commentId =>
     deleteApi(`/api/comment/${commentId}/info`)
       .then(() => comments.filter(v => v.commentId !== commentId))
       .then(setComments)
-      .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [comments]);
+      .catch(err => err.message ? alert(err.message) : console.error(err)),
+    [comments]);
 
   const onClickModifyComment = useCallback(commentId => {
     const newComments = comments.map(comment => ({

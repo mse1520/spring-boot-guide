@@ -4,7 +4,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Loading from './components/common/Loading';
 
-import Main from './layouts/Main';
+import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
+import { action as signUpAction } from './pages/SignUp';
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
@@ -31,6 +32,8 @@ button {
 const router = createBrowserRouter([{
   path: '/',
   element: <Main />,
+  loader: mainLoader,
+  action: mainAction,
   children: [{
     path: '/home',
     element: <Home />
@@ -46,7 +49,8 @@ const router = createBrowserRouter([{
   }]
 }, {
   path: '/sign-up',
-  element: <SignUp />
+  element: <SignUp />,
+  action: signUpAction
 }, {
   path: '/sign-in',
   element: <SignIn />

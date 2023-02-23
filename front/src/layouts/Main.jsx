@@ -1,5 +1,5 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { Suspense, useCallback, useMemo } from 'react';
+import { Outlet, redirect, useLoaderData, useSubmit } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/Loading';
 import SideMenu from '../components/Main/SideMenu';
@@ -38,27 +38,18 @@ background-color: rgb(50, 50, 50);
 align-items: baseline;
 `;
 
-const LINKS = [
-  { path: '/home', text: '홈' },
-  { path: '/board/write', text: '게시글 작성' },
-  { path: '/board/info', text: '게시글' },
-];
+export const loader = ({ request }) => {
+  const url = new URL(request.url);
+  return url.pathname === '/' ? redirect('/home') : Promise.all([getApi('/api/menu'), getApi('/api/user/info')]);
+};
+
+export const action = () => postApi('/api/user/sign-out');
 
 const Main = () => {
-  const [user, setUser] = useState();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [menu, user] = useLoaderData();
+  const submit = useSubmit();
 
-  useEffect(() => {
-    getApi('/api/user/info')
-      .then(setUser)
-      .then(() => navigate(location.pathname === '/' ? '/home' : location.pathname))
-      .catch(console.error);
-  }, []);
-
-  const onClickSignOut = useCallback(() => {
-    postApi('/api/user/sign-out').then(() => setUser(null)).catch(console.error);
-  }, []);
+  const onClickSignOut = useCallback(() => submit(null, { method: 'post', action: '/' }), []);
 
   const signedInfo = useMemo(() => user
     ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
@@ -68,7 +59,7 @@ const Main = () => {
     <Aticle>
       <Header>{signedInfo}</Header>
       <Section>
-        <SideMenu links={LINKS} />
+        <SideMenu links={menu} />
         <ContentWrap>
           <Content>
             <Suspense fallback={<Loading />}>

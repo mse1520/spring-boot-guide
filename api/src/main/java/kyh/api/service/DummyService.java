@@ -1,5 +1,7 @@
 package kyh.api.service;
 
+import java.util.Arrays;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,15 +30,29 @@ public class DummyService {
   @PostConstruct
   @Transactional
   private void init() {
-    User user = new User("123", passwordEncoder.encode("123"), UserRole.USER);
-    userRepository.save(user);
-
-    Board board = new Board("제목", "내용", user);
-    boardRepository.save(board);
+    User user1 = new User("test1", passwordEncoder.encode("123"), UserRole.SUPER);
+    User user2 = new User("test2", passwordEncoder.encode("123"), UserRole.USER);
+    userRepository.saveAll(Arrays.asList(user1, user2));
 
     for (Integer i = 0; i < 65; i++) {
-      Comment comment = new Comment("댓글" + i, board, user);
-      commentRepository.save(comment);
+      Board board = new Board("제목" + i, "내용" + i, user1);
+      boardRepository.save(board);
+    }
+
+    Board board1 = new Board("테스트 게시글1", "테스트 게시글 내용1", user1);
+    Board board2 = new Board("테스트 게시글2", "테스트 게시글 내용2", user2);
+    boardRepository.saveAll(Arrays.asList(board1, board2));
+
+    for (Integer i = 0; i < 33; i++) {
+      Comment comment1 = new Comment("댓글" + i, board1, user1);
+      Comment comment2 = new Comment("댓글" + i, board1, user2);
+      commentRepository.saveAll(Arrays.asList(comment1, comment2));
+    }
+
+    for (Integer i = 0; i < 33; i++) {
+      Comment comment1 = new Comment("댓글" + i, board2, user1);
+      Comment comment2 = new Comment("댓글" + i, board2, user2);
+      commentRepository.saveAll(Arrays.asList(comment1, comment2));
     }
   }
 

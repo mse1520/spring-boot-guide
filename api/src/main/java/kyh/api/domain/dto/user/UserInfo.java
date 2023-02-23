@@ -21,19 +21,19 @@ public class UserInfo implements UserDetails {
   private Long id;
   private String name;
   private String password;
-  private UserRole userRole;
+  private UserRole role;
 
   public UserInfo(User user) {
     id = user.getId();
     name = user.getName();
     password = user.getPassword();
-    userRole = user.getUserRole();
+    role = user.getRole();
   }
 
   @JsonIgnore
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.unmodifiableList(AuthorityUtils.createAuthorityList(userRole.getRole()));
+    return Collections.unmodifiableList(AuthorityUtils.createAuthorityList(role.getRole()));
   }
 
   @JsonIgnore

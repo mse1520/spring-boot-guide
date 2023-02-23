@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { Form, redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
@@ -40,43 +40,41 @@ display: flex;
 justify-content: end;
 `;
 
+export const action = ({ request }) => request.formData()
+  .then(form => ({
+    name: form.get('name'),
+    password: form.get('password')
+  }))
+  .then(data => postApi('/api/user/sign-up', data))
+  .then(data => alert(data.message))
+  .then(() => redirect('/sign-in'))
+  .catch(data => alert(data.message))
+  .then(res => res ? res : null);
+
 const SignUp = () => {
   const nameRef = useRef();
   const passwordRef = useRef();
-  const navigate = useNavigate();
-
-  const onSubmitForm = useCallback(e => {
-    e.preventDefault();
-
-    postApi('/api/user/sign-up', {
-      name: nameRef.current.value,
-      password: passwordRef.current.value
-    })
-      .then(data => alert(data.message))
-      .then(() => navigate('/sign-in'))
-      .catch(data => alert(data.message));
-  }, []);
 
   return <>
     <Aticle>
-      <form onSubmit={onSubmitForm}>
+      <Form method='post' action='/sign-up'>
         <StyledCard>
           <div>
             <H2>회원가입</H2>
             <InputWrap>
               <Label htmlFor='name'>아이디</Label>
-              <DefaultInput id='name' ref={nameRef} />
+              <DefaultInput id='name' name='name' ref={nameRef} />
             </InputWrap>
             <InputWrap>
               <Label htmlFor='password'>비밀번호</Label>
-              <DefaultInput id='password' type='password' ref={passwordRef} />
+              <DefaultInput id='password' name='password' type='password' ref={passwordRef} />
             </InputWrap>
           </div>
           <ButtonWrap>
             <DefaultButton>회원 가입</DefaultButton>
           </ButtonWrap>
         </StyledCard>
-      </form>
+      </Form>
     </Aticle>
   </>;
 };
