@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import React from 'react';
+import { Form, redirect } from 'react-router-dom';
 import styled from 'styled-components';
-import Loading from '../components/common/Loading';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
@@ -41,53 +40,35 @@ display: flex;
 justify-content: end;
 `;
 
-const SignIn = () => {
-  const [user, setUser] = useState();
-  const nameRef = useRef();
-  const passwordRef = useRef();
+export const loader = () => getApi('/api/user/info').then(user => user ? redirect('/') : null);
 
-  useEffect(() => {
-    getApi('/api/user/info').then(setUser).catch(console.error);
-  }, []);
+export const action = ({ request }) => request.formData()
+  .then(form => postApi('/api/user/sign-in', form))
+  .then(data => alert(data.message))
+  .catch(err => alert(err.message))
+  .then(() => null);
 
-  const onSubmitForm = useCallback(e => {
-    e.preventDefault();
-
-    const form = new FormData();
-    form.append('name', nameRef.current.value);
-    form.append('password', passwordRef.current.value);
-
-    postApi('/api/user/sign-in', form)
-      .then(data => (alert(data.message), data.body))
-      .then(setUser)
-      .catch(data => alert(data.message));
-  }, []);
-
-  if (user === undefined) return <Loading />
-  if (user) return <Navigate to='/' replace={true} />
-
-  return <>
-    <Aticle>
-      <form onSubmit={onSubmitForm}>
-        <StyledCard>
-          <div>
-            <H2>로그인</H2>
-            <InputWrap>
-              <Label htmlFor='name'>아이디</Label>
-              <DefaultInput id='name' ref={nameRef} />
-            </InputWrap>
-            <InputWrap>
-              <Label htmlFor='password'>비밀번호</Label>
-              <DefaultInput id='password' type='password' ref={passwordRef} />
-            </InputWrap>
-          </div>
-          <ButtonWrap>
-            <DefaultButton>로그인</DefaultButton>
-          </ButtonWrap>
-        </StyledCard>
-      </form>
-    </Aticle>
-  </>;
-};
+const SignIn = () => <>
+  <Aticle>
+    <Form method='post' action='/sign-in'>
+      <StyledCard>
+        <div>
+          <H2>로그인</H2>
+          <InputWrap>
+            <Label htmlFor='name'>아이디</Label>
+            <DefaultInput id='name' name='name' />
+          </InputWrap>
+          <InputWrap>
+            <Label htmlFor='password'>비밀번호</Label>
+            <DefaultInput id='password' name='password' type='password' />
+          </InputWrap>
+        </div>
+        <ButtonWrap>
+          <DefaultButton>로그인</DefaultButton>
+        </ButtonWrap>
+      </StyledCard>
+    </Form>
+  </Aticle>
+</>;
 
 export default SignIn;

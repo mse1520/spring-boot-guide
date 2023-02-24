@@ -17,7 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @EnableWebSecurity
@@ -42,7 +41,7 @@ public class SecurityConfig {
             .passwordParameter("password")
             .loginProcessingUrl("/user/sign-in")
             .defaultSuccessUrl("/user/sign-in")
-            .failureHandler(authenticationFailureHandler()))
+            .failureHandler(new CustomAuthFailureHandler()))
         .logout(logout -> logout
             .logoutUrl("/user/sign-out")
             .logoutSuccessUrl("/user/info")
@@ -53,11 +52,6 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
-
-  @Bean
-  public AuthenticationFailureHandler authenticationFailureHandler() {
-    return new CustomAuthFailureHandler();
   }
 
   private static class CustomAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {

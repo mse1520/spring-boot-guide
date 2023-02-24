@@ -3,9 +3,10 @@ import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import Loading from './components/common/Loading';
+import { action as signUpAction } from './pages/SignUp';
+import { action as signInAction, loader as signInLoader } from './pages/SignIn';
 
 import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
-import { action as signUpAction } from './pages/SignUp';
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
@@ -53,16 +54,16 @@ const router = createBrowserRouter([{
   action: signUpAction
 }, {
   path: '/sign-in',
-  element: <SignIn />
+  element: <SignIn />,
+  loader: signInLoader,
+  action: signInAction
 }]);
 
-const App = () => {
-  return <>
-    <GlobalStyle />
-    <Suspense fallback={<Loading />}>
-      <RouterProvider router={router} />
-    </Suspense>
-  </>;
-};
+const App = () => <>
+  <GlobalStyle />
+  <Suspense fallback={<Loading />}>
+    <RouterProvider router={router} />
+  </Suspense>
+</>;
 
 export default App;
