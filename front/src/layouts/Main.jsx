@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useMemo } from 'react';
-import { Outlet, redirect, useLoaderData, useSubmit } from 'react-router-dom';
+import { Outlet, useFetcher, useLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/Loading';
 import SideMenu from '../components/Main/SideMenu';
@@ -38,20 +38,17 @@ background-color: rgb(50, 50, 50);
 align-items: baseline;
 `;
 
-export const loader = ({ request }) => {
-  const url = new URL(request.url);
-  return url.pathname === '/' ? redirect('/home') : Promise.all([getApi('/api/menu'), getApi('/api/user/info')]);
-};
+export const loader = () => getApi('/api/user/info');
 
 export const action = () => postApi('/api/user/sign-out');
 
 const Main = () => {
-  const [menu, user] = useLoaderData();
-  const submit = useSubmit();
+  const user = useLoaderData();
+  const fetcher = useFetcher();
 
-  const onClickSignOut = useCallback(() => submit(null, { method: 'post', action: '/' }), []);
+  const onClickSignOut = useCallback(() => fetcher.submit(null, { method: 'post', action: '/' }), []);
 
-  const signedInfo = useMemo(() => user
+  const signedInfo = useMemo(() => user.name
     ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
     : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />, [user]);
 
@@ -59,7 +56,7 @@ const Main = () => {
     <Aticle>
       <Header>{signedInfo}</Header>
       <Section>
-        <SideMenu links={menu} />
+        <SideMenu links={user.menuList} />
         <ContentWrap>
           <Content>
             <Suspense fallback={<Loading />}>

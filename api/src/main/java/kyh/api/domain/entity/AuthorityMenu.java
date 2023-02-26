@@ -7,37 +7,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@Table(name = "user_t")
+@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class AuthorityMenu extends BaseEntity {
 
   @Id
   @GeneratedValue
-  @Column(name = "user_id")
+  @Column(name = "authority_menu_id")
   private Long id;
-
-  @Column(unique = true, nullable = false)
-  private String name;
-
-  @Column(nullable = false)
-  private String password;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "authority_id")
   private Authority authority;
 
-  public User(String name, String password, Authority authority) {
-    this.name = name;
-    this.password = password;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "menu_id")
+  private Menu menu;
+
+  public AuthorityMenu(Authority authority, Menu menu) {
     this.authority = authority;
+    this.menu = menu;
   }
 
 }

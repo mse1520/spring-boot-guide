@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kyh.api.domain.dto.menu.MenuInfo;
 import kyh.api.domain.dto.user.UserInfo;
-import kyh.api.domain.entity.User;
 import kyh.api.service.MenuService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,12 +19,7 @@ public class MenuController {
 
     @GetMapping(value = "/menu")
     public List<MenuInfo> menu(@AuthenticationPrincipal UserInfo userInfo) {
-        if (userInfo == null) {
-            User user = new User(null, null, null);
-            userInfo = new UserInfo(user);
-        }
-
-        return menuService.info(userInfo.getRole());
+        return menuService.info(userInfo);
     }
 
 }

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router-dom';
 import Comment from '../../components/BoardDetail/Comment';
 import Loading from '../../components/common/Loading';
 import useIntersection from '../../hooks/useIntersection';
@@ -8,7 +8,10 @@ import CommentMode from '../../types/BoardDetail/CommentMode';
 import { deleteApi, getApi, putApi, postApi } from '../../utils/Api';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer } from './style';
 
+export const loader = () => getApi('/api/user/info');
+
 const BoardDetail = () => {
+  const user = useLoaderData();
   const { boardId } = useParams();
   const [board, setBoard] = useState();
   const [comments, setComments] = useState([]);
@@ -106,7 +109,7 @@ const BoardDetail = () => {
       <Hr />
       {comments.map((comment, i) => <Comment
         key={i}
-        boardUserName={board.userName}
+        userName={user ? user.name : board.userName}
         comment={comment}
         onClickDelete={onClickDeleteComment}
         onClickModify={onClickModifyComment}

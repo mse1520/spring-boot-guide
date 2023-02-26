@@ -1,9 +1,10 @@
 import React, { useCallback, useRef } from 'react';
+import { redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { postApi } from '../utils/Api';
+import { getApi, postApi } from '../utils/Api';
 
 const Header = styled.header`
 display: flex;
@@ -16,6 +17,8 @@ const StyledTextarea = styled(Textarea)`
 min-height: 20rem;
 margin: 1rem 0;
 `;
+
+export const loader = () => getApi('/api/user/info').then(user => ['SUPER', 'ADMIN'].includes(user?.role) ? null : redirect('/'));
 
 const BoardWrite = () => {
   const titleRef = useRef();

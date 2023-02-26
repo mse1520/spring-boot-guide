@@ -40,7 +40,7 @@ display: flex;
 justify-content: end;
 `;
 
-export const loader = () => getApi('/api/user/info').then(user => user ? redirect('/') : null);
+export const loader = () => getApi('/api/user/info').then(user => user.name ? redirect('/') : null);
 
 export const action = ({ request }) => request.formData()
   .then(form => postApi('/api/user/sign-in', form))

@@ -2,6 +2,7 @@ package kyh.api.domain.dto.user;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -22,12 +23,14 @@ public class UserInfo implements UserDetails {
   private String name;
   private String password;
   private UserRole role;
+  private List<MenuInfo> menuList;
 
   public UserInfo(User user) {
     id = user.getId();
     name = user.getName();
     password = user.getPassword();
-    role = user.getRole();
+    role = user.getAuthority().getRole();
+    menuList = MenuInfo.create(user.getAuthority());
   }
 
   @JsonIgnore

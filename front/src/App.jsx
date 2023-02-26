@@ -7,6 +7,8 @@ import { action as signUpAction } from './pages/SignUp';
 import { action as signInAction, loader as signInLoader } from './pages/SignIn';
 
 import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
+import { loader as boardDetailLoader } from './pages/BoardDetail';
+import { loader as boardWriteLoader } from './pages/BoardWrite';
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
@@ -36,17 +38,19 @@ const router = createBrowserRouter([{
   loader: mainLoader,
   action: mainAction,
   children: [{
-    path: '/home',
+    index: true,
     element: <Home />
   }, {
     path: '/board/write',
-    element: <BoardWrite />
+    element: <BoardWrite />,
+    loader: boardWriteLoader
   }, {
     path: '/board/info',
     element: <BoardInfo />
   }, {
     path: '/board/:boardId/info',
-    element: <BoardDetail />
+    element: <BoardDetail />,
+    loader: boardDetailLoader
   }]
 }, {
   path: '/sign-up',
