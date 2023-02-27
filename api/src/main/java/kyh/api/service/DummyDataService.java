@@ -32,7 +32,7 @@ public class DummyDataService {
     Authority authSuper = authorityRepository.findByRole(MemberRole.SUPER).orElseThrow();
     Authority authUser = authorityRepository.findByRole(MemberRole.USER).orElseThrow();
 
-    Member member1 = new Member("test1", passwordEncoder.encode("123"), authSuper);
+    Member member1 = new Member("123", passwordEncoder.encode("123"), authSuper);
     Member member2 = new Member("test2", passwordEncoder.encode("123"), authUser);
     memberRepository.saveAll(Arrays.asList(member1, member2));
 

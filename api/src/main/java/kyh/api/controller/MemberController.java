@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.dto.member.MemberInfo;
-import kyh.api.domain.dto.member.SignUpUserForm;
+import kyh.api.domain.dto.member.SignUpForm;
 import kyh.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +41,7 @@ public class MemberController {
 
   /** 회원 가입 api */
   @PostMapping(value = "/sign-up")
-  public ResponseEntity<DataBox<MemberInfo>> SignUp(@RequestBody @Validated SignUpUserForm form,
+  public ResponseEntity<DataBox<MemberInfo>> SignUp(@RequestBody @Validated SignUpForm form,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));

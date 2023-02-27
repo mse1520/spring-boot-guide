@@ -45,7 +45,7 @@ export const action = ({ request }) => request.formData()
   .then(data => postApi('/api/member/sign-up', data))
   .then(data => alert(data.message))
   .then(() => redirect('/sign-in'))
-  .catch(err => (alert(err.message), null));
+  .catch(err => (alert(err.message), { ok: true }));
 
 const SignUp = () => <>
   <Aticle>

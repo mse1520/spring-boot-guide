@@ -18,7 +18,9 @@ min-height: 20rem;
 margin: 1rem 0;
 `;
 
-export const loader = () => getApi('/api/member/info').then(({ member }) => ['SUPER', 'ADMIN'].includes(member?.role) ? null : redirect('/'));
+const AUTH_LIST = ['SUPER', 'ADMIN'];
+
+export const loader = () => getApi('/api/member/info').then(({ member }) => AUTH_LIST.includes(member?.role) ? { ok: true } : redirect('/'));
 
 const BoardWrite = () => {
   const titleRef = useRef();

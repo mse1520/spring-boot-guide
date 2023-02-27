@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SignUpUserForm {
+public class SignUpForm {
 
   @NotEmpty(message = "아이디를 입력해야 합니다.")
   private String username;

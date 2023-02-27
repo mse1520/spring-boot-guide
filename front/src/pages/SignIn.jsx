@@ -40,13 +40,13 @@ display: flex;
 justify-content: end;
 `;
 
-export const loader = () => getApi('/api/member/info').then(({ member }) => member ? redirect('/') : null);
+export const loader = () => getApi('/api/member/info').then(({ member }) => member ? redirect('/') : { ok: true });
 
 export const action = ({ request }) => request.formData()
   .then(form => postApi('/api/member/sign-in', form))
   .then(data => alert(data.message))
   .catch(err => alert(err.message))
-  .then(() => null);
+  .then(() => ({ ok: true }));
 
 const SignIn = () => <>
   <Aticle>
