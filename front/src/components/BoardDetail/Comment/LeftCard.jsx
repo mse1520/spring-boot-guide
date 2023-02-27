@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { CommentContext } from '.';
 import CommentMode from '../../../types/BoardDetail/CommentMode';
 import ModifyControl from './ModifyControl';
-import { ButtonWrap, Card, Content, DateTime, StyledDeleteImg, StyledModifyImg, UserName, CardWrap } from './style';
+import { ButtonWrap, Card, Content, DateTime, StyledDeleteImg, StyledModifyImg, Username, CardWrap } from './style';
 
 const LeftCard = () => {
   const { comment, onClickModify, onClickDelete } = useContext(CommentContext);
@@ -16,7 +16,7 @@ const LeftCard = () => {
       </CardWrap>
       : <CardWrap>
         <Card>
-          <UserName>{comment.userName}</UserName>
+          <Username>{comment.username}</Username>
           <Content>{comment.content}</Content>
           <DateTime>{comment.updatedDate}</DateTime>
         </Card>

@@ -6,7 +6,7 @@ import kyh.api.domain.dto.board.BoardInfo;
 import kyh.api.domain.dto.board.BoardWriteForm;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
-import kyh.api.domain.dto.user.UserInfo;
+import kyh.api.domain.dto.member.MemberInfo;
 import kyh.api.service.BoardService;
 import lombok.RequiredArgsConstructor;
 
@@ -35,11 +35,11 @@ public class BoardController {
   /** 게시글 작성 api */
   @PostMapping(value = "/write")
   public ResponseEntity<DataBox<BoardInfo>> write(@RequestBody @Validated BoardWriteForm form,
-      BindingResult bindingResult, @AuthenticationPrincipal UserInfo userInfo) {
+      BindingResult bindingResult, @AuthenticationPrincipal MemberInfo memberInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    return ResponseEntity.ok(boardService.write(form, userInfo.getId()));
+    return ResponseEntity.ok(boardService.write(form, memberInfo.getId()));
   }
 
   /** 게시글 조회 api */
@@ -61,8 +61,8 @@ public class BoardController {
   /** 게시글 삭제 api */
   @DeleteMapping(value = "/{boardId}/info")
   public ResponseEntity<DataBox<BoardInfo>> delete(@PathVariable Long boardId,
-      @AuthenticationPrincipal UserInfo userInfo) {
-    DataBox<BoardInfo> result = boardService.delete(boardId, userInfo.getName());
+      @AuthenticationPrincipal MemberInfo memberInfo) {
+    DataBox<BoardInfo> result = boardService.delete(boardId, memberInfo.getUsername());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

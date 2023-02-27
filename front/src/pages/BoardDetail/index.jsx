@@ -6,12 +6,12 @@ import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
 import CommentMode from '../../types/BoardDetail/CommentMode';
 import { deleteApi, getApi, putApi, postApi } from '../../utils/Api';
-import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, UserName, Footer } from './style';
+import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer } from './style';
 
-export const loader = () => getApi('/api/user/info');
+export const loader = () => getApi('/api/member/info');
 
 const BoardDetail = () => {
-  const user = useLoaderData();
+  const { member } = useLoaderData();
   const { boardId } = useParams();
   const [board, setBoard] = useState();
   const [comments, setComments] = useState([]);
@@ -98,7 +98,7 @@ const BoardDetail = () => {
       <h2>{board.title}</h2>
       <BoardInfo>
         <div>
-          <UserName>{board.userName}</UserName>
+          <Username>{board.username}</Username>
           <CreatedDate>{board.createdDate}</CreatedDate>
         </div>
         <div>댓글수: {total}</div>
@@ -109,7 +109,7 @@ const BoardDetail = () => {
       <Hr />
       {comments.map((comment, i) => <Comment
         key={i}
-        userName={user ? user.name : board.userName}
+        username={member ? member.username : board.username}
         comment={comment}
         onClickDelete={onClickDeleteComment}
         onClickModify={onClickModifyComment}

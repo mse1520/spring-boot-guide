@@ -4,7 +4,7 @@ import { CommentContext } from '.';
 import CommentMode from '../../../types/BoardDetail/CommentMode';
 import ModifyControl from './ModifyControl';
 import {
-  ButtonWrap, Card as BaseCard, Content, DateTime, StyledDeleteImg, StyledModifyImg, UserName as BaseUserName, CardWrap as BaseCardWrap
+  ButtonWrap, Card as BaseCard, Content, DateTime, StyledDeleteImg, StyledModifyImg, Username as BaseUsername, CardWrap as BaseCardWrap
 } from './style';
 
 const CardWrap = styled(BaseCardWrap)`
@@ -14,7 +14,7 @@ const Card = styled(BaseCard)`
 background-color: rgb(50, 50, 50);
 color: whitesmoke;
 `;
-const UserName = styled(BaseUserName)`
+const Username = styled(BaseUsername)`
 text-align: right;
 `;
 
@@ -34,7 +34,7 @@ const RightCard = () => {
           <StyledDeleteImg onClick={onClickDelete(comment.commentId)} />
         </ButtonWrap>
         <Card>
-          <UserName>{comment.userName}</UserName>
+          <Username>{comment.username}</Username>
           <Content>{comment.content}</Content>
           <DateTime>{comment.updatedDate}</DateTime>
         </Card>

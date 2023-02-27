@@ -1,4 +1,4 @@
-package kyh.api.domain.dto.user;
+package kyh.api.domain.dto.member;
 
 import java.util.List;
 

@@ -40,10 +40,10 @@ display: flex;
 justify-content: end;
 `;
 
-export const loader = () => getApi('/api/user/info').then(user => user.name ? redirect('/') : null);
+export const loader = () => getApi('/api/member/info').then(({ member }) => member ? redirect('/') : null);
 
 export const action = ({ request }) => request.formData()
-  .then(form => postApi('/api/user/sign-in', form))
+  .then(form => postApi('/api/member/sign-in', form))
   .then(data => alert(data.message))
   .catch(err => alert(err.message))
   .then(() => null);
@@ -55,8 +55,8 @@ const SignIn = () => <>
         <div>
           <H2>로그인</H2>
           <InputWrap>
-            <Label htmlFor='name'>아이디</Label>
-            <DefaultInput id='name' name='name' />
+            <Label htmlFor='username'>아이디</Label>
+            <DefaultInput id='username' name='username' />
           </InputWrap>
           <InputWrap>
             <Label htmlFor='password'>비밀번호</Label>

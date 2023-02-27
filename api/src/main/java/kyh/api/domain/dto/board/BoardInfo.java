@@ -16,7 +16,7 @@ public class BoardInfo {
   private Long boardId;
   private String title;
   private String content;
-  private String userName;
+  private String username;
   private String createdDate;
 
   public static BoardInfo generate(Board board) {
@@ -24,7 +24,7 @@ public class BoardInfo {
     boardInfo.boardId = board.getId();
     boardInfo.title = board.getTitle();
     boardInfo.content = board.getContent();
-    boardInfo.userName = board.getUser().getName();
+    boardInfo.username = board.getMember().getUsername();
     boardInfo.createdDate = board.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     return boardInfo;
   }

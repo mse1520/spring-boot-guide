@@ -10,13 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
-import kyh.api.domain.dto.user.SignUpUserForm;
-import kyh.api.domain.dto.user.UserInfo;
-import kyh.api.domain.entity.Authority;
-import kyh.api.domain.entity.User;
-import kyh.api.domain.type.UserRole;
-import kyh.api.repository.AuthorityRepository;
-import kyh.api.service.UserService;
+import kyh.api.domain.dto.member.MemberInfo;
+import kyh.api.domain.dto.member.SignUpUserForm;
+import kyh.api.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,37 +22,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/user")
-public class UserController {
+@RequestMapping(value = "/member")
+public class MemberController {
 
-  private final UserService userService;
-  private final AuthorityRepository authorityRepository;
+  private final MemberService userService;
 
   /** 회원 정보 api */
   @GetMapping(value = "/info")
-  public UserInfo info(@AuthenticationPrincipal UserInfo userInfo) {
-    if (userInfo == null) {
-      Authority auth = authorityRepository.findWithMenuByRole(UserRole.USER).orElseThrow();
-      User user = new User(null, null, auth);
-      userInfo = new UserInfo(user);
-    }
-    return userInfo;
+  public MemberInfo info(@AuthenticationPrincipal MemberInfo userInfo) {
+    return userService.info(userInfo);
   }
 
   /** 인증 성공 api */
   @GetMapping(value = "/sign-in")
-  public DataBox<UserInfo> signIn(@AuthenticationPrincipal UserInfo userInfo) {
+  public DataBox<MemberInfo> signIn(@AuthenticationPrincipal MemberInfo userInfo) {
     return new DataBox<>(DataBoxType.SUCCESS, "회원 인증에 성공했습니다.", userInfo);
   }
 
   /** 회원 가입 api */
   @PostMapping(value = "/sign-up")
-  public ResponseEntity<DataBox<UserInfo>> SignUp(@RequestBody @Validated SignUpUserForm form,
+  public ResponseEntity<DataBox<MemberInfo>> SignUp(@RequestBody @Validated SignUpUserForm form,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    DataBox<UserInfo> result = userService.signUp(form);
+    DataBox<MemberInfo> result = userService.signUp(form);
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

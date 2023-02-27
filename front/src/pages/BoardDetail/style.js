@@ -14,7 +14,7 @@ justify-content: space-between;
 align-items: end;
 `;
 
-export const UserName = styled.div`
+export const Username = styled.div`
 font-weight: bolder;
 `;
 

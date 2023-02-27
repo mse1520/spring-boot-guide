@@ -12,9 +12,9 @@ import kyh.api.domain.dto.board.BoardWriteForm;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.entity.Board;
-import kyh.api.domain.entity.User;
+import kyh.api.domain.entity.Member;
 import kyh.api.repository.BoardRepository;
-import kyh.api.repository.UserRepository;
+import kyh.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardService {
 
-  private final UserRepository userRepository;
+  private final MemberRepository memberRepository;
   private final BoardRepository boardRepository;
 
   /** 게시글(Board) 작성 */
   @Transactional
-  public DataBox<BoardInfo> write(BoardWriteForm boardWriteForm, Long UserId) {
-    User user = userRepository.findById(UserId).orElseThrow();
-    Board board = new Board(boardWriteForm.getTitle(), boardWriteForm.getContent(), user);
+  public DataBox<BoardInfo> write(BoardWriteForm boardWriteForm, Long memberId) {
+    Member member = memberRepository.findById(memberId).orElseThrow();
+    Board board = new Board(boardWriteForm.getTitle(), boardWriteForm.getContent(), member);
     Board savedBoard = boardRepository.save(board);
     BoardInfo boardInfo = BoardInfo.generate(savedBoard);
 
@@ -39,7 +39,7 @@ public class BoardService {
   /** 모든 게시글(Board) */
   public DataBox<List<BoardInfo>> list(Integer page) {
     PageRequest pageRequest = PageRequest.of(page, 20);
-    Slice<Board> slice = boardRepository.findWithUserAll(pageRequest);
+    Slice<Board> slice = boardRepository.findWithMemberAll(pageRequest);
     List<BoardInfo> boardInfos = slice.map(BoardInfo::generate).toList();
 
     return new DataBox<>(DataBoxType.SUCCESS, slice.isLast(), boardInfos);
@@ -47,7 +47,7 @@ public class BoardService {
 
   /** 단건 게시글(Board) */
   public DataBox<BoardInfo> info(Long boardId) {
-    Board findBoard = boardRepository.findWithUserById(boardId).orElse(null);
+    Board findBoard = boardRepository.findWithMemberById(boardId).orElse(null);
 
     if (findBoard == null)
       return new DataBox<>(DataBoxType.FAILURE, "조회된 게시글이 없습니다.");
@@ -58,12 +58,12 @@ public class BoardService {
 
   /** 게시글(Board) 삭제 */
   @Transactional
-  public DataBox<BoardInfo> delete(Long boardId, String userName) {
+  public DataBox<BoardInfo> delete(Long boardId, String username) {
     Board findBoard = boardRepository.findById(boardId).orElse(null);
 
     if (findBoard == null)
       return new DataBox<>(DataBoxType.FAILURE, "존재하지 않는 게시글입니다.");
-    if (!findBoard.getUser().getName().equals(userName))
+    if (!findBoard.getMember().getUsername().equals(username))
       return new DataBox<>(DataBoxType.FAILURE, "게시글을 삭제할 권한이 없습니다.");
 
     boardRepository.delete(findBoard);

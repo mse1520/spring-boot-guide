@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { deleteApi, getApi } from '../../utils/Api';
 import { useNavigate } from 'react-router-dom';
-import { Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, UserName } from './style';
+import { Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, Username } from './style';
 import useIntersection from '../../hooks/useIntersection';
 
 const BoardInfo = () => {
@@ -51,7 +51,7 @@ const BoardInfo = () => {
           <Title>{board.title}</Title>
           <ContentWrap>
             <Content>{board.content}</Content>
-            <UserName>{board.userName}</UserName>
+            <Username>{board.username}</Username>
             <div>{board.createdDate}</div>
           </ContentWrap>
         </StyledCard>

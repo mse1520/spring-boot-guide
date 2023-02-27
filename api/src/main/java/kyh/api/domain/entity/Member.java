@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,17 +14,16 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "user_t")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class Member extends BaseEntity {
 
   @Id
   @GeneratedValue
-  @Column(name = "user_id")
+  @Column(name = "member_id")
   private Long id;
 
   @Column(unique = true, nullable = false)
-  private String name;
+  private String username;
 
   @Column(nullable = false)
   private String password;
@@ -34,8 +32,8 @@ public class User extends BaseEntity {
   @JoinColumn(name = "authority_id")
   private Authority authority;
 
-  public User(String name, String password, Authority authority) {
-    this.name = name;
+  public Member(String username, String password, Authority authority) {
+    this.username = username;
     this.password = password;
     this.authority = authority;
   }

@@ -17,7 +17,7 @@ public class CommentInfo {
   private String content;
   private String createdDate;
   private String updatedDate;
-  private String userName;
+  private String username;
 
   public static CommentInfo generate(Comment comment) {
     CommentInfo commentInfo = new CommentInfo();
@@ -25,7 +25,7 @@ public class CommentInfo {
     commentInfo.content = comment.getContent();
     commentInfo.createdDate = comment.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     commentInfo.updatedDate = comment.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    commentInfo.userName = comment.getUser().getName();
+    commentInfo.username = comment.getMember().getUsername();
     return commentInfo;
   }
 

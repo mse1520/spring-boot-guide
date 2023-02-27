@@ -10,7 +10,7 @@ margin: 1rem 0;
 export const CommentContext = createContext({
   comment: {
     commentId: null,
-    userName: null,
+    username: null,
     content: null,
     createdDate: null,
     updatedDate: null
@@ -20,7 +20,7 @@ export const CommentContext = createContext({
   onClickModifyConfirm: (result, commentId, content) => { }
 });
 
-const Comment = ({ userName, comment, onClickDelete, onClickModify, onClickModifyConfirm }) => {
+const Comment = ({ username, comment, onClickDelete, onClickModify, onClickModifyConfirm }) => {
   const onClickInnerDelete = useCallback(commentId => () => onClickDelete(commentId), [onClickDelete]);
   const onClickInnerModify = useCallback(commentId => () => onClickModify(commentId), [onClickModify]);
 
@@ -32,7 +32,7 @@ const Comment = ({ userName, comment, onClickDelete, onClickModify, onClickModif
       onClickModifyConfirm
     }}>
       <Wrap>
-        {userName === comment.userName ? <RightCard /> : <LeftCard />}
+        {username === comment.username ? <RightCard /> : <LeftCard />}
       </Wrap>
     </CommentContext.Provider>
   </>;

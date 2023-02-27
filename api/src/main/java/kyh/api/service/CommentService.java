@@ -13,10 +13,10 @@ import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.entity.Board;
 import kyh.api.domain.entity.Comment;
-import kyh.api.domain.entity.User;
+import kyh.api.domain.entity.Member;
 import kyh.api.repository.BoardRepository;
 import kyh.api.repository.CommentRepository;
-import kyh.api.repository.UserRepository;
+import kyh.api.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,18 +25,18 @@ import lombok.RequiredArgsConstructor;
 public class CommentService {
 
   private final CommentRepository commentRepository;
-  private final UserRepository userRepository;
+  private final MemberRepository memberRepository;
   private final BoardRepository boardRepository;
 
   @Transactional
-  public DataBox<CommentInfo> wirte(CommentWriteForm form, Long userId) {
+  public DataBox<CommentInfo> wirte(CommentWriteForm form, Long memberId) {
     Board findBoard = boardRepository.findById(form.getBoardId()).orElse(null);
-    User findUser = userRepository.findById(userId).orElseThrow();
+    Member findMember = memberRepository.findById(memberId).orElseThrow();
 
     if (findBoard == null)
       return new DataBox<>(DataBoxType.FAILURE, "잘못된 게시글.");
 
-    Comment comment = new Comment(form.getContent(), findBoard, findUser);
+    Comment comment = new Comment(form.getContent(), findBoard, findMember);
     Comment savedComment = commentRepository.save(comment);
     CommentInfo commentInfo = CommentInfo.generate(savedComment);
 
@@ -50,20 +50,20 @@ public class CommentService {
     if (board == null)
       return new DataBox<>(DataBoxType.FAILURE, "조회된 게시글이 없습니다.");
 
-    Page<Comment> pageComment = commentRepository.findWithUserByBoard(board, pageRequest);
+    Page<Comment> pageComment = commentRepository.findWithMemberByBoard(board, pageRequest);
     List<CommentInfo> commentInfos = pageComment.map(CommentInfo::generate).toList();
 
     return new DataBox<>(DataBoxType.SUCCESS, pageComment.isLast(), pageComment.getTotalElements(), commentInfos);
   }
 
   @Transactional
-  public DataBox<CommentInfo> delete(Long commentId, Long userId) {
-    Comment findComment = commentRepository.findWithUserById(commentId).orElse(null);
-    User findUser = userRepository.findById(userId).orElse(new User(null, null, null));
+  public DataBox<CommentInfo> delete(Long commentId, Long memberId) {
+    Comment findComment = commentRepository.findWithMemberById(commentId).orElse(null);
+    Member findMember = memberRepository.findById(memberId).orElse(new Member(null, null, null));
 
     if (findComment == null)
       return new DataBox<>(DataBoxType.FAILURE, "존재하지 않는 댓글입니다.");
-    if (findComment.getUser() != findUser)
+    if (findComment.getMember() != findMember)
       return new DataBox<>(DataBoxType.FAILURE, "댓글을 삭제할 권한이 없습니다.");
 
     commentRepository.delete(findComment);
@@ -72,13 +72,13 @@ public class CommentService {
   }
 
   @Transactional
-  public DataBox<CommentInfo> modify(Long commentId, Long userId, String content) {
-    Comment findComment = commentRepository.findWithUserById(commentId).orElse(null);
-    User findUser = userRepository.findById(userId).orElse(new User(null, null, null));
+  public DataBox<CommentInfo> modify(Long commentId, Long memberId, String content) {
+    Comment findComment = commentRepository.findWithMemberById(commentId).orElse(null);
+    Member findMember = memberRepository.findById(memberId).orElse(new Member(null, null, null));
 
     if (findComment == null)
       return new DataBox<>(DataBoxType.FAILURE, "존재하지 않는 댓글입니다.");
-    if (findComment.getUser() != findUser)
+    if (findComment.getMember() != findMember)
       return new DataBox<>(DataBoxType.FAILURE, "댓글을 수정할 권한이 없습니다.");
 
     findComment.changeContent(content);

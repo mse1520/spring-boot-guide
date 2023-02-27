@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UserRole {
+public enum MemberRole {
   SUPER("SUPER"),
   ADMIN("ADMIN"),
   USER("USER");
 
-  private String role;
+  private String value;
 }

@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import kyh.api.domain.entity.Authority;
-import kyh.api.domain.type.UserRole;
+import kyh.api.domain.type.MemberRole;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 
-  Optional<Authority> findByRole(UserRole role);
+  Optional<Authority> findByRole(MemberRole role);
 
   @Query("select a"
       + " from Authority a"
@@ -19,6 +19,6 @@ public interface AuthorityRepository extends JpaRepository<Authority, Long> {
       + " join fetch am.menu m"
       + " where a.role = :role"
       + " order by m.seq asc")
-  Optional<Authority> findWithMenuByRole(@Param("role") UserRole role);
+  Optional<Authority> findWithMenuByRole(@Param("role") MemberRole role);
 
 }

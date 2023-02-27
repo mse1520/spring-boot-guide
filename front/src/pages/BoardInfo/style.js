@@ -71,6 +71,6 @@ text-overflow: ellipsis;
 margin: 1rem 0;
 `;
 
-export const UserName = styled.div`
+export const Username = styled.div`
 color: whitesmoke;
 `;

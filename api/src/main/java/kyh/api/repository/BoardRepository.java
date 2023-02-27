@@ -12,10 +12,10 @@ import kyh.api.domain.entity.Board;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-  @Query("select b from Board b join fetch b.user order by b.createdDate desc")
-  Slice<Board> findWithUserAll(Pageable pageable);
+  @Query("select b from Board b join fetch b.member m order by b.createdDate desc")
+  Slice<Board> findWithMemberAll(Pageable pageable);
 
-  @Query("select b from Board b join fetch b.user where b.id = :id")
-  Optional<Board> findWithUserById(@Param("id") Long id);
+  @Query("select b from Board b join fetch b.member m where b.id = :id")
+  Optional<Board> findWithMemberById(@Param("id") Long id);
 
 }

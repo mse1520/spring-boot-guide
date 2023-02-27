@@ -38,7 +38,7 @@ padding: 1rem;
 border-radius: 1rem;
 `;
 
-export const UserName = styled.div`
+export const Username = styled.div`
 font-weight: bolder;
 `;
 
