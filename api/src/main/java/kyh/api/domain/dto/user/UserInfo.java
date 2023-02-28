@@ -1,4 +1,4 @@
-package kyh.api.domain.dto.member;
+package kyh.api.domain.dto.user;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import kyh.api.domain.entity.Authority;
-import kyh.api.domain.entity.Member;
-import kyh.api.domain.type.MemberRole;
+import kyh.api.domain.entity.User;
+import kyh.api.domain.type.UserRole;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,45 +21,50 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MemberInfo implements UserDetails {
+public class UserInfo implements UserDetails {
 
-  private MemberInfoDetail member;
+  private UserInfoDetail user;
   private List<MenuInfo> menuList;
 
-  public static MemberInfo generate(Member member) {
-    MemberInfo memberInfo = new MemberInfo();
-    memberInfo.member = new MemberInfoDetail(member);
-    memberInfo.menuList = MenuInfo.generate(member.getAuthority());
-    return memberInfo;
+  public static UserInfo generate(User user) {
+    UserInfo userInfo = new UserInfo();
+    userInfo.user = new UserInfoDetail(user);
+    userInfo.menuList = MenuInfo.generate(user.getAuthority());
+    return userInfo;
   }
 
-  public static MemberInfo generate(Authority authority) {
-    MemberInfo memberInfo = new MemberInfo();
-    memberInfo.menuList = MenuInfo.generate(authority);
-    return memberInfo;
+  public static UserInfo generate(Authority authority) {
+    UserInfo userInfo = new UserInfo();
+    userInfo.menuList = MenuInfo.generate(authority);
+    return userInfo;
   }
 
   @JsonIgnore
   public Long getId() {
-    return member.getId();
+    return user.getId();
+  }
+
+  @JsonIgnore
+  public String getName() {
+    return user.getName();
   }
 
   @JsonIgnore
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.unmodifiableList(AuthorityUtils.createAuthorityList(member.getRole().getValue()));
+    return Collections.unmodifiableList(AuthorityUtils.createAuthorityList(user.getRole().getValue()));
   }
 
   @JsonIgnore
   @Override
   public String getPassword() {
-    return member.getPassword();
+    return user.getPassword();
   }
 
   @JsonIgnore
   @Override
   public String getUsername() {
-    return member.getUsername();
+    return user.getName();
   }
 
   @JsonIgnore
@@ -88,18 +93,18 @@ public class MemberInfo implements UserDetails {
 
   @Getter
   @ToString
-  private static class MemberInfoDetail {
+  private static class UserInfoDetail {
 
     private Long id;
-    private String username;
-    private MemberRole role;
+    private String name;
+    private UserRole role;
     private String password;
 
-    private MemberInfoDetail(Member member) {
-      id = member.getId();
-      username = member.getUsername();
-      password = member.getPassword();
-      role = member.getAuthority().getRole();
+    private UserInfoDetail(User user) {
+      id = user.getId();
+      name = user.getName();
+      password = user.getPassword();
+      role = user.getAuthority().getRole();
     }
 
     @JsonIgnore

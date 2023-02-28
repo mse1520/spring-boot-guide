@@ -1,4 +1,4 @@
-package kyh.api.domain.dto.member;
+package kyh.api.domain.dto.user;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -13,7 +13,7 @@ import lombok.ToString;
 public class SignUpForm {
 
   @NotEmpty(message = "아이디를 입력해야 합니다.")
-  private String username;
+  private String name;
 
   @NotEmpty(message = "비밀번호를 입력해야 합니다.")
   private String password;

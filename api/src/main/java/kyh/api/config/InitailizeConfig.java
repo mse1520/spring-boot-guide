@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kyh.api.domain.entity.Menu;
 import kyh.api.domain.entity.Authority;
 import kyh.api.domain.entity.AuthorityMenu;
-import kyh.api.domain.type.MemberRole;
+import kyh.api.domain.type.UserRole;
 import kyh.api.repository.MenuRepository;
 import kyh.api.service.DummyDataService;
 import kyh.api.repository.AuthorityMenuRepository;
@@ -52,9 +52,9 @@ public class InitailizeConfig {
       List<Authority> authorities = authorityRepository.findAll();
 
       List<Authority> saveList = new ArrayList<>();
-      saveList.add(newAuthItem(authorities, MemberRole.SUPER));
-      saveList.add(newAuthItem(authorities, MemberRole.ADMIN));
-      saveList.add(newAuthItem(authorities, MemberRole.USER));
+      saveList.add(newAuthItem(authorities, UserRole.SUPER));
+      saveList.add(newAuthItem(authorities, UserRole.ADMIN));
+      saveList.add(newAuthItem(authorities, UserRole.USER));
 
       return authorityRepository.saveAll(saveList.stream().filter(auth -> auth != null).toList());
     }
@@ -72,9 +72,9 @@ public class InitailizeConfig {
       menuRepository.deleteByIdNotIn(saveMenuList.stream().map(menu -> menu.getId()).toList());
 
       List<Authority> authorities = authorityRepository.findAll();
-      Authority authSuper = getAuth(authorities, MemberRole.SUPER);
-      Authority authAdmin = getAuth(authorities, MemberRole.ADMIN);
-      Authority authUser = getAuth(authorities, MemberRole.USER);
+      Authority authSuper = getAuth(authorities, UserRole.SUPER);
+      Authority authAdmin = getAuth(authorities, UserRole.ADMIN);
+      Authority authUser = getAuth(authorities, UserRole.USER);
 
       List<AuthorityMenu> authorityMenus = new ArrayList<>();
 
@@ -93,7 +93,7 @@ public class InitailizeConfig {
       authorityMenuRepository.saveAll(authorityMenus);
     }
 
-    private Authority newAuthItem(List<Authority> authorities, MemberRole role) {
+    private Authority newAuthItem(List<Authority> authorities, UserRole role) {
       Long count = authorities.stream().filter(auth -> auth.getRole() == role).count();
       return count < 1 ? new Authority(role) : null;
     }
@@ -104,7 +104,7 @@ public class InitailizeConfig {
       return findMenu;
     }
 
-    private Authority getAuth(List<Authority> authorities, MemberRole role) {
+    private Authority getAuth(List<Authority> authorities, UserRole role) {
       return authorities.stream()
           .filter(auth -> auth.getRole() == role)
           .findFirst()

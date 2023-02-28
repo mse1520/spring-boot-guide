@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
-import kyh.api.domain.dto.member.MemberInfo;
-import kyh.api.domain.dto.member.SignUpForm;
-import kyh.api.service.MemberService;
+import kyh.api.domain.dto.user.UserInfo;
+import kyh.api.domain.dto.user.SignUpForm;
+import kyh.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,31 +22,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/member")
-public class MemberController {
+@RequestMapping(value = "/user")
+public class UserController {
 
-  private final MemberService userService;
+  private final UserService userService;
 
   /** 회원 정보 api */
   @GetMapping(value = "/info")
-  public MemberInfo info(@AuthenticationPrincipal MemberInfo userInfo) {
+  public UserInfo info(@AuthenticationPrincipal UserInfo userInfo) {
     return userService.info(userInfo);
   }
 
   /** 인증 성공 api */
   @GetMapping(value = "/sign-in")
-  public DataBox<MemberInfo> signIn(@AuthenticationPrincipal MemberInfo userInfo) {
+  public DataBox<UserInfo> signIn(@AuthenticationPrincipal UserInfo userInfo) {
     return new DataBox<>(DataBoxType.SUCCESS, "회원 인증에 성공했습니다.", userInfo);
   }
 
   /** 회원 가입 api */
   @PostMapping(value = "/sign-up")
-  public ResponseEntity<DataBox<MemberInfo>> SignUp(@RequestBody @Validated SignUpForm form,
+  public ResponseEntity<DataBox<UserInfo>> SignUp(@RequestBody @Validated SignUpForm form,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    DataBox<MemberInfo> result = userService.signUp(form);
+    DataBox<UserInfo> result = userService.signUp(form);
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

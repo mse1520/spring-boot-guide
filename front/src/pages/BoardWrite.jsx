@@ -20,7 +20,7 @@ margin: 1rem 0;
 
 const AUTH_LIST = ['SUPER', 'ADMIN'];
 
-export const loader = () => getApi('/api/member/info').then(({ member }) => AUTH_LIST.includes(member?.role) ? { ok: true } : redirect('/'));
+export const loader = () => getApi('/api/user/info').then(({ user }) => AUTH_LIST.includes(user?.role) ? { ok: true } : redirect('/'));
 
 const BoardWrite = () => {
   const titleRef = useRef();

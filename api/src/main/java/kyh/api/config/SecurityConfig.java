@@ -35,16 +35,16 @@ public class SecurityConfig {
             .anyRequest().permitAll())
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint((request, response, authException) -> response
-                .sendRedirect(request.getContextPath() + "/member/error?message=" + unAuthMessage)))
+                .sendRedirect(request.getContextPath() + "/user/error?message=" + unAuthMessage)))
         .formLogin(form -> form
-            .usernameParameter("username")
+            .usernameParameter("name")
             .passwordParameter("password")
-            .loginProcessingUrl("/member/sign-in")
-            .defaultSuccessUrl("/member/sign-in")
+            .loginProcessingUrl("/user/sign-in")
+            .defaultSuccessUrl("/user/sign-in")
             .failureHandler(new CustomAuthFailureHandler()))
         .logout(logout -> logout
-            .logoutUrl("/member/sign-out")
-            .logoutSuccessUrl("/member/info")
+            .logoutUrl("/user/sign-out")
+            .logoutSuccessUrl("/user/info")
             .deleteCookies("JSESSIONID"))
         .build();
   }
@@ -69,7 +69,7 @@ public class SecurityConfig {
         errorMessage = "알 수 없는 이유로 회원 인증에 실패하였습니다.";
 
       errorMessage = URLEncoder.encode(errorMessage, "UTF-8");
-      setDefaultFailureUrl("/member/error?message=" + errorMessage);
+      setDefaultFailureUrl("/user/error?message=" + errorMessage);
 
       super.onAuthenticationFailure(request, response, exception);
     }

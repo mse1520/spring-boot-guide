@@ -38,18 +38,18 @@ background-color: rgb(50, 50, 50);
 align-items: baseline;
 `;
 
-export const loader = () => getApi('/api/member/info');
-export const action = () => postApi('/api/member/sign-out');
+export const loader = () => getApi('/api/user/info');
+export const action = () => postApi('/api/user/sign-out');
 
 const Main = () => {
-  const { member, menuList } = useLoaderData();
+  const { user, menuList } = useLoaderData();
   const fetcher = useFetcher();
 
   const onClickSignOut = useCallback(() => fetcher.submit(null, { method: 'post', action: '/' }), []);
 
-  const signedInfo = useMemo(() => member
-    ? <SignedButtonGroup name={member.username} onClick={onClickSignOut} />
-    : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />, [member]);
+  const signedInfo = useMemo(() => user
+    ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
+    : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />, [user]);
 
   return <>
     <Aticle>

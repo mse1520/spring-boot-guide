@@ -25,7 +25,7 @@ public class CommentInfo {
     commentInfo.content = comment.getContent();
     commentInfo.createdDate = comment.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     commentInfo.updatedDate = comment.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    commentInfo.username = comment.getMember().getUsername();
+    commentInfo.username = comment.getUser().getName();
     return commentInfo;
   }
 

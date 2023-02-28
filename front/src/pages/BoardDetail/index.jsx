@@ -8,10 +8,10 @@ import CommentMode from '../../types/BoardDetail/CommentMode';
 import { deleteApi, getApi, putApi, postApi } from '../../utils/Api';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer } from './style';
 
-export const loader = () => getApi('/api/member/info');
+export const loader = () => getApi('/api/user/info');
 
 const BoardDetail = () => {
-  const { member } = useLoaderData();
+  const { user } = useLoaderData();
   const { boardId } = useParams();
   const [board, setBoard] = useState();
   const [comments, setComments] = useState([]);
@@ -109,7 +109,7 @@ const BoardDetail = () => {
       <Hr />
       {comments.map((comment, i) => <Comment
         key={i}
-        username={member ? member.username : board.username}
+        username={user ? user.name : board.username}
         comment={comment}
         onClickDelete={onClickDeleteComment}
         onClickModify={onClickModifyComment}

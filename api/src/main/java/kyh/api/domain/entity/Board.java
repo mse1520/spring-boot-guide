@@ -34,16 +34,16 @@ public class Board extends BaseEntity {
   private String content;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
   private List<Comment> comments = new ArrayList<>();
 
-  public Board(String title, String content, Member member) {
+  public Board(String title, String content, User user) {
     this.title = title;
     this.content = content;
-    this.member = member;
+    this.user = user;
   }
 
 }

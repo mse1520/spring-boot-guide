@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import kyh.api.domain.type.MemberRole;
+import kyh.api.domain.type.UserRole;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +28,12 @@ public class Authority extends BaseEntity {
 
   @Column(nullable = false, unique = true)
   @Enumerated(EnumType.STRING)
-  private MemberRole role;
+  private UserRole role;
 
   @OneToMany(mappedBy = "authority")
   private List<AuthorityMenu> authorityMenus = new ArrayList<>();
 
-  public Authority(MemberRole role) {
+  public Authority(UserRole role) {
     this.role = role;
   }
 

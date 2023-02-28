@@ -7,7 +7,7 @@ import kyh.api.domain.dto.comment.CommentModifyForm;
 import kyh.api.domain.dto.comment.CommentWriteForm;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
-import kyh.api.domain.dto.member.MemberInfo;
+import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.service.CommentService;
 import lombok.RequiredArgsConstructor;
 
@@ -39,11 +39,11 @@ public class CommentController {
   /** 댓글 작성 api */
   @PostMapping(value = "/write")
   public ResponseEntity<DataBox<CommentInfo>> write(@RequestBody @Validated CommentWriteForm form,
-      BindingResult bindingResult, @AuthenticationPrincipal MemberInfo memberInfo) {
+      BindingResult bindingResult, @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    DataBox<CommentInfo> result = commentService.wirte(form, memberInfo.getId());
+    DataBox<CommentInfo> result = commentService.wirte(form, userInfo.getId());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
@@ -64,8 +64,8 @@ public class CommentController {
   /** 댓글 삭제 api */
   @DeleteMapping(value = "/{commentId}/info")
   public ResponseEntity<DataBox<CommentInfo>> delete(@PathVariable Long commentId,
-      @AuthenticationPrincipal MemberInfo memberInfo) {
-    DataBox<CommentInfo> result = commentService.delete(commentId, memberInfo.getId());
+      @AuthenticationPrincipal UserInfo userInfo) {
+    DataBox<CommentInfo> result = commentService.delete(commentId, userInfo.getId());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
@@ -76,11 +76,11 @@ public class CommentController {
   @PutMapping(value = "/{commentId}/info")
   public ResponseEntity<DataBox<CommentInfo>> modify(@PathVariable Long commentId,
       @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult,
-      @AuthenticationPrincipal MemberInfo memberInfo) {
+      @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    DataBox<CommentInfo> result = commentService.modify(commentId, memberInfo.getId(), form.getContent());
+    DataBox<CommentInfo> result = commentService.modify(commentId, userInfo.getId(), form.getContent());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

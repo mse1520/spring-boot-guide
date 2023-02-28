@@ -6,34 +6,34 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kyh.api.domain.entity.Member;
+import kyh.api.domain.entity.User;
 import kyh.api.domain.entity.QAuthority;
 import kyh.api.domain.entity.QAuthorityMenu;
-import kyh.api.domain.entity.QMember;
 import kyh.api.domain.entity.QMenu;
+import kyh.api.domain.entity.QUser;
 
 @Repository
-public class MemberQueryRepository {
+public class UserQueryRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public MemberQueryRepository(EntityManager entityManager) {
+  public UserQueryRepository(EntityManager entityManager) {
     queryFactory = new JPAQueryFactory(entityManager);
   }
 
-  public Member findWithMenuByUsername(String username) {
-    QMember member = QMember.member;
+  public User findWithMenuByName(String name) {
+    QUser user = QUser.user;
     QAuthority authority = QAuthority.authority;
     QAuthorityMenu authorityMenu = QAuthorityMenu.authorityMenu;
     QMenu menu = QMenu.menu;
 
     return queryFactory
-        .select(member)
-        .from(member)
-        .join(member.authority, authority).fetchJoin()
+        .select(user)
+        .from(user)
+        .join(user.authority, authority).fetchJoin()
         .join(authority.authorityMenus, authorityMenu).fetchJoin()
         .join(authorityMenu.menu, menu).fetchJoin()
-        .where(member.username.eq(username))
+        .where(user.name.eq(name))
         .orderBy(menu.seq.asc())
         .fetchOne();
   }

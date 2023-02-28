@@ -24,7 +24,7 @@ public class BoardInfo {
     boardInfo.boardId = board.getId();
     boardInfo.title = board.getTitle();
     boardInfo.content = board.getContent();
-    boardInfo.username = board.getMember().getUsername();
+    boardInfo.username = board.getUser().getName();
     boardInfo.createdDate = board.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     return boardInfo;
   }

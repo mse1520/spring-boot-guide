@@ -32,13 +32,13 @@ public class Comment extends BaseEntity {
   private Board board;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @JoinColumn(name = "user_id")
+  private User user;
 
-  public Comment(String content, Board board, Member member) {
+  public Comment(String content, Board board, User user) {
     this.content = content;
     this.board = board;
-    this.member = member;
+    this.user = user;
   }
 
   public void changeContent(String content) {

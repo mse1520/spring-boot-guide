@@ -42,7 +42,7 @@ justify-content: end;
 
 export const action = ({ request }) => request.formData()
   .then(form => Object.fromEntries(form))
-  .then(data => postApi('/api/member/sign-up', data))
+  .then(data => postApi('/api/user/sign-up', data))
   .then(data => alert(data.message))
   .then(() => redirect('/sign-in'))
   .catch(err => (alert(err.message), { ok: true }));
@@ -54,8 +54,8 @@ const SignUp = () => <>
         <div>
           <H2>회원가입</H2>
           <InputWrap>
-            <Label htmlFor='username'>아이디</Label>
-            <DefaultInput id='username' name='username' />
+            <Label htmlFor='name'>아이디</Label>
+            <DefaultInput id='name' name='name' />
           </InputWrap>
           <InputWrap>
             <Label htmlFor='password'>비밀번호</Label>
