@@ -22,7 +22,7 @@ public class MenuInfo {
     text = authorityMenu.getMenu().getText();
   }
 
-  public static List<MenuInfo> create(Authority authority) {
+  public static List<MenuInfo> generate(Authority authority) {
     return authority.getAuthorityMenus().stream().map(MenuInfo::new).toList();
   }
 

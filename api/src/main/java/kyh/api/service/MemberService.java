@@ -33,7 +33,7 @@ public class MemberService implements UserDetailsService {
   public MemberInfo info(MemberInfo memberInfo) {
     if (memberInfo == null) {
       Authority auth = authorityRepository.findWithMenuByRole(MemberRole.USER).orElseThrow();
-      memberInfo = MemberInfo.create(auth);
+      memberInfo = MemberInfo.generate(auth);
     }
     return memberInfo;
   }
@@ -47,7 +47,7 @@ public class MemberService implements UserDetailsService {
     Authority auth = authorityRepository.findByRole(MemberRole.USER).orElseThrow();
     Member member = new Member(form.getUsername(), passwordEncoder.encode(form.getPassword()), auth);
     Member savedMember = memberRepository.save(member);
-    MemberInfo memberInfo = MemberInfo.create(savedMember);
+    MemberInfo memberInfo = MemberInfo.generate(savedMember);
 
     return new DataBox<>(DataBoxType.SUCCESS, "회원가입에 성공하였습니다.", memberInfo);
   }
@@ -58,7 +58,7 @@ public class MemberService implements UserDetailsService {
     if (member == null)
       throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
     // .orElseThrow(() -> new UsernameNotFoundException("아이디를 찾을 수 없습니다."));
-    return MemberInfo.create(member);
+    return MemberInfo.generate(member);
   }
 
 }

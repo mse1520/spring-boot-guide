@@ -26,17 +26,17 @@ public class MemberInfo implements UserDetails {
   private MemberInfoDetail member;
   private List<MenuInfo> menuList;
 
-  public static MemberInfo create(Member member) {
-    MemberInfo userInfo = new MemberInfo();
-    userInfo.member = new MemberInfoDetail(member);
-    userInfo.menuList = MenuInfo.create(member.getAuthority());
-    return userInfo;
+  public static MemberInfo generate(Member member) {
+    MemberInfo memberInfo = new MemberInfo();
+    memberInfo.member = new MemberInfoDetail(member);
+    memberInfo.menuList = MenuInfo.generate(member.getAuthority());
+    return memberInfo;
   }
 
-  public static MemberInfo create(Authority authority) {
-    MemberInfo userInfo = new MemberInfo();
-    userInfo.menuList = MenuInfo.create(authority);
-    return userInfo;
+  public static MemberInfo generate(Authority authority) {
+    MemberInfo memberInfo = new MemberInfo();
+    memberInfo.menuList = MenuInfo.generate(authority);
+    return memberInfo;
   }
 
   @JsonIgnore

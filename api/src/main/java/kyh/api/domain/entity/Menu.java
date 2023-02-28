@@ -19,7 +19,7 @@ public class Menu extends BaseEntity {
     @Column(name = "menu_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String path;
 
     @Column(nullable = false)
@@ -30,6 +30,11 @@ public class Menu extends BaseEntity {
 
     public Menu(String path, String text, long seq) {
         this.path = path;
+        this.text = text;
+        this.seq = seq;
+    }
+
+    public void changeTextAndSeq(String text, long seq) {
         this.text = text;
         this.seq = seq;
     }

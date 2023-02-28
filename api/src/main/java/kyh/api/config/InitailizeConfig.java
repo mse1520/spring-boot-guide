@@ -61,12 +61,15 @@ public class InitailizeConfig {
 
     @Transactional
     private void createMenu() {
-      Menu home = new Menu("/", "홈", 1);
-      Menu boardWrite = new Menu("/board/write", "게시글 작성", 2);
-      Menu boardInfo = new Menu("/board/info", "게시글", 3);
+      List<Menu> menus = menuRepository.findAll();
 
-      menuRepository.deleteAll();
-      menuRepository.saveAll(Arrays.asList(home, boardWrite, boardInfo));
+      Menu home = newMenuItem(menus, new Menu("/", "홈", 1));
+      Menu boardWrite = newMenuItem(menus, new Menu("/board/write", "게시글 작성", 2));
+      Menu boardInfo = newMenuItem(menus, new Menu("/board/info", "게시글", 3));
+      List<Menu> saveMenuList = Arrays.asList(home, boardWrite, boardInfo);
+
+      menuRepository.saveAll(saveMenuList);
+      menuRepository.deleteByIdNotIn(saveMenuList.stream().map(menu -> menu.getId()).toList());
 
       List<Authority> authorities = authorityRepository.findAll();
       Authority authSuper = getAuth(authorities, MemberRole.SUPER);
@@ -86,12 +89,19 @@ public class InitailizeConfig {
       authorityMenus.add(new AuthorityMenu(authUser, home));
       authorityMenus.add(new AuthorityMenu(authUser, boardInfo));
 
+      authorityMenuRepository.deleteAllInBatch();
       authorityMenuRepository.saveAll(authorityMenus);
     }
 
     private Authority newAuthItem(List<Authority> authorities, MemberRole role) {
       Long count = authorities.stream().filter(auth -> auth.getRole() == role).count();
       return count < 1 ? new Authority(role) : null;
+    }
+
+    private Menu newMenuItem(List<Menu> menus, Menu menu) {
+      Menu findMenu = menus.stream().filter(_menu -> _menu.getPath().equals(menu.getPath())).findFirst().orElse(menu);
+      findMenu.changeTextAndSeq(menu.getText(), menu.getSeq());
+      return findMenu;
     }
 
     private Authority getAuth(List<Authority> authorities, MemberRole role) {
