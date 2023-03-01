@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import kyh.api.domain.entity.Authority;
 import kyh.api.domain.entity.User;
-import kyh.api.domain.type.UserRole;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,12 +22,12 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserInfo implements UserDetails {
 
-  private UserInfoDetail user;
+  private UserDetailInfo user;
   private List<MenuInfo> menuList;
 
   public static UserInfo generate(User user) {
     UserInfo userInfo = new UserInfo();
-    userInfo.user = new UserInfoDetail(user);
+    userInfo.user = new UserDetailInfo(user);
     userInfo.menuList = MenuInfo.generate(user.getAuthority());
     return userInfo;
   }
@@ -89,29 +88,6 @@ public class UserInfo implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
-  }
-
-  @Getter
-  @ToString
-  private static class UserInfoDetail {
-
-    private Long id;
-    private String name;
-    private UserRole role;
-    private String password;
-
-    private UserInfoDetail(User user) {
-      id = user.getId();
-      name = user.getName();
-      password = user.getPassword();
-      role = user.getAuthority().getRole();
-    }
-
-    @JsonIgnore
-    private String getPassword() {
-      return password;
-    }
-
   }
 
 }

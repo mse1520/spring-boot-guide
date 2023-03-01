@@ -15,7 +15,6 @@ import kyh.api.domain.entity.Authority;
 import kyh.api.domain.entity.User;
 import kyh.api.domain.type.UserRole;
 import kyh.api.repository.AuthorityRepository;
-import kyh.api.repository.UserQueryRepository;
 import kyh.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +25,6 @@ public class UserService implements UserDetailsService {
 
   private final AuthorityRepository authorityRepository;
   private final UserRepository userRepository;
-  private final UserQueryRepository userQueryRepository;
   private final PasswordEncoder passwordEncoder;
 
   /** 회원 정보 */
@@ -54,10 +52,8 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userQueryRepository.findWithMenuByName(username);
-    if (user == null)
-      throw new UsernameNotFoundException("아이디를 찾을 수 없습니다.");
-    // .orElseThrow(() -> new UsernameNotFoundException("아이디를 찾을 수 없습니다."));
+    User user = userRepository.findWithMenuByName(username)
+        .orElseThrow(() -> new UsernameNotFoundException("아이디를 찾을 수 없습니다."));
     return UserInfo.generate(user);
   }
 
