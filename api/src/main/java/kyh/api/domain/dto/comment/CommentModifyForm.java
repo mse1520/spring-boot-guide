@@ -12,7 +12,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentModifyForm {
+
   @NotEmpty(message = "내용을 입력해주세요.")
   @Size(max = 1000)
   private String content;
+
 }

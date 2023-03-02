@@ -13,12 +13,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import kyh.api.domain.entity.Authority;
 import kyh.api.domain.entity.User;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserInfo implements UserDetails {
 
@@ -26,15 +28,14 @@ public class UserInfo implements UserDetails {
   private List<MenuInfo> menuList;
 
   public static UserInfo generate(User user) {
-    UserInfo userInfo = new UserInfo();
+    UserInfo userInfo = UserInfo.generate(user.getAuthority());
     userInfo.user = new UserDetailInfo(user);
-    userInfo.menuList = MenuInfo.generate(user.getAuthority());
     return userInfo;
   }
 
   public static UserInfo generate(Authority authority) {
     UserInfo userInfo = new UserInfo();
-    userInfo.menuList = MenuInfo.generate(authority);
+    userInfo.menuList = authority.getAuthorityMenus().stream().map(MenuInfo::new).toList();
     return userInfo;
   }
 

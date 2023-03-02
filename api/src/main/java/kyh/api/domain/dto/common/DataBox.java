@@ -60,9 +60,4 @@ public class DataBox<T> {
     return new DataBox<>(DataBoxType.FAILURE, message);
   }
 
-  /** 인증되지 않은 사용자에 대한 메세지 */
-  public static <T> DataBox<T> unauthorized() {
-    return new DataBox<>(DataBoxType.FAILURE, "인증되지 않은 사용자입니다.");
-  }
-
 }

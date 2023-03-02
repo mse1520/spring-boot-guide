@@ -9,5 +9,5 @@ public enum DataBoxType {
   SUCCESS("SUCCESS"),
   FAILURE("FAILURE");
 
-  private String type;
+  private String value;
 }
