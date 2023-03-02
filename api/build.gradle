@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.9'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.springframework.boot' version '3.0.3'
+	id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'kyh'
@@ -33,9 +33,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	// querydsl
-    implementation 'com.querydsl:querydsl-jpa'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
-	annotationProcessor 'javax.persistence:javax.persistence-api'
+	// 2.7
+    // implementation 'com.querydsl:querydsl-jpa'
+	// annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+	// annotationProcessor 'javax.persistence:javax.persistence-api'
+	// 3.0
+	implementation "com.querydsl:querydsl-jpa:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 }
 
 tasks.named('test') {

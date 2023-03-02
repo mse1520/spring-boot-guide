@@ -2,6 +2,7 @@ package kyh.api.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kyh.api.domain.dto.comment.CommentInfo;
 import kyh.api.domain.dto.comment.CommentModifyForm;
 import kyh.api.domain.dto.comment.CommentWriteForm;
@@ -12,8 +13,6 @@ import kyh.api.service.CommentService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

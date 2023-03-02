@@ -3,11 +3,8 @@ package kyh.api.config;
 import java.io.IOException;
 import java.net.URLEncoder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -28,10 +30,10 @@ public class SecurityConfig {
 
     return http
         .csrf(csrf -> csrf.disable())
-        .authorizeRequests(auth -> auth
-            .antMatchers("/board/write", "/comment/write").authenticated()
-            .antMatchers(HttpMethod.DELETE, "/board/*/info", "/comment/*/info").authenticated()
-            .antMatchers(HttpMethod.PUT, "/board/*/info", "/comment/*/info").authenticated()
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/board/write", "/comment/write").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/board/*/info", "/comment/*/info").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/board/*/info", "/comment/*/info").authenticated()
             .anyRequest().permitAll())
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint((request, response, authException) -> response
