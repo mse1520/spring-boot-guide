@@ -31,16 +31,14 @@ import kyh.api.repository.UserRepository;
 @Transactional
 public class QuerydslTest {
 
+  private final String userName = "test";
+
   @Autowired
   private JPAQueryFactory queryFactory;
-
   @Autowired
   private UserRepository userRepository;
-
   @Autowired
   private AuthorityRepository authorityRepository;
-
-  private final String userName = "test";
 
   @BeforeEach
   public void beforeInsertDummyData() {
