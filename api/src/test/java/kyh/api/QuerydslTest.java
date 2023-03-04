@@ -31,7 +31,7 @@ import kyh.api.repository.UserRepository;
 @Transactional
 public class QuerydslTest {
 
-  private final String userName = "test";
+  private final String USER_NAME = "test";
 
   @Autowired
   private JPAQueryFactory queryFactory;
@@ -42,12 +42,12 @@ public class QuerydslTest {
 
   @BeforeEach
   public void beforeInsertDummyData() {
-    Optional<User> findUser = userRepository.findByName(userName);
+    Optional<User> findUser = userRepository.findByName(USER_NAME);
     if (findUser.isPresent())
       return;
 
     Authority auth = authorityRepository.findByRole(UserRole.SUPER).orElseThrow();
-    User user = new User(userName, "password", auth);
+    User user = new User(USER_NAME, "password", auth);
 
     authorityRepository.save(auth);
     userRepository.save(user);
@@ -56,9 +56,9 @@ public class QuerydslTest {
   @DisplayName("querydsl 사용및 최적화 테스트")
   @Test
   public void querydslOptimization() {
-    User user = findWithMenuByName1(userName).orElse(null);
+    User user = findWithMenuByName1(USER_NAME).orElse(null);
     UserInfo userInfo1 = UserInfo.generate(user);
-    UserInfo userInfo2 = findWithMenuByName2(userName).orElse(null);
+    UserInfo userInfo2 = findWithMenuByName2(USER_NAME).orElse(null);
 
     System.out.println(userInfo1);
     System.out.println(userInfo2);

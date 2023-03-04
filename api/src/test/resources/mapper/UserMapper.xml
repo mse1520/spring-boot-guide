@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='kyh.api.dao.UserDao'>
+
+  <select id='findWithMenuByName' parameterType='String' resultType='Map'>
+    select
+      u.user_id as id,
+      u.name as name,
+      u.password as password,
+      a.role as role,
+      m.path as path,
+      m.text as text 
+    from user_t u
+    join authority a on a.authority_id = u.authority_id 
+    join authority_menu am on a.authority_id=am.authority_id 
+    join menu m on m.menu_id=am.menu_id 
+    where u.name = #{name}
+    order by m.seq asc
+  </select>
+
+</mapper>
