@@ -49,7 +49,6 @@ public class QuerydslTest {
     Authority auth = authorityRepository.findByRole(UserRole.SUPER).orElseThrow();
     User user = new User(USER_NAME, "password", auth);
 
-    authorityRepository.save(auth);
     userRepository.save(user);
   }
 

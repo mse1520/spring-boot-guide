@@ -3,6 +3,16 @@
 
 <mapper namespace='kyh.api.dao.UserDao'>
 
+  <select id='findByName' parameterType='String' resultType='User'>
+    select
+      user_id as id,
+      name as name,
+      password as password,
+      authority_id as authority
+    from user_t
+    where name = #{name}
+  </select>
+
   <select id='findWithMenuByName' parameterType='String' resultType='Map'>
     select
       u.user_id as id,
@@ -18,5 +28,27 @@
     where u.name = #{name}
     order by m.seq asc
   </select>
+
+  <insert id='save' parameterType='Map'>
+    <selectKey keyProperty='id' resultType='Long' order='BEFORE'>
+      select coalesce(max(user_id) + 1, 1) from user_t
+    </selectKey>
+    insert into user_t (
+      user_id,
+      name,
+      password,
+      authority_id,
+      created_date,
+      updated_date
+    )
+    values (
+      #{id},
+      #{name},
+      #{password},
+      #{authority.id},
+      now(),
+      now()
+    )
+  </insert>
 
 </mapper>

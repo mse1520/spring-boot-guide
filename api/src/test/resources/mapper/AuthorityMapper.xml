@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+
+<mapper namespace='kyh.api.dao.AuthorityDao'>
+
+  <select id='findByRole' parameterType='UserRole' resultType='Authority'>
+    select
+      authority_id as id,
+      role as role
+    from authority
+    where role = #{role.value}
+  </select>
+
+</mapper>
