@@ -11,10 +11,10 @@ import kyh.api.domain.dto.user.MenuInfo;
 import kyh.api.domain.dto.user.UserDetailInfo;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.domain.type.UserRole;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserQueryDao {
 
   private final SqlSession sqlSession;

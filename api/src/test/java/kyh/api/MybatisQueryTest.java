@@ -31,16 +31,6 @@ public class MybatisQueryTest {
   @Autowired
   private AuthorityDao authorityDao;
 
-  @Test
-  @DisplayName("mybatis xml을 이용한 쿼리작성 테스트")
-  public void nativeQueryTest() {
-    UserInfo userInfo = userQueryDao.findWithMenuByName(USER_NAME).orElseThrow();
-
-    System.out.println(userInfo);
-
-    Assertions.assertThat(userInfo.getName()).isEqualTo(USER_NAME);
-  }
-
   @BeforeEach
   public void nativeQueryTransactionTest() {
     Optional<User> findUser = userDao.findByName(USER_NAME);
@@ -52,6 +42,16 @@ public class MybatisQueryTest {
     User user = new User(USER_NAME, "password", auth);
 
     userDao.save(user);
+  }
+
+  @Test
+  @DisplayName("mybatis xml을 이용한 쿼리작성 테스트")
+  public void nativeQueryTest() {
+    UserInfo userInfo = userQueryDao.findWithMenuByName(USER_NAME).orElseThrow();
+
+    System.out.println(userInfo);
+
+    Assertions.assertThat(userInfo.getName()).isEqualTo(USER_NAME);
   }
 
 }

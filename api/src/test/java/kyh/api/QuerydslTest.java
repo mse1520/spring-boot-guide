@@ -52,8 +52,8 @@ public class QuerydslTest {
     userRepository.save(user);
   }
 
-  @DisplayName("querydsl 사용및 최적화 테스트")
   @Test
+  @DisplayName("querydsl 사용및 최적화 테스트")
   public void querydslOptimization() {
     User user = findWithMenuByName1(USER_NAME).orElse(null);
     UserInfo userInfo1 = UserInfo.generate(user);
@@ -114,7 +114,8 @@ public class QuerydslTest {
         tuple.get(authority.role)//
     );
 
-    List<MenuInfo> menuInfos = tuples.stream().map(tp -> new MenuInfo(tp.get(menu.path), tp.get(menu.text)))
+    List<MenuInfo> menuInfos = tuples.stream()
+        .map(tp -> new MenuInfo(tp.get(menu.path), tp.get(menu.text)))
         .toList();
 
     return Optional.of(new UserInfo(userDetailInfo, menuInfos));
