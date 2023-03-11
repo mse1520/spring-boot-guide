@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import kyh.api.domain.entity.Authority;
 import kyh.api.domain.entity.AuthorityMenu;
 import kyh.api.domain.type.UserRole;
 import kyh.api.repository.MenuRepository;
-import kyh.api.service.DummyDataService;
 import kyh.api.repository.AuthorityMenuRepository;
 import kyh.api.repository.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +34,10 @@ public class InitailizeConfig {
     private final MenuRepository menuRepository;
     private final AuthorityMenuRepository authorityMenuRepository;
 
-    @Autowired
-    private DummyDataService dummyDataService;
-
     @PostConstruct
     private void init() {
       createAuth();
       createMenu();
-      dummyDataService.make();
     }
 
     @Transactional
@@ -62,9 +56,9 @@ public class InitailizeConfig {
     private void createMenu() {
       List<Menu> menus = menuRepository.findAll();
 
-      Menu home = newMenuItem(menus, new Menu("/", "홈", 1));
-      Menu boardWrite = newMenuItem(menus, new Menu("/board/write", "게시글 작성", 2));
-      Menu boardInfo = newMenuItem(menus, new Menu("/board/info", "게시글", 3));
+      Menu home = newMenuItem(menus, new Menu("/", "홈", "/img/home.png", 1));
+      Menu boardWrite = newMenuItem(menus, new Menu("/board/write", "게시글 작성", "/img/modify.png", 2));
+      Menu boardInfo = newMenuItem(menus, new Menu("/board/info", "게시글", "/img/board.png", 3));
       List<Menu> saveMenuList = Arrays.asList(home, boardWrite, boardInfo);
 
       menuRepository.saveAll(saveMenuList);
@@ -99,7 +93,7 @@ public class InitailizeConfig {
 
     private Menu newMenuItem(List<Menu> menus, Menu menu) {
       Menu findMenu = menus.stream().filter(_menu -> _menu.getPath().equals(menu.getPath())).findFirst().orElse(menu);
-      findMenu.changeTextAndSeq(menu.getText(), menu.getSeq());
+      findMenu.changeData(menu.getText(), menu.getImgPath(), menu.getSeq());
       return findMenu;
     }
 

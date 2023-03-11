@@ -94,7 +94,8 @@ public class QuerydslTest {
             user.password,
             authority.role,
             menu.path,
-            menu.text)
+            menu.text,
+            menu.imgPath)
         .from(user)
         .join(user.authority, authority)
         .join(authority.authorityMenus, authorityMenu)
@@ -115,7 +116,7 @@ public class QuerydslTest {
     );
 
     List<MenuInfo> menuInfos = tuples.stream()
-        .map(tp -> new MenuInfo(tp.get(menu.path), tp.get(menu.text)))
+        .map(tp -> new MenuInfo(tp.get(menu.path), tp.get(menu.text), tp.get(menu.imgPath)))
         .toList();
 
     return Optional.of(new UserInfo(userDetailInfo, menuInfos));

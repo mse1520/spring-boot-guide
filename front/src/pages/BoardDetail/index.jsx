@@ -23,7 +23,7 @@ const BoardDetail = () => {
   const loaderRef = useRef();
 
   const loadComments = useCallback((boardId, page, comments) =>
-    getApi(`/api/comment/${boardId}/info`, { page })
+    getApi(`/api/comment/info/${boardId}`, { page })
       .then(v => (setTotal(v.total), v))
       .then(v => (setIsLast(v.isLast), v))
       .then(v => (setPage(page + 1), v.body))
@@ -39,7 +39,7 @@ const BoardDetail = () => {
   }, [loaderRef.current, comments, page]);
 
   useEffect(() => {
-    getApi(`/api/board/${boardId}/info`)
+    getApi(`/api/board/info/${boardId}`)
       .then(v => setBoard(v.body))
       .catch(err => {
         console.error(err);
@@ -57,14 +57,16 @@ const BoardDetail = () => {
     })
       .then(v => v.body)
       .then(v => setComments([...comments, v]))
+      .then(() => setTotal(total + 1))
       .then(() => textareaRef.current.innerText = '')
       .catch(err => err.message ? alert(err.message) : console.error(err)),
     [comments]);
 
   const onClickDeleteComment = useCallback(commentId =>
-    deleteApi(`/api/comment/${commentId}/info`)
+    deleteApi(`/api/comment/info/${commentId}`)
       .then(() => comments.filter(v => v.commentId !== commentId))
       .then(setComments)
+      .then(() => setTotal(total - 1))
       .catch(err => err.message ? alert(err.message) : console.error(err)),
     [comments]);
 
@@ -84,7 +86,7 @@ const BoardDetail = () => {
       return setComments([...comments]);
     }
 
-    putApi(`/api/comment/${commentId}/info`, { content })
+    putApi(`/api/comment/info/${commentId}`, { content })
       .then(v => v.body)
       .then(newComment => setComments(comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)))
       .catch(err => err.message ? alert(err.message) : console.error(err));

@@ -24,17 +24,22 @@ public class Menu extends BaseEntity {
     @Column(nullable = false)
     private String text;
 
+    @Column
+    private String imgPath;
+
     @Column(nullable = false)
     private Long seq;
 
-    public Menu(String path, String text, long seq) {
+    public Menu(String path, String text, String imgPath, long seq) {
         this.path = path;
         this.text = text;
+        this.imgPath = imgPath;
         this.seq = seq;
     }
 
-    public void changeTextAndSeq(String text, long seq) {
+    public void changeData(String text, String imgPath, long seq) {
         this.text = text;
+        this.imgPath = imgPath;
         this.seq = seq;
     }
 

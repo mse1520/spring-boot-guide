@@ -22,14 +22,14 @@ const BoardInfo = () => {
       .catch(console.error);
   }, [boards, page, isLast]);
 
-  const onClickCard = useCallback(boardId => () => navigate(`/board/${boardId}/info`), []);
+  const onClickCard = useCallback(boardId => () => navigate(`/board/info/${boardId}`), []);
 
   const onClickDelete = useCallback(boardId => e => {
     e.stopPropagation();
 
     if (!confirm('게시글을 삭제하시겠습니까?')) return;
 
-    deleteApi(`/api/board/${boardId}/info`)
+    deleteApi(`/api/board/info/${boardId}`)
       .then(v => alert(v.message))
       .then(() => boards.filter(board => board.boardId !== boardId))
       .then(setBoards)

@@ -50,7 +50,7 @@ public class CommentController {
   }
 
   /** 댓글 리스트 api */
-  @GetMapping(value = "/{boardId}/info")
+  @GetMapping(value = "/info/{boardId}")
   public ResponseEntity<DataBox<List<CommentInfo>>> list(HttpServletRequest request, @PathVariable Long boardId,
       @RequestParam Integer page) {
     DataBox<List<CommentInfo>> result = commentService.list(boardId, page);
@@ -61,7 +61,7 @@ public class CommentController {
   }
 
   /** 댓글 삭제 api */
-  @DeleteMapping(value = "/{commentId}/info")
+  @DeleteMapping(value = "/info/{commentId}")
   public ResponseEntity<DataBox<CommentInfo>> delete(@PathVariable Long commentId,
       @AuthenticationPrincipal UserInfo userInfo) {
     DataBox<CommentInfo> result = commentService.delete(commentId, userInfo.getId());
@@ -72,7 +72,7 @@ public class CommentController {
   }
 
   /** 댓글 수정 api */
-  @PutMapping(value = "/{commentId}/info")
+  @PutMapping(value = "/info/{commentId}")
   public ResponseEntity<DataBox<CommentInfo>> modify(@PathVariable Long commentId,
       @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult,
       @AuthenticationPrincipal UserInfo userInfo) {

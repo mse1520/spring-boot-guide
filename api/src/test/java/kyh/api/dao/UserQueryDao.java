@@ -34,7 +34,7 @@ public class UserQueryDao {
     );
 
     List<MenuInfo> menuInfos = datas.stream()
-        .map(data -> new MenuInfo((String) data.get("path"), (String) data.get("text")))
+        .map(data -> new MenuInfo((String) data.get("path"), (String) data.get("text"), (String) data.get("img")))
         .toList();
 
     return Optional.of(new UserInfo(userDetailInfo, menuInfos));

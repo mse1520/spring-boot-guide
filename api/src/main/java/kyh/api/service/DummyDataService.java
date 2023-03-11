@@ -2,10 +2,13 @@ package kyh.api.service;
 
 import java.util.Arrays;
 
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.annotation.PostConstruct;
 import kyh.api.domain.entity.Authority;
 import kyh.api.domain.entity.Board;
 import kyh.api.domain.entity.Comment;
@@ -18,6 +21,8 @@ import kyh.api.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Profile("test")
+@DependsOn("initailizer")
 @RequiredArgsConstructor
 public class DummyDataService {
 
@@ -27,6 +32,7 @@ public class DummyDataService {
   private final BoardRepository boardRepository;
   private final CommentRepository commentRepository;
 
+  @PostConstruct
   @Transactional
   public void make() {
     Authority authSuper = authorityRepository.findByRole(UserRole.SUPER).orElseThrow();

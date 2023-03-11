@@ -76,6 +76,7 @@ module.exports = {
     open: true,
     proxy: {
       '/api': { target: 'http://localhost:4001' }
-    }
+    },
+    static: { directory: path.join('src', 'resources') }
   }
 };

@@ -32,8 +32,8 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/board/write", "/comment/write").authenticated()
-            .requestMatchers(HttpMethod.DELETE, "/board/*/info", "/comment/*/info").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/board/*/info", "/comment/*/info").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/board/info/*", "/comment/info/*").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/board/info/*", "/comment/info/*").authenticated()
             .anyRequest().permitAll())
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint((request, response, authException) -> response

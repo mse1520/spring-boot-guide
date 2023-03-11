@@ -48,7 +48,7 @@ const router = createBrowserRouter([{
     path: '/board/info',
     element: <BoardInfo />
   }, {
-    path: '/board/:boardId/info',
+    path: '/board/info/:boardId',
     element: <BoardDetail />,
     loader: boardDetailLoader
   }]

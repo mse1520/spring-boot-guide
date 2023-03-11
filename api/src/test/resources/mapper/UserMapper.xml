@@ -20,7 +20,8 @@
       u.password as password,
       a.role as role,
       m.path as path,
-      m.text as text 
+      m.text as text,
+      m.img_path as img
     from user_t u
     join authority a on a.authority_id = u.authority_id 
     join authority_menu am on a.authority_id=am.authority_id 

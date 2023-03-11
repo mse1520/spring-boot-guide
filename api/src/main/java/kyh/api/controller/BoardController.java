@@ -49,7 +49,7 @@ public class BoardController {
   }
 
   /** 게시글 단건 조회 api */
-  @GetMapping(value = "/{boardId}/info")
+  @GetMapping(value = "/info/{boardId}")
   public ResponseEntity<DataBox<BoardInfo>> info(@PathVariable Long boardId) {
     DataBox<BoardInfo> result = boardService.info(boardId);
 
@@ -59,7 +59,7 @@ public class BoardController {
   }
 
   /** 게시글 삭제 api */
-  @DeleteMapping(value = "/{boardId}/info")
+  @DeleteMapping(value = "/info/{boardId}")
   public ResponseEntity<DataBox<BoardInfo>> delete(@PathVariable Long boardId,
       @AuthenticationPrincipal UserInfo userInfo) {
     DataBox<BoardInfo> result = boardService.delete(boardId, userInfo.getName());

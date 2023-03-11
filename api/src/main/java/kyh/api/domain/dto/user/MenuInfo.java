@@ -12,10 +12,12 @@ public class MenuInfo {
 
   private String path;
   private String text;
+  private String img;
 
   public MenuInfo(AuthorityMenu authorityMenu) {
     path = authorityMenu.getMenu().getPath();
     text = authorityMenu.getMenu().getText();
+    img = authorityMenu.getMenu().getImgPath();
   }
 
 }
