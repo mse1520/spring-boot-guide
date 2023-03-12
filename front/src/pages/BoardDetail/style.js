@@ -47,6 +47,10 @@ margin-bottom: .5rem;
   background-color: transparent;
 }`;
 
+export const StyledTextarea = styled(Textarea)`
+height: 5rem;
+`;
+
 export const Footer = styled.footer`
 display: flex;
 flex-direction: column;
@@ -57,8 +61,4 @@ bottom: -1rem;
 margin: -1rem;
 padding: 1rem;
 background-color: rgb(30, 30, 30);
-`;
-
-export const StyledTextarea = styled(Textarea)`
-height: 5rem;
 `;
