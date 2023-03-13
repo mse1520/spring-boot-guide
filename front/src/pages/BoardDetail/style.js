@@ -6,6 +6,17 @@ export const Header = styled.header`
 border-bottom: .1rem solid dimgray;
 `;
 
+export const TitleWrap = styled.div`
+display: flex;
+justify-content: space-between;
+align-items: center;
+`;
+
+export const TitleButtonGroup = styled.div`
+display: flex;
+gap: .5rem;
+`;
+
 export const BoardInfo = styled.div`
 margin: 1rem 0;
 font-size: .9rem;

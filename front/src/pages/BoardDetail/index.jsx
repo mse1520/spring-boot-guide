@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useLoaderData, useParams } from 'react-router-dom';
 import Comment from '../../components/BoardDetail/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
 import { getApi, postApi } from '../../utils/Api';
-import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer } from './style';
+import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup } from './style';
 
 export const loader = ({ request }) => {
   const url = new URL(request.url);
@@ -27,25 +27,17 @@ const BoardDetail = () => {
   const textareaRef = useRef();
   const loaderRef = useRef();
 
-  const loadComments = useCallback((boardId, page, comments) =>
+  useIntersection(loaderRef, ([entry]) => {
+    if (!entry.isIntersecting) return;
+    if (isLast) return;
+
     getApi(`/api/comment/info/${boardId}`, { page })
       .then(v => (setTotal(v.total), v))
       .then(v => (setIsLast(v.isLast), v))
       .then(v => (setPage(page + 1), v.body))
       .then(v => setComments([...comments, ...v]))
-      .catch(console.error),
-    []);
-
-  useEffect(() => {
-    loadComments(boardId, page, comments);
-  }, []);
-
-  useIntersection(loaderRef, ([entry]) => {
-    if (!entry.isIntersecting) return;
-    if (isLast) return;
-
-    loadComments(boardId, page, comments);
-  }, [loaderRef.current, comments, page]);
+      .catch(console.error)
+  }, [comments, page]);
 
   const onClickDeleteComment = useCallback(commentId =>
     deleteApi(`/api/comment/info/${commentId}`)
@@ -91,13 +83,13 @@ const BoardDetail = () => {
 
   return <>
     <Header>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <TitleWrap>
         <h2>{board.title}</h2>
-        <div style={{ display: 'flex', gap: '.5rem' }}>
+        <TitleButtonGroup>
           <DefaultButton>수정</DefaultButton>
           <DefaultButton>삭제</DefaultButton>
-        </div>
-      </div>
+        </TitleButtonGroup>
+      </TitleWrap>
       <BoardInfo>
         <div>
           <Username>{board.username}</Username>

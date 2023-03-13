@@ -27,9 +27,9 @@ public class BoardService {
 
   /** 게시글(Board) 작성 */
   @Transactional
-  public DataBox<BoardInfo> write(BoardWriteForm boardWriteForm, Long userId) {
+  public DataBox<BoardInfo> write(BoardWriteForm form, Long userId) {
     User user = userRepository.findById(userId).orElseThrow();
-    Board board = new Board(boardWriteForm.getTitle(), boardWriteForm.getContent(), user);
+    Board board = new Board(form.getTitle(), form.getContent(), user);
     Board savedBoard = boardRepository.save(board);
     BoardInfo boardInfo = BoardInfo.generate(savedBoard);
 
