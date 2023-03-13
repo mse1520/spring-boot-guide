@@ -1,29 +1,29 @@
-import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLoaderData, useParams } from 'react-router-dom';
-import CommentList from '../../components/BoardDetail/CommentList';
-import Loading from '../../components/common/Loading';
+import Comment from '../../components/BoardDetail/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
 import { getApi, postApi } from '../../utils/Api';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer } from './style';
 
-export const loader = () => getApi('/api/user/info');
+export const loader = ({ request }) => {
+  const url = new URL(request.url);
+  const pathnames = url.pathname.split('/');
+  const boardId = pathnames[pathnames.length - 1];
 
-export const BoardDetailContext = createContext({
-  comments: { state: [], setState: () => { } },
-  total: { state: [], setState: () => { } },
-  username: '',
-});
+  return Promise.all([
+    getApi('/api/user/info'),
+    getApi(`/api/board/info/${boardId}`)
+  ]).then(([{ user, menuList }, { body }]) => ({ user, menuList, board: body }))
+};
 
 const BoardDetail = () => {
-  const { user } = useLoaderData();
+  const { user, board } = useLoaderData();
   const { boardId } = useParams();
-  const [board, setBoard] = useState();
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(0);
   const [isLast, setIsLast] = useState(false);
   const [total, setTotal] = useState(0);
-  const [error, setError] = useState();
   const textareaRef = useRef();
   const loaderRef = useRef();
 
@@ -36,6 +36,10 @@ const BoardDetail = () => {
       .catch(console.error),
     []);
 
+  useEffect(() => {
+    loadComments(boardId, page, comments);
+  }, []);
+
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
     if (isLast) return;
@@ -43,17 +47,35 @@ const BoardDetail = () => {
     loadComments(boardId, page, comments);
   }, [loaderRef.current, comments, page]);
 
-  useEffect(() => {
-    getApi(`/api/board/info/${boardId}`)
-      .then(v => setBoard(v.body))
-      .catch(err => {
-        console.error(err);
-        setError(err);
-        setBoard(null)
-      });
+  const onClickDeleteComment = useCallback(commentId =>
+    deleteApi(`/api/comment/info/${commentId}`)
+      .then(() => comments.filter(v => v.commentId !== commentId))
+      .then(setComments)
+      .then(() => setTotal(total - 1))
+      .catch(err => err.message ? alert(err.message) : console.error(err)),
+    [comments]);
 
-    loadComments(boardId, page, comments);
-  }, []);
+  const onClickModifyComment = useCallback(commentId => {
+    const newComments = comments.map(comment => ({
+      ...comment,
+      mode: comment.commentId === commentId ? CommentMode.MODIFYING : CommentMode.DONE
+    }));
+
+    setComments(newComments);
+  }, [comments]);
+
+  const onClickModifyCommentConfirm = useCallback((result, commentId, content) => {
+    if (!result) {
+      const findComment = comments.find(comment => comment.commentId === commentId);
+      findComment.mode = CommentMode.DONE;
+      return setComments([...comments]);
+    }
+
+    putApi(`/api/comment/info/${commentId}`, { content })
+      .then(v => v.body)
+      .then(newComment => setComments(comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)))
+      .catch(err => err.message ? alert(err.message) : console.error(err));
+  }, [comments]);
 
   const onClickCreateComment = useCallback(() =>
     postApi('/api/comment/write', {
@@ -67,42 +89,40 @@ const BoardDetail = () => {
       .catch(err => err.message ? alert(err.message) : console.error(err)),
     [comments]);
 
-  if (board === undefined) return <Loading />;
-  if (!board) return <div>{error.message}</div>;
-
   return <>
-    <BoardDetailContext.Provider value={{
-      comments: { state: comments, setState: setComments },
-      total: { state: total, setState: setTotal },
-      username: user ? user.name : board.username,
-    }}>
-      <Header>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2>{board.title}</h2>
-          <div style={{ display: 'flex', gap: '.5rem' }}>
-            <DefaultButton>수정</DefaultButton>
-            <DefaultButton>삭제</DefaultButton>
-          </div>
+    <Header>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>{board.title}</h2>
+        <div style={{ display: 'flex', gap: '.5rem' }}>
+          <DefaultButton>수정</DefaultButton>
+          <DefaultButton>삭제</DefaultButton>
         </div>
-        <BoardInfo>
-          <div>
-            <Username>{board.username}</Username>
-            <CreatedDate>{board.createdDate}</CreatedDate>
-          </div>
-          <div>댓글수: {total}</div>
-        </BoardInfo>
-      </Header>
-      <section>
-        <Content>{board.content}</Content>
-        <Hr />
-        <CommentList />
-        <div ref={loaderRef} />
-      </section>
-      <Footer>
-        <StyledTextarea ref={textareaRef} placeholder='댓글을 남겨보세요.' />
-        <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
-      </Footer>
-    </BoardDetailContext.Provider>
+      </div>
+      <BoardInfo>
+        <div>
+          <Username>{board.username}</Username>
+          <CreatedDate>{board.createdDate}</CreatedDate>
+        </div>
+        <div>댓글수: {total}</div>
+      </BoardInfo>
+    </Header>
+    <section>
+      <Content>{board.content}</Content>
+      <Hr />
+      {comments.map((comment, i) => <Comment
+        key={i}
+        username={user ? user.name : board.username}
+        comment={comment}
+        onClickDelete={onClickDeleteComment}
+        onClickModify={onClickModifyComment}
+        onClickModifyConfirm={onClickModifyCommentConfirm}
+      />)}
+      <div ref={loaderRef} />
+    </section>
+    <Footer>
+      <StyledTextarea ref={textareaRef} placeholder='댓글을 남겨보세요.' />
+      <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
+    </Footer>
   </>;
 };
 

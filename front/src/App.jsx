@@ -9,6 +9,7 @@ import { action as signInAction, loader as signInLoader } from './pages/SignIn';
 import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
 import { loader as boardDetailLoader } from './pages/BoardDetail';
 import { loader as boardWriteLoader } from './pages/BoardWrite';
+import Error from './pages/Error';
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
@@ -50,6 +51,7 @@ const router = createBrowserRouter([{
   }, {
     path: '/board/info/:boardId',
     element: <BoardDetail />,
+    errorElement: <Error />,
     loader: boardDetailLoader
   }]
 }, {

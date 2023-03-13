@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { CommentContext } from '.';
 import CommentMode from '../../../types/BoardDetail/CommentMode';
-import ModifyControl from './ModifyControl';
+import ModifyForm from './ModifyForm';
 import {
   ButtonWrap, Card as BaseCard, Content, DateTime, StyledDeleteImg, StyledModifyImg, Username as BaseUsername, CardWrap as BaseCardWrap
 } from './style';
@@ -25,7 +25,7 @@ const RightCard = () => {
     {comment.mode === CommentMode.MODIFYING
       ? <CardWrap>
         <Card>
-          <ModifyControl />
+          <ModifyForm />
         </Card>
       </CardWrap>
       : <CardWrap>
