@@ -13,6 +13,12 @@ border: none;
 font-size: 1rem;
 &:hover {
   background-color: dimgray;
+}
+&:disabled {
+  opacity: .5;
+}
+&:disabled:hover {
+  background-color: darkgray;
 }`;
 
 export const DefaultLink = styled(Link)`

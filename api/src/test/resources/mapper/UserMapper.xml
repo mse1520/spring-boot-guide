@@ -24,7 +24,7 @@
       m.img_path as img
     from user_t u
     join authority a on a.authority_id = u.authority_id 
-    join authority_menu am on a.authority_id=am.authority_id 
+    join authority_menu am on a.authority_id = am.authority_id 
     join menu m on m.menu_id=am.menu_id 
     where u.name = #{name}
     order by m.seq asc

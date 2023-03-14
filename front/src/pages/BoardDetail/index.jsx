@@ -6,16 +6,11 @@ import { DefaultButton } from '../../styles/button';
 import { getApi, postApi } from '../../utils/Api';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup } from './style';
 
-export const loader = ({ request }) => {
-  const url = new URL(request.url);
-  const pathnames = url.pathname.split('/');
-  const boardId = pathnames[pathnames.length - 1];
-
-  return Promise.all([
+export const loader = ({ params }) => Promise
+  .all([
     getApi('/api/user/info'),
-    getApi(`/api/board/info/${boardId}`)
-  ]).then(([{ user, menuList }, { body }]) => ({ user, menuList, board: body }))
-};
+    getApi(`/api/board/info/${params.boardId}`)])
+  .then(([{ user, menuList }, { body }]) => ({ user, menuList, board: body }));
 
 const BoardDetail = () => {
   const { user, board } = useLoaderData();

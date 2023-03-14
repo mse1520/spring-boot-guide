@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { redirect } from 'react-router-dom';
+import { redirect, useFetcher } from 'react-router-dom';
 import styled from 'styled-components';
 import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
@@ -22,23 +22,31 @@ const AUTH_LIST = ['SUPER', 'ADMIN'];
 
 export const loader = () => getApi('/api/user/info').then(({ user }) => AUTH_LIST.includes(user?.role) ? { ok: true } : redirect('/'));
 
+export const action = ({ request }) => request.formData()
+  .then(form => Object.fromEntries(form))
+  .then(data => postApi('/api/board/write', data))
+  .then(data => alert(data.message))
+  .catch(err => err?.message ? alert(err.message) : console.error(err))
+  .then(() => ({ ok: true }));
+
+
 const BoardWrite = () => {
+  const fetcher = useFetcher();
   const titleRef = useRef();
   const contentRef = useRef();
 
-  const onClickCreate = useCallback(() => {
-    postApi('/api/board/write', {
+  const onClick = useCallback(e => {
+    const data = {
       title: titleRef.current.value,
       content: contentRef.current.innerText
-    })
-      .then(v => alert(v.message))
-      .catch(err => err?.message ? alert(err.message) : console.error(err));
+    };
+    fetcher.submit(data, { method: 'post', action: '/board/write' });
   }, []);
 
   return <>
     <Header>
       <h2>게시글 작성</h2>
-      <DefaultButton onClick={onClickCreate}>등록</DefaultButton>
+      <DefaultButton onClick={onClick} disabled={fetcher.state !== 'idle'}>등록</DefaultButton>
     </Header>
     <DefaultInput ref={titleRef} placeholder='제목을 입력하세요.' />
     <StyledTextarea ref={contentRef} placeholder='내용을 입력하세요.' />
