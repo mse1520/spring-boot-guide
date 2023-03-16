@@ -1,11 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { deleteApi, getApi } from '../../utils/Api';
-import { useNavigate } from 'react-router-dom';
-import { Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section, StyledButton, StyledCard, StyledInput, Title, Username } from './style';
+import {
+  Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section,
+  StyledButton, StyledCard, StyledInput, Title, Username, StyledLink
+} from './style';
 import useIntersection from '../../hooks/useIntersection';
 
 const BoardInfo = () => {
-  const navigate = useNavigate();
   const [boards, setBoards] = useState([]);
   const [page, setPage] = useState(0);
   const [isLast, setIsLast] = useState(false);
@@ -22,8 +23,6 @@ const BoardInfo = () => {
       .catch(console.error);
   }, [boards, page, isLast]);
 
-  const onClickCard = useCallback(boardId => () => navigate(`/board/info/${boardId}`), []);
-
   const onClickDelete = useCallback(boardId => e => {
     e.stopPropagation();
 
@@ -31,7 +30,7 @@ const BoardInfo = () => {
 
     deleteApi(`/api/board/info/${boardId}`)
       .then(v => alert(v.message))
-      .then(() => boards.filter(board => board.boardId !== boardId))
+      .then(() => boards.filter(board => board.id !== boardId))
       .then(setBoards)
       .catch(err => err.message ? alert(err.message) : console.error(err));
   }, [boards]);
@@ -46,15 +45,17 @@ const BoardInfo = () => {
     </Header>
     <Section>
       {boards.map((board, i) =>
-        <StyledCard key={i} onClick={onClickCard(board.boardId)}>
-          <StyledDeleteImg onClick={onClickDelete(board.boardId)} />
-          <Title>{board.title}</Title>
-          <ContentWrap>
-            <Content>{board.content}</Content>
-            <Username>{board.username}</Username>
-            <div>{board.createdDate}</div>
-          </ContentWrap>
-        </StyledCard>
+        <StyledLink key={i} to={`/board/info/${board.id}`}>
+          <StyledCard>
+            <StyledDeleteImg onClick={onClickDelete(board.id)} />
+            <Title>{board.title}</Title>
+            <ContentWrap>
+              <Content>{board.content}</Content>
+              <Username>{board.username}</Username>
+              <div>{board.createdDate}</div>
+            </ContentWrap>
+          </StyledCard>
+        </StyledLink>
       )}
       <FakeCard />
       <FakeCard />

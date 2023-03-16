@@ -31,16 +31,16 @@ const BoardDetail = () => {
       .then(v => (setIsLast(v.isLast), v))
       .then(v => (setPage(page + 1), v.body))
       .then(v => setComments([...comments, ...v]))
-      .catch(console.error)
+      .catch(console.error);
   }, [comments, page]);
 
-  const onClickDeleteComment = useCallback(commentId =>
+  const onClickDeleteComment = useCallback(commentId => {
     deleteApi(`/api/comment/info/${commentId}`)
       .then(() => comments.filter(v => v.commentId !== commentId))
       .then(setComments)
       .then(() => setTotal(total - 1))
-      .catch(err => err.message ? alert(err.message) : console.error(err)),
-    [comments]);
+      .catch(err => err.message ? alert(err.message) : console.error(err));
+  }, [comments]);
 
   const onClickModifyComment = useCallback(commentId => {
     const newComments = comments.map(comment => ({
@@ -64,7 +64,7 @@ const BoardDetail = () => {
       .catch(err => err.message ? alert(err.message) : console.error(err));
   }, [comments]);
 
-  const onClickCreateComment = useCallback(() =>
+  const onClickCreateComment = useCallback(() => {
     postApi('/api/comment/write', {
       boardId,
       content: textareaRef.current.innerText
@@ -73,8 +73,8 @@ const BoardDetail = () => {
       .then(v => setComments([...comments, v]))
       .then(() => setTotal(total + 1))
       .then(() => textareaRef.current.innerText = '')
-      .catch(err => err.message ? alert(err.message) : console.error(err)),
-    [comments]);
+      .catch(err => err.message ? alert(err.message) : console.error(err));
+  }, [comments]);
 
   return <>
     <Header>

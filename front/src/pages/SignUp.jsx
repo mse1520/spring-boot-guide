@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { ApiType, postApi } from '../utils/Api';
+import { postApi } from '../utils/Api';
 
 const Aticle = styled.article`
 width: 100%;

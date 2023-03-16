@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import DeleteImg from '../../components/common/DeleteImg';
 import { Card } from '../../styles/box';
@@ -31,6 +32,11 @@ export const Section = styled.section`
 display: flex;
 flex-wrap: wrap;
 gap: 1rem;
+`;
+
+export const StyledLink = styled(Link)`
+color: inherit;
+text-decoration-line: none;
 `;
 
 export const StyledCard = styled(Card)`

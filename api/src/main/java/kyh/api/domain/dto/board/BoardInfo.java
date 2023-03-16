@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardInfo {
 
-  private Long boardId;
+  private Long id;
   private String title;
   private String content;
   private String username;
@@ -21,7 +21,7 @@ public class BoardInfo {
 
   public static BoardInfo generate(Board board) {
     BoardInfo boardInfo = new BoardInfo();
-    boardInfo.boardId = board.getId();
+    boardInfo.id = board.getId();
     boardInfo.title = board.getTitle();
     boardInfo.content = board.getContent();
     boardInfo.username = board.getUser().getName();
