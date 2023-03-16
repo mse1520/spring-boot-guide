@@ -43,6 +43,8 @@ font-weight: bolder;
 `;
 
 export const Content = styled.div`
+overflow-wrap: break-word;
+word-break: break-all;
 white-space: pre-wrap;
 margin: .5rem 0;
 `;

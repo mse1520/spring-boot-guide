@@ -29,8 +29,8 @@ const ModifyForm = () => {
     <Wrap>
       <StyledTextarea ref={cotentRef}>{comment.content}</StyledTextarea>
       <ButtonWrap>
-        <DefaultButton onClick={onClick(false, comment.commentId)}>취소</DefaultButton>
-        <DefaultButton onClick={onClick(true, comment.commentId)}>등록</DefaultButton>
+        <DefaultButton onClick={onClick(false, comment.id)}>취소</DefaultButton>
+        <DefaultButton onClick={onClick(true, comment.id)}>등록</DefaultButton>
       </ButtonWrap>
     </Wrap>
   </>;

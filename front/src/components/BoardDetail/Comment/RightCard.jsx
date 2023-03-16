@@ -30,8 +30,8 @@ const RightCard = () => {
       </CardWrap>
       : <CardWrap>
         <ButtonWrap>
-          <StyledModifyImg onClick={onClickModify(comment.commentId)} />
-          <StyledDeleteImg onClick={onClickDelete(comment.commentId)} />
+          <StyledModifyImg onClick={onClickModify(comment.id)} />
+          <StyledDeleteImg onClick={onClickDelete(comment.id)} />
         </ButtonWrap>
         <Card>
           <Username>{comment.username}</Username>

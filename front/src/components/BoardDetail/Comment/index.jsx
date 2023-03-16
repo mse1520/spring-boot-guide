@@ -9,7 +9,7 @@ margin: 1rem 0;
 
 export const CommentContext = createContext({
   comment: {
-    commentId: null,
+    id: null,
     username: null,
     content: null,
     createdDate: null,

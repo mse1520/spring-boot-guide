@@ -21,8 +21,8 @@ const LeftCard = () => {
           <DateTime>{comment.updatedDate}</DateTime>
         </Card>
         <ButtonWrap>
-          <StyledModifyImg onClick={onClickModify(comment.commentId)} />
-          <StyledDeleteImg onClick={onClickDelete(comment.commentId)} />
+          <StyledModifyImg onClick={onClickModify(comment.id)} />
+          <StyledDeleteImg onClick={onClickDelete(comment.id)} />
         </ButtonWrap>
       </CardWrap>
     }

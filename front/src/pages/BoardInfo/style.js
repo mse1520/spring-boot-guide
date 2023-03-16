@@ -37,12 +37,13 @@ gap: 1rem;
 export const StyledLink = styled(Link)`
 color: inherit;
 text-decoration-line: none;
+display: block;
+flex: 1;
 `;
 
 export const StyledCard = styled(Card)`
 box-sizing: border-box;
 min-width: 19rem;
-flex: 1;
 position: relative;
 cursor: pointer;
 &:hover {

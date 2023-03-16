@@ -1,9 +1,11 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useLoaderData, useParams } from 'react-router-dom';
+import useSWRInfinite from 'swr/infinite'
 import Comment from '../../components/BoardDetail/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
-import { getApi, postApi } from '../../utils/Api';
+import { getApi } from '../../utils/Api';
+import { cancelModifying, commentFetcher, createComment, deleteComment, enableModifying, getKey, modifyComment } from './fetcher';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup } from './style';
 
 export const loader = ({ params }) => Promise
@@ -15,66 +17,40 @@ export const loader = ({ params }) => Promise
 const BoardDetail = () => {
   const { user, board } = useLoaderData();
   const { boardId } = useParams();
-  const [comments, setComments] = useState([]);
-  const [page, setPage] = useState(0);
-  const [isLast, setIsLast] = useState(false);
-  const [total, setTotal] = useState(0);
+  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey(boardId), commentFetcher, { parallel: true });
   const textareaRef = useRef();
   const loaderRef = useRef();
 
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
-    if (isLast) return;
-
-    getApi(`/api/comment/info/${boardId}`, { page })
-      .then(v => (setTotal(v.total), v))
-      .then(v => (setIsLast(v.isLast), v))
-      .then(v => (setPage(page + 1), v.body))
-      .then(v => setComments([...comments, ...v]))
-      .catch(console.error);
-  }, [comments, page]);
+    if (isLoading) return;
+    setSize(size => size + 1);
+  }, [isLoading]);
 
   const onClickDeleteComment = useCallback(commentId => {
-    deleteApi(`/api/comment/info/${commentId}`)
-      .then(() => comments.filter(v => v.commentId !== commentId))
-      .then(setComments)
-      .then(() => setTotal(total - 1))
+    deleteComment(data, commentId)
+      .then(data => mutate(data))
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [comments]);
+  }, [data]);
 
   const onClickModifyComment = useCallback(commentId => {
-    const newComments = comments.map(comment => ({
-      ...comment,
-      mode: comment.commentId === commentId ? CommentMode.MODIFYING : CommentMode.DONE
-    }));
-
-    setComments(newComments);
-  }, [comments]);
+    mutate(enableModifying(data, commentId));
+  }, [data]);
 
   const onClickModifyCommentConfirm = useCallback((result, commentId, content) => {
-    if (!result) {
-      const findComment = comments.find(comment => comment.commentId === commentId);
-      findComment.mode = CommentMode.DONE;
-      return setComments([...comments]);
-    }
+    if (!result) return mutate(cancelModifying(data));
 
-    putApi(`/api/comment/info/${commentId}`, { content })
-      .then(v => v.body)
-      .then(newComment => setComments(comments.map(comment => comment.commentId === newComment.commentId ? newComment : comment)))
+    modifyComment(data, commentId, content)
+      .then(data => mutate(data))
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [comments]);
+  }, [data]);
 
   const onClickCreateComment = useCallback(() => {
-    postApi('/api/comment/write', {
-      boardId,
-      content: textareaRef.current.innerText
-    })
-      .then(v => v.body)
-      .then(v => setComments([...comments, v]))
-      .then(() => setTotal(total + 1))
+    createComment(data, boardId, textareaRef.current.innerText)
+      .then(data => mutate(data))
       .then(() => textareaRef.current.innerText = '')
       .catch(err => err.message ? alert(err.message) : console.error(err));
-  }, [comments]);
+  }, [data]);
 
   return <>
     <Header>
@@ -90,20 +66,20 @@ const BoardDetail = () => {
           <Username>{board.username}</Username>
           <CreatedDate>{board.createdDate}</CreatedDate>
         </div>
-        <div>댓글수: {total}</div>
+        <div>댓글수: {data?.[data.length - 1].total}</div>
       </BoardInfo>
     </Header>
     <section>
       <Content>{board.content}</Content>
       <Hr />
-      {comments.map((comment, i) => <Comment
+      {data?.map(({ body }) => body.map((comment, i) => <Comment
         key={i}
         username={user ? user.name : board.username}
         comment={comment}
         onClickDelete={onClickDeleteComment}
         onClickModify={onClickModifyComment}
         onClickModifyConfirm={onClickModifyCommentConfirm}
-      />)}
+      />))}
       <div ref={loaderRef} />
     </section>
     <Footer>
