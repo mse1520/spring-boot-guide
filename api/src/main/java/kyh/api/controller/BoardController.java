@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,6 +68,12 @@ public class BoardController {
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)
         : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+  }
+
+  /** 게시글 수정 api */
+  @PutMapping(value = "/info/{boardId}")
+  public String update() {
+    return "{ \"test\": 123 }";
   }
 
 }

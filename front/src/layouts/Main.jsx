@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useMemo, useState } from 'react';
+import React, { Suspense, useCallback, useState } from 'react';
 import { Outlet, useFetcher, useLoaderData } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/Loading';
@@ -55,15 +55,15 @@ const Main = () => {
 
   const onClickMenu = useCallback(() => setMenuActive(!menuActive), [menuActive]);
 
-  const signedInfo = useMemo(() => user
-    ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
-    : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />, [user]);
-
   return <>
     <Aticle>
       <Header>
         <MenuImg onClick={onClickMenu} />
-        <ButtonGroup>{signedInfo}</ButtonGroup>
+        <ButtonGroup>
+          {user
+            ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
+            : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />}
+        </ButtonGroup>
       </Header>
       <Section>
         <SideMenu links={menuList} active={menuActive} />

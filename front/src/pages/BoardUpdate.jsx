@@ -22,14 +22,7 @@ const AUTH_LIST = ['SUPER', 'ADMIN'];
 
 export const loader = () => getApi('/api/user/info').then(({ user }) => AUTH_LIST.includes(user?.role) ? { ok: true } : redirect('/'));
 
-export const action = ({ request }) => request.formData()
-  .then(form => Object.fromEntries(form))
-  .then(data => postApi('/api/board/write', data))
-  .then(data => alert(data.message))
-  .catch(err => err?.message ? alert(err.message) : console.error(err))
-  .then(() => ({ ok: true }));
-
-const BoardWrite = () => {
+const BoardUpdate = () => {
   const fetcher = useFetcher();
   const titleRef = useRef();
   const contentRef = useRef();
@@ -39,12 +32,11 @@ const BoardWrite = () => {
       title: titleRef.current.value,
       content: contentRef.current.innerText
     };
-    fetcher.submit(data, { method: 'post', action: '/board/write' });
   }, []);
 
   return <>
     <Header>
-      <h2>게시글 작성</h2>
+      <h2>게시글 수정</h2>
       <DefaultButton onClick={onClick} disabled={fetcher.state !== 'idle'}>등록</DefaultButton>
     </Header>
     <DefaultInput ref={titleRef} placeholder='제목을 입력하세요.' />
@@ -52,4 +44,4 @@ const BoardWrite = () => {
   </>;
 };
 
-export default BoardWrite;
+export default BoardUpdate;

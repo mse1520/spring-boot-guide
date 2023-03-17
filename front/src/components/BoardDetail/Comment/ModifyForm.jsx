@@ -1,8 +1,11 @@
 import React, { useCallback, useContext, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import useSWRInfinite from 'swr/infinite'
 import styled from 'styled-components';
 import { CommentContext } from '.';
 import { DefaultButton } from '../../../styles/button';
 import Textarea from '../../common/Textarea';
+import { cancelModifying, commentFetcher, getKey, modifyComment } from '../../../pages/BoardDetail/fetcher';
 
 const Wrap = styled.div`
 display: flex;
@@ -20,17 +23,22 @@ justify-content: end;
 `;
 
 const ModifyForm = () => {
-  const { comment, onClickModifyConfirm } = useContext(CommentContext);
+  const { boardId } = useParams();
+  const { data, mutate } = useSWRInfinite(getKey(boardId), commentFetcher, { revalidateOnMount: false });
+  const { comment } = useContext(CommentContext);
   const cotentRef = useRef();
 
-  const onClick = useCallback((result, commentId) => () => onClickModifyConfirm(result, commentId, cotentRef.current.innerText), []);
+  const onClickCancel = useCallback(() => cancelModifying(mutate, { data }), [data]);
+
+  const onClickSave = useCallback(commentId => () =>
+    modifyComment(mutate, { data, commentId, content: cotentRef.current.innerText }), [data]);
 
   return <>
     <Wrap>
       <StyledTextarea ref={cotentRef}>{comment.content}</StyledTextarea>
       <ButtonWrap>
-        <DefaultButton onClick={onClick(false, comment.id)}>취소</DefaultButton>
-        <DefaultButton onClick={onClick(true, comment.id)}>등록</DefaultButton>
+        <DefaultButton onClick={onClickCancel}>취소</DefaultButton>
+        <DefaultButton onClick={onClickSave(comment.id)}>등록</DefaultButton>
       </ButtonWrap>
     </Wrap>
   </>;

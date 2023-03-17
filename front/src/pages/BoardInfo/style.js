@@ -35,8 +35,6 @@ gap: 1rem;
 `;
 
 export const StyledLink = styled(Link)`
-color: inherit;
-text-decoration-line: none;
 display: block;
 flex: 1;
 `;

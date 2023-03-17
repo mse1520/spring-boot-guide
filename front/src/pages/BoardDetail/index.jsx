@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { useLoaderData, useParams } from 'react-router-dom';
+import { Link, useLoaderData, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
 import Comment from '../../components/BoardDetail/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
 import { getApi } from '../../utils/api';
-import { cancelModifying, commentFetcher, createComment, deleteComment, enableModifying, getKey, modifyComment } from './fetcher';
+import { commentFetcher, createComment, getKey } from './fetcher';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup } from './style';
 
 export const loader = ({ params }) => Promise
@@ -30,35 +30,9 @@ const BoardDetail = () => {
     setSize(size => size + 1);
   }, [isLoading, isLast]);
 
-  const onClickDeleteComment = useCallback(commentId => {
-    const res = deleteComment(data, commentId);
-    mutate(res.data, { revalidate: false });
-    res.api
-      .catch(err => err.message ? alert(err.message) : console.error(err))
-      .then(() => mutate());
-  }, [data]);
-
-  const onClickModifyComment = useCallback(commentId => {
-    mutate(enableModifying(data, commentId), { revalidate: false });
-  }, [data]);
-
-  const onClickModifyCommentConfirm = useCallback((result, commentId, content) => {
-    if (!result) return mutate(cancelModifying(data), { revalidate: false });
-
-    const res = modifyComment(data, commentId, content);
-    mutate(res.data, { revalidate: false });
-    res.api
-      .catch(err => err.message ? alert(err.message) : console.error(err))
-      .then(() => mutate());
-  }, [data]);
-
   const onClickCreateComment = useCallback(() => {
-    const res = createComment(data, boardId, textareaRef.current.innerText, user.name);
-    mutate(res.data, { revalidate: false });
+    createComment(mutate, { data, boardId, content: textareaRef.current.innerText, username: user.name });
     textareaRef.current.innerText = '';
-    res.api
-      .catch(err => err.message ? alert(err.message) : console.error(err))
-      .then(() => mutate());
   }, [data]);
 
   return <>
@@ -66,7 +40,7 @@ const BoardDetail = () => {
       <TitleWrap>
         <h2>{board.title}</h2>
         <TitleButtonGroup>
-          <DefaultButton>수정</DefaultButton>
+          <Link to={`/board/info/${boardId}/update`}><DefaultButton>수정</DefaultButton></Link>
           <DefaultButton>삭제</DefaultButton>
         </TitleButtonGroup>
       </TitleWrap>
@@ -81,14 +55,8 @@ const BoardDetail = () => {
     <section>
       <Content>{board.content}</Content>
       <Hr />
-      {data?.map(({ body }) => body.map((comment, i) => <Comment
-        key={i}
-        username={user ? user.name : board.username}
-        comment={comment}
-        onClickDelete={onClickDeleteComment}
-        onClickModify={onClickModifyComment}
-        onClickModifyConfirm={onClickModifyCommentConfirm}
-      />))}
+      {data?.map(({ body }) => body.map((comment, i) =>
+        <Comment key={i} username={user ? user.name : board.username} comment={comment} />))}
       <div ref={loaderRef} />
     </section>
     <Footer>

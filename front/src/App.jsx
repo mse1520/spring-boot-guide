@@ -9,6 +9,7 @@ import { action as signInAction, loader as signInLoader } from './pages/SignIn';
 import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
 import { loader as boardDetailLoader } from './pages/BoardDetail';
 import { action as boardWriteAction, loader as boardWriteLoader } from './pages/BoardWrite';
+import { loader as boardUpdateLoader } from './pages/BoardUpdate';
 const Error = lazy(() => import(/* webpackChunkName: 'Error' */ './pages/Error'));
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
@@ -16,6 +17,7 @@ const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignU
 const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
 const BoardInfo = lazy(() => import(/* webpackChunkName: 'BoardInfo' */ './pages/BoardInfo'));
 const BoardDetail = lazy(() => import(/* webpackChunkName: 'BoardDetail' */ './pages/BoardDetail'));
+const BoardUpdate = lazy(() => import(/* webpackChunkName: 'BoardUpdate' */ './pages/BoardUpdate'));
 
 const GlobalStyle = createGlobalStyle`
 html, body, #root {
@@ -31,6 +33,10 @@ input {
 }
 button {
   cursor: pointer;
+}
+a {
+  color: inherit;
+  text-decoration-line: none;
 }`;
 
 const router = createBrowserRouter([{
@@ -54,6 +60,10 @@ const router = createBrowserRouter([{
     element: <BoardDetail />,
     errorElement: <Error />,
     loader: boardDetailLoader
+  }, {
+    path: '/board/info/:boardId/update',
+    element: <BoardUpdate />,
+    loader: boardUpdateLoader
   }]
 }, {
   path: '/sign-up',

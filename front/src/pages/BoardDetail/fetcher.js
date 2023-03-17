@@ -16,31 +16,38 @@ const getNow = () => {
 export const getKey = boardId => (page, prevData) => prevData?.isLast ? null : [`/api/comment/info/${boardId}`, page];
 export const commentFetcher = ([url, page]) => getApi(url, { page });
 
-export const deleteComment = (data, commentId) => {
-  const api = deleteApi(`/api/comment/info/${commentId}`);
+export const deleteComment = (mutate, { data, commentId }) => {
   const _data = data.map(item => {
     const body = item.body.filter(comment => comment.id !== commentId);
     return { ...item, body };
   });
 
-  return { api, data: _data };
+  mutate(_data, { revalidate: false });
+  deleteApi(`/api/comment/info/${commentId}`)
+    .catch(err => err.message ? alert(err.message) : console.error(err))
+    .then(() => mutate());
+};
+export const enableModifying = (mutate, { data, commentId }) => {
+  const _data = data.map(item => {
+    const body = item.body.map(comment => ({
+      ...comment,
+      mode: comment.id === commentId ? CommentMode.MODIFYING : CommentMode.DONE
+    }));
+    return { ...item, body };
+  });
+
+  mutate(_data, { revalidate: false });
+};
+export const cancelModifying = (mutate, { data }) => {
+  const _data = data.map(item => {
+    const body = item.body.map(comment => ({ ...comment, mode: CommentMode.DONE }));
+    return { ...item, body };
+  });
+
+  mutate(_data, { revalidate: false });
 };
 
-export const enableModifying = (data, commentId) => data.map(item => {
-  const body = item.body.map(comment => ({
-    ...comment,
-    mode: comment.id === commentId ? CommentMode.MODIFYING : CommentMode.DONE
-  }));
-  return { ...item, body };
-});
-
-export const cancelModifying = data => data.map(item => {
-  const body = item.body.map(comment => ({ ...comment, mode: CommentMode.DONE }));
-  return { ...item, body };
-});
-
-export const modifyComment = (data, commentId, content) => {
-  const api = putApi(`/api/comment/info/${commentId}`, { content });
+export const modifyComment = (mutate, { data, commentId, content }) => {
   const _data = data.map(item => {
     const body = item.body.map(comment =>
       comment.id === commentId
@@ -50,16 +57,21 @@ export const modifyComment = (data, commentId, content) => {
     return { ...item, body };
   })
 
-  return { api, data: _data };
-}
+  mutate(_data, { revalidate: false });
+  putApi(`/api/comment/info/${commentId}`, { content })
+    .catch(err => err.message ? alert(err.message) : console.error(err))
+    .then(() => mutate());
+};
 
-export const createComment = (data, boardId, content, username) => {
-  const api = postApi('/api/comment/write', { boardId, content });
+export const createComment = (mutate, { data, boardId, content, username }) => {
   const comment = { content, username, updatedDate: getNow() };
   const _data = data.map((item, i) =>
     data.length - 1 === i
       ? { ...item, body: [...item.body, comment] }
       : { ...item });
 
-  return { api, data: _data };
+  mutate(_data, { revalidate: false });
+  postApi('/api/comment/write', { boardId, content })
+    .catch(err => err.message ? alert(err.message) : console.error(err))
+    .then(() => mutate());
 };
