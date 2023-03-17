@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { deleteApi, getApi } from '../../utils/Api';
+import { deleteApi, getApi } from '../../utils/api';
 import {
   Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section,
   StyledButton, StyledCard, StyledInput, Title, Username, StyledLink

@@ -1,10 +1,10 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useLoaderData, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
 import Comment from '../../components/BoardDetail/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
-import { getApi } from '../../utils/Api';
+import { getApi } from '../../utils/api';
 import { cancelModifying, commentFetcher, createComment, deleteComment, enableModifying, getKey, modifyComment } from './fetcher';
 import { Content, CreatedDate, BoardInfo, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup } from './style';
 
@@ -17,39 +17,48 @@ export const loader = ({ params }) => Promise
 const BoardDetail = () => {
   const { user, board } = useLoaderData();
   const { boardId } = useParams();
-  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey(boardId), commentFetcher, { parallel: true });
+  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey(boardId), commentFetcher);
   const textareaRef = useRef();
   const loaderRef = useRef();
 
+  const isLast = useMemo(() => data?.[data.length - 1].isLast, [data]);
+
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
+    if (isLast) return;
     if (isLoading) return;
     setSize(size => size + 1);
-  }, [isLoading]);
+  }, [isLoading, isLast]);
 
   const onClickDeleteComment = useCallback(commentId => {
-    deleteComment(data, commentId)
-      .then(data => mutate(data))
-      .catch(err => err.message ? alert(err.message) : console.error(err));
+    const res = deleteComment(data, commentId);
+    mutate(res.data, { revalidate: false });
+    res.api
+      .catch(err => err.message ? alert(err.message) : console.error(err))
+      .then(() => mutate());
   }, [data]);
 
   const onClickModifyComment = useCallback(commentId => {
-    mutate(enableModifying(data, commentId));
+    mutate(enableModifying(data, commentId), { revalidate: false });
   }, [data]);
 
   const onClickModifyCommentConfirm = useCallback((result, commentId, content) => {
-    if (!result) return mutate(cancelModifying(data));
+    if (!result) return mutate(cancelModifying(data), { revalidate: false });
 
-    modifyComment(data, commentId, content)
-      .then(data => mutate(data))
-      .catch(err => err.message ? alert(err.message) : console.error(err));
+    const res = modifyComment(data, commentId, content);
+    mutate(res.data, { revalidate: false });
+    res.api
+      .catch(err => err.message ? alert(err.message) : console.error(err))
+      .then(() => mutate());
   }, [data]);
 
   const onClickCreateComment = useCallback(() => {
-    createComment(data, boardId, textareaRef.current.innerText)
-      .then(data => mutate(data))
-      .then(() => textareaRef.current.innerText = '')
-      .catch(err => err.message ? alert(err.message) : console.error(err));
+    const res = createComment(data, boardId, textareaRef.current.innerText, user.name);
+    mutate(res.data, { revalidate: false });
+    textareaRef.current.innerText = '';
+    res.api
+      .catch(err => err.message ? alert(err.message) : console.error(err))
+      .then(() => mutate());
   }, [data]);
 
   return <>

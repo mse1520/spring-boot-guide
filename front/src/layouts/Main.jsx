@@ -6,7 +6,7 @@ import MenuImg from '../components/common/MenuImg';
 import SideMenu from '../components/Main/SideMenu';
 import SignedButtonGroup from '../components/Main/SignedButtonGroup';
 import UnsignedButtonGroup from '../components/Main/UnSignedButtonGroup';
-import { getApi, postApi } from '../utils/Api';
+import { getApi, postApi } from '../utils/api';
 
 const Aticle = styled.article`
 width: 100%;
