@@ -2,8 +2,8 @@ package kyh.api.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import kyh.api.domain.dto.comment.CommentInfo;
+import kyh.api.domain.dto.comment.CommentListForm;
 import kyh.api.domain.dto.comment.CommentModifyForm;
 import kyh.api.domain.dto.comment.CommentWriteForm;
 import kyh.api.domain.dto.common.DataBox;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(value = "/comment")
@@ -50,10 +49,12 @@ public class CommentController {
   }
 
   /** 댓글 리스트 api */
-  @GetMapping(value = "/info/{boardId}")
-  public ResponseEntity<DataBox<List<CommentInfo>>> list(HttpServletRequest request, @PathVariable Long boardId,
-      @RequestParam Integer page) {
-    DataBox<List<CommentInfo>> result = commentService.list(boardId, page);
+  @GetMapping(value = "/list")
+  public ResponseEntity<DataBox<List<CommentInfo>>> list(@Validated CommentListForm form, BindingResult bindingResult) {
+    if (bindingResult.hasErrors())
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
+
+    DataBox<List<CommentInfo>> result = commentService.list(form.getBoardId(), form.getPage());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

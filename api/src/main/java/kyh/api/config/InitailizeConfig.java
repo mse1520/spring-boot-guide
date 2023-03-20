@@ -58,7 +58,7 @@ public class InitailizeConfig {
 
       Menu home = newMenuItem(menus, new Menu("/", "홈", "/img/home.png", 1));
       Menu boardWrite = newMenuItem(menus, new Menu("/board/write", "게시글 작성", "/img/modify.png", 2));
-      Menu boardInfo = newMenuItem(menus, new Menu("/board/info", "게시글", "/img/board.png", 3));
+      Menu boardInfo = newMenuItem(menus, new Menu("/board/list", "게시글", "/img/board.png", 3));
       List<Menu> saveMenuList = Arrays.asList(home, boardWrite, boardInfo);
 
       menuRepository.saveAll(saveMenuList);

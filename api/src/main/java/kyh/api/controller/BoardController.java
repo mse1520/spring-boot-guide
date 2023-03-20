@@ -71,7 +71,7 @@ public class BoardController {
   }
 
   /** 게시글 수정 api */
-  @PutMapping(value = "/info/{boardId}")
+  @PutMapping(value = "/info/{boardId}/update")
   public String update() {
     return "{ \"test\": 123 }";
   }

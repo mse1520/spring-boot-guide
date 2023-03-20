@@ -13,8 +13,8 @@ const getNow = () => {
   return `${year}-${month}-${date} ${hour}:${minute}:${second}`;
 };
 
-export const getKey = boardId => (page, prevData) => prevData?.isLast ? null : [`/api/comment/info/${boardId}`, page];
-export const commentFetcher = ([url, page]) => getApi(url, { page });
+export const getKey = boardId => (page, prevData) => prevData?.isLast ? null : ['/api/comment/list', boardId, page];
+export const commentFetcher = ([url, boardId, page]) => getApi(url, { boardId, page });
 
 export const deleteComment = (mutate, { data, commentId }) => {
   const _data = data.map(item => {

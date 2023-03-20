@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kyh.api.domain.type.UserRole;
 
 @Configuration
 @EnableWebSecurity
@@ -27,17 +28,21 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     String unAuthMessage = URLEncoder.encode("인증되지 않은 사용자입니다.", "UTF-8");
+    String accessDeniedMessage = URLEncoder.encode("접근 권한이 없습니다.", "UTF-8");
 
     return http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/board/write", "/comment/write").authenticated()
-            .requestMatchers(HttpMethod.DELETE, "/board/info/*", "/comment/info/*").authenticated()
-            .requestMatchers(HttpMethod.PUT, "/board/info/*", "/comment/info/*").authenticated()
+            .requestMatchers("/comment/write", "/comment/info/*").authenticated()
+            .requestMatchers(HttpMethod.POST, "/board/write", "/board/info/**").hasAnyRole(
+                UserRole.SUPER.getValue(),
+                UserRole.ADMIN.getValue())
             .anyRequest().permitAll())
         .exceptionHandling(exception -> exception
             .authenticationEntryPoint((request, response, authException) -> response
-                .sendRedirect(request.getContextPath() + "/user/error?message=" + unAuthMessage)))
+                .sendRedirect(request.getContextPath() + "/user/error?message=" + unAuthMessage))
+            .accessDeniedHandler((request, response, accessDeniedException) -> response
+                .sendRedirect(request.getContextPath() + "/user/error?message=" + accessDeniedMessage)))
         .formLogin(form -> form
             .usernameParameter("name")
             .passwordParameter("password")

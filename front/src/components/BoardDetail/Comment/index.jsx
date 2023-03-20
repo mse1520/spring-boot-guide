@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite'
 import styled from 'styled-components';
 import LeftCard from './LeftCard';
 import RightCard from './RightCard';
-import { commentFetcher, deleteComment, enableModifying, getKey } from '../../../pages/BoardDetail/fetcher';
+import { commentFetcher, deleteComment, enableModifying, getKey } from '../../../pages/BoardInfo/fetcher';
 
 const Wrap = styled.div`
 margin: 1rem 0;

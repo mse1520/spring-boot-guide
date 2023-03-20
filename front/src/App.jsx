@@ -7,7 +7,7 @@ import { action as signUpAction } from './pages/SignUp';
 import { action as signInAction, loader as signInLoader } from './pages/SignIn';
 
 import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
-import { loader as boardDetailLoader } from './pages/BoardDetail';
+import { loader as boardInfoLoader } from './pages/BoardInfo';
 import { action as boardWriteAction, loader as boardWriteLoader } from './pages/BoardWrite';
 import { loader as boardUpdateLoader } from './pages/BoardUpdate';
 const Error = lazy(() => import(/* webpackChunkName: 'Error' */ './pages/Error'));
@@ -15,8 +15,8 @@ const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
+const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
 const BoardInfo = lazy(() => import(/* webpackChunkName: 'BoardInfo' */ './pages/BoardInfo'));
-const BoardDetail = lazy(() => import(/* webpackChunkName: 'BoardDetail' */ './pages/BoardDetail'));
 const BoardUpdate = lazy(() => import(/* webpackChunkName: 'BoardUpdate' */ './pages/BoardUpdate'));
 
 const GlobalStyle = createGlobalStyle`
@@ -53,13 +53,13 @@ const router = createBrowserRouter([{
     loader: boardWriteLoader,
     action: boardWriteAction
   }, {
-    path: '/board/info',
-    element: <BoardInfo />
+    path: '/board/list',
+    element: <BoardList />
   }, {
     path: '/board/info/:boardId',
-    element: <BoardDetail />,
+    element: <BoardInfo />,
     errorElement: <Error />,
-    loader: boardDetailLoader
+    loader: boardInfoLoader
   }, {
     path: '/board/info/:boardId/update',
     element: <BoardUpdate />,

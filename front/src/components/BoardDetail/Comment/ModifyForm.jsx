@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { CommentContext } from '.';
 import { DefaultButton } from '../../../styles/button';
 import Textarea from '../../common/Textarea';
-import { cancelModifying, commentFetcher, getKey, modifyComment } from '../../../pages/BoardDetail/fetcher';
+import { cancelModifying, commentFetcher, getKey, modifyComment } from '../../../pages/BoardInfo/fetcher';
 
 const Wrap = styled.div`
 display: flex;

@@ -1,17 +1,24 @@
 import React, { useCallback, useMemo, useRef } from 'react';
+import { Link, useLoaderData, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
-import { deleteApi, getApi } from '../../utils/api';
-import {
-  Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section,
-  StyledButton, StyledCard, StyledInput, Title, Username, StyledLink
-} from './style';
+import Comment from '../../components/BoardDetail/Comment';
 import useIntersection from '../../hooks/useIntersection';
+import { DefaultButton } from '../../styles/button';
+import { getApi } from '../../utils/api';
+import { commentFetcher, createComment, getKey } from './fetcher';
+import { Content, CreatedDate, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup, Info } from './style';
 
-const getKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
-const boardFetcher = ([url, page]) => getApi(url, { page });
+export const loader = ({ params }) => Promise
+  .all([
+    getApi('/api/user/info'),
+    getApi(`/api/board/info/${params.boardId}`)])
+  .then(([{ user, menuList }, { body }]) => ({ user, menuList, board: body }));
 
 const BoardInfo = () => {
-  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey, boardFetcher);
+  const { boardId } = useParams();
+  const { user, board } = useLoaderData();
+  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey(boardId), commentFetcher);
+  const textareaRef = useRef();
   const loaderRef = useRef();
 
   const isLast = useMemo(() => data?.[data.length - 1].isLast, [data]);
@@ -23,49 +30,39 @@ const BoardInfo = () => {
     setSize(size => size + 1);
   }, [isLoading, isLast]);
 
-  const onClickDelete = useCallback(boardId => e => {
-    e.preventDefault();
-
-    if (!confirm('게시글을 삭제하시겠습니까?')) return;
-
-    const newData = data.map(item => {
-      const body = item.body.filter(board => board.id !== boardId);
-      return { ...item, body };
-    });
-
-    mutate(newData, { revalidate: false });
-    deleteApi(`/api/board/info/${boardId}`)
-      .then(v => alert(v.message))
-      .catch(err => err.message ? alert(err.message) : console.error(err))
-      .then(() => mutate());
+  const onClickCreateComment = useCallback(() => {
+    createComment(mutate, { data, boardId, content: textareaRef.current.innerText, username: user.name });
+    textareaRef.current.innerText = '';
   }, [data]);
 
   return <>
     <Header>
-      <h2>전체글 보기</h2>
-      <SearchGroup>
-        <StyledInput />
-        <StyledButton>검색</StyledButton>
-      </SearchGroup>
+      <TitleWrap>
+        <h2>{board.title}</h2>
+        <TitleButtonGroup>
+          <Link to={`/board/info/${boardId}/update`}><DefaultButton>수정</DefaultButton></Link>
+          <DefaultButton>삭제</DefaultButton>
+        </TitleButtonGroup>
+      </TitleWrap>
+      <Info>
+        <div>
+          <Username>{board.username}</Username>
+          <CreatedDate>{board.createdDate}</CreatedDate>
+        </div>
+        <div>댓글수: {data?.[data.length - 1].total}</div>
+      </Info>
     </Header>
-    <Section>
-      {data?.map(({ body }) => body.map((board, i) =>
-        <StyledLink key={i} to={`/board/info/${board.id}`}>
-          <StyledCard>
-            <StyledDeleteImg onClick={onClickDelete(board.id)} />
-            <Title>{board.title}</Title>
-            <ContentWrap>
-              <Content>{board.content}</Content>
-              <Username>{board.username}</Username>
-              <div>{board.createdDate}</div>
-            </ContentWrap>
-          </StyledCard>
-        </StyledLink>
-      ))}
-      <FakeCard />
-      <FakeCard />
-      <FakeCard ref={loaderRef} />
-    </Section>
+    <section>
+      <Content>{board.content}</Content>
+      <Hr />
+      {data?.map(({ body }) => body.map((comment, i) =>
+        <Comment key={i} username={user ? user.name : board.username} comment={comment} />))}
+      <div ref={loaderRef} />
+    </section>
+    <Footer>
+      <StyledTextarea ref={textareaRef} placeholder='댓글을 남겨보세요.' />
+      <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
+    </Footer>
   </>;
 };
 
