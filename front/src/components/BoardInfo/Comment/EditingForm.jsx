@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { CommentContext } from '.';
 import { DefaultButton } from '../../../styles/button';
 import Textarea from '../../common/Textarea';
-import { cancelModifying, commentFetcher, getKey, modifyComment } from '../../../pages/BoardInfo/fetcher';
+import { cancelEditing, commentFetcher, getKey, updateComment } from '../../../pages/BoardInfo/fetcher';
 
 const Wrap = styled.div`
 display: flex;
@@ -22,16 +22,16 @@ gap: .5rem;
 justify-content: end;
 `;
 
-const ModifyForm = () => {
+const EditingForm = () => {
   const { boardId } = useParams();
   const { data, mutate } = useSWRInfinite(getKey(boardId), commentFetcher, { revalidateOnMount: false });
   const { comment } = useContext(CommentContext);
   const cotentRef = useRef();
 
-  const onClickCancel = useCallback(() => cancelModifying(mutate, { data }), [data]);
+  const onClickCancel = useCallback(() => cancelEditing(mutate, { data }), [data]);
 
   const onClickSave = useCallback(commentId => () =>
-    modifyComment(mutate, { data, commentId, content: cotentRef.current.innerText }), [data]);
+    updateComment(mutate, { data, commentId, content: cotentRef.current.innerText }), [data]);
 
   return <>
     <Wrap>
@@ -44,4 +44,4 @@ const ModifyForm = () => {
   </>;
 };
 
-export default ModifyForm;
+export default EditingForm;

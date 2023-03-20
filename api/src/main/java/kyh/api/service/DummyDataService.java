@@ -21,7 +21,7 @@ import kyh.api.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Profile("test")
+@Profile("local")
 @DependsOn("initailizer")
 @RequiredArgsConstructor
 public class DummyDataService {

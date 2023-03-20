@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kyh.api.domain.dto.comment.CommentInfo;
 import kyh.api.domain.dto.comment.CommentListForm;
-import kyh.api.domain.dto.comment.CommentModifyForm;
+import kyh.api.domain.dto.comment.CommentUpdateForm;
 import kyh.api.domain.dto.comment.CommentWriteForm;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
@@ -74,13 +74,13 @@ public class CommentController {
 
   /** 댓글 수정 api */
   @PutMapping(value = "/info/{commentId}")
-  public ResponseEntity<DataBox<CommentInfo>> modify(@PathVariable Long commentId,
-      @RequestBody @Validated CommentModifyForm form, BindingResult bindingResult,
+  public ResponseEntity<DataBox<CommentInfo>> update(@PathVariable Long commentId,
+      @RequestBody @Validated CommentUpdateForm form, BindingResult bindingResult,
       @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    DataBox<CommentInfo> result = commentService.modify(commentId, userInfo.getId(), form.getContent());
+    DataBox<CommentInfo> result = commentService.update(commentId, userInfo.getId(), form.getContent());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

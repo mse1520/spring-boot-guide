@@ -45,4 +45,10 @@ public class Board extends BaseEntity {
     this.user = user;
   }
 
+  /** 게시글의 내용을 수정합니다 */
+  public void changeBoard(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
+
 }

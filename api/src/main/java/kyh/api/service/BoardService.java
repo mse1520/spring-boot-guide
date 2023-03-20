@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kyh.api.domain.dto.board.BoardInfo;
-import kyh.api.domain.dto.board.BoardWriteForm;
 import kyh.api.domain.dto.common.DataBox;
 import kyh.api.domain.dto.common.DataBoxType;
 import kyh.api.domain.entity.Board;
@@ -27,9 +26,9 @@ public class BoardService {
 
   /** 게시글(Board) 작성 */
   @Transactional
-  public DataBox<BoardInfo> write(BoardWriteForm form, Long userId) {
+  public DataBox<BoardInfo> write(String title, String content, Long userId) {
     User user = userRepository.findById(userId).orElseThrow();
-    Board board = new Board(form.getTitle(), form.getContent(), user);
+    Board board = new Board(title, content, user);
     Board savedBoard = boardRepository.save(board);
     BoardInfo boardInfo = BoardInfo.generate(savedBoard);
 
@@ -69,6 +68,20 @@ public class BoardService {
     boardRepository.delete(findBoard);
     BoardInfo boardInfo = BoardInfo.generate(findBoard);
     return new DataBox<>(DataBoxType.SUCCESS, "게시글이 삭제 되었습니다.", boardInfo);
+  }
+
+  /** 게시글(Board) 수정 */
+  @Transactional
+  public DataBox<BoardInfo> update(Long boardId, String title, String content) {
+    Board board = boardRepository.findById(boardId).orElse(null);
+
+    if (board == null)
+      return new DataBox<>(DataBoxType.FAILURE, "존재하지 않는 게시글입니다.");
+
+    board.changeBoard(title, content);
+    Board savedBoard = boardRepository.save(board);
+    BoardInfo boardInfo = BoardInfo.generate(savedBoard);
+    return new DataBox<>(DataBoxType.SUCCESS, "게시글이 수정 되었습니다.", boardInfo);
   }
 
 }

@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { CommentContext } from '.';
 import CommentMode from '../../../types/BoardDetail/CommentMode';
-import ModifyForm from './ModifyForm';
+import EditingForm from './EditingForm';
 import {
-  ButtonWrap, Card as BaseCard, Content, DateTime, StyledDeleteImg, StyledModifyImg, Username as BaseUsername, CardWrap as BaseCardWrap
+  ButtonWrap, Card as BaseCard, Content, DateTime, StyledDeleteImg, StyledEditingImg, Username as BaseUsername, CardWrap as BaseCardWrap
 } from './style';
 
 const CardWrap = styled(BaseCardWrap)`
@@ -19,18 +19,18 @@ text-align: right;
 `;
 
 const RightCard = () => {
-  const { comment, onClickModify, onClickDelete } = useContext(CommentContext);
+  const { comment, onClickEditing, onClickDelete } = useContext(CommentContext);
 
   return <>
-    {comment.mode === CommentMode.MODIFYING
+    {comment.mode === CommentMode.EDITING
       ? <CardWrap>
         <Card>
-          <ModifyForm />
+          <EditingForm />
         </Card>
       </CardWrap>
       : <CardWrap>
         <ButtonWrap>
-          <StyledModifyImg onClick={onClickModify(comment.id)} />
+          <StyledEditingImg onClick={onClickEditing(comment.id)} />
           <StyledDeleteImg onClick={onClickDelete(comment.id)} />
         </ButtonWrap>
         <Card>

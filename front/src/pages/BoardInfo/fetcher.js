@@ -27,18 +27,18 @@ export const deleteComment = (mutate, { data, commentId }) => {
     .catch(err => err.message ? alert(err.message) : console.error(err))
     .then(() => mutate());
 };
-export const enableModifying = (mutate, { data, commentId }) => {
+export const enableEditing = (mutate, { data, commentId }) => {
   const _data = data.map(item => {
     const body = item.body.map(comment => ({
       ...comment,
-      mode: comment.id === commentId ? CommentMode.MODIFYING : CommentMode.DONE
+      mode: comment.id === commentId ? CommentMode.EDITING : CommentMode.DONE
     }));
     return { ...item, body };
   });
 
   mutate(_data, { revalidate: false });
 };
-export const cancelModifying = (mutate, { data }) => {
+export const cancelEditing = (mutate, { data }) => {
   const _data = data.map(item => {
     const body = item.body.map(comment => ({ ...comment, mode: CommentMode.DONE }));
     return { ...item, body };
@@ -47,7 +47,7 @@ export const cancelModifying = (mutate, { data }) => {
   mutate(_data, { revalidate: false });
 };
 
-export const modifyComment = (mutate, { data, commentId, content }) => {
+export const updateComment = (mutate, { data, commentId, content }) => {
   const _data = data.map(item => {
     const body = item.body.map(comment =>
       comment.id === commentId

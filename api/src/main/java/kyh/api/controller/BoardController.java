@@ -40,7 +40,7 @@ public class BoardController {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    return ResponseEntity.ok(boardService.write(form, userInfo.getId()));
+    return ResponseEntity.ok(boardService.write(form.getTitle(), form.getContent(), userInfo.getId()));
   }
 
   /** 게시글 조회 api */
@@ -72,8 +72,16 @@ public class BoardController {
 
   /** 게시글 수정 api */
   @PutMapping(value = "/info/{boardId}/update")
-  public String update() {
-    return "{ \"test\": 123 }";
+  public ResponseEntity<DataBox<BoardInfo>> update(@PathVariable Long boardId, @RequestBody BoardWriteForm form,
+      BindingResult bindingResult) {
+    if (bindingResult.hasErrors())
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
+
+    DataBox<BoardInfo> result = boardService.update(boardId, form.getTitle(), form.getContent());
+
+    return result.getType() == DataBoxType.SUCCESS
+        ? ResponseEntity.ok(result)
+        : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
   }
 
 }

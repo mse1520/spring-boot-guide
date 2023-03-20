@@ -1,6 +1,6 @@
 const CommentMode = {
   DONE: 'DONE',
-  MODIFYING: 'MODIFYING'
+  EDITING: 'EDITING'
 };
 
 export default CommentMode;

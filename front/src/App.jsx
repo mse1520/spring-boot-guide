@@ -9,7 +9,7 @@ import { action as signInAction, loader as signInLoader } from './pages/SignIn';
 import Main, { action as mainAction, loader as mainLoader } from './layouts/Main';
 import { loader as boardInfoLoader } from './pages/BoardInfo';
 import { action as boardWriteAction, loader as boardWriteLoader } from './pages/BoardWrite';
-import { loader as boardUpdateLoader } from './pages/BoardUpdate';
+import { action as boardUpdateAction, loader as boardUpdateLoader } from './pages/BoardUpdate';
 const Error = lazy(() => import(/* webpackChunkName: 'Error' */ './pages/Error'));
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
@@ -63,7 +63,8 @@ const router = createBrowserRouter([{
   }, {
     path: '/board/info/:boardId/update',
     element: <BoardUpdate />,
-    loader: boardUpdateLoader
+    loader: boardUpdateLoader,
+    action: boardUpdateAction
   }]
 }, {
   path: '/sign-up',

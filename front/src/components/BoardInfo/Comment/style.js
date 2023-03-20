@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import DeleteImg from '../../common/DeleteImg';
-import ModifyImg from '../../common/ModifyImg';
+import EditingImg from '../../common/EditingImg';
 
 export const CardWrap = styled.div`
 margin: 1rem 0;
@@ -13,7 +13,7 @@ export const ButtonWrap = styled.div`
 margin-bottom: .5rem;
 `;
 
-export const StyledModifyImg = styled(ModifyImg)`
+export const StyledEditingImg = styled(EditingImg)`
 max-width: 1rem;
 max-height: 1rem;
 &:hover {

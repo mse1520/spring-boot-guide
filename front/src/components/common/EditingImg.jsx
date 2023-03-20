@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
-import modifyImg from '../../resources/img/modify';
+import modifyImg from '../../resources/img/editing';
 
 export const Img = styled.img`
 display: block;
@@ -16,6 +16,6 @@ transition: .2s;
   background-color: gray;
 }`;
 
-const ModifyImg = forwardRef((props, ref) => <Img ref={ref} {...props} src={modifyImg} />);
+const EditingImg = forwardRef((props, ref) => <Img ref={ref} {...props} src={modifyImg} />);
 
-export default ModifyImg;
+export default EditingImg;

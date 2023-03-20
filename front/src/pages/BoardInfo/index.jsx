@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Link, useLoaderData, useParams } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
-import Comment from '../../components/BoardDetail/Comment';
+import Comment from '../../components/BoardInfo/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
-import { getApi } from '../../utils/api';
+import { deleteApi, getApi } from '../../utils/api';
 import { commentFetcher, createComment, getKey } from './fetcher';
 import { Content, CreatedDate, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup, Info } from './style';
 
@@ -16,6 +16,7 @@ export const loader = ({ params }) => Promise
 
 const BoardInfo = () => {
   const { boardId } = useParams();
+  const navigate = useNavigate();
   const { user, board } = useLoaderData();
   const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey(boardId), commentFetcher);
   const textareaRef = useRef();
@@ -35,13 +36,20 @@ const BoardInfo = () => {
     textareaRef.current.innerText = '';
   }, [data]);
 
+  const onClickDeleteBoard = useCallback(() => {
+    deleteApi(`/api/board/info/${boardId}`)
+      .then(v => alert(v.message))
+      .then(() => navigate('/board/list', { replace: true }))
+      .catch(err => err.message ? alert(err.message) : console.error(err));
+  }, []);
+
   return <>
     <Header>
       <TitleWrap>
         <h2>{board.title}</h2>
         <TitleButtonGroup>
           <Link to={`/board/info/${boardId}/update`}><DefaultButton>수정</DefaultButton></Link>
-          <DefaultButton>삭제</DefaultButton>
+          <DefaultButton onClick={onClickDeleteBoard}>삭제</DefaultButton>
         </TitleButtonGroup>
       </TitleWrap>
       <Info>

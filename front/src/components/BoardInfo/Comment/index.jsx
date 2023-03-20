@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite'
 import styled from 'styled-components';
 import LeftCard from './LeftCard';
 import RightCard from './RightCard';
-import { commentFetcher, deleteComment, enableModifying, getKey } from '../../../pages/BoardInfo/fetcher';
+import { commentFetcher, deleteComment, enableEditing, getKey } from '../../../pages/BoardInfo/fetcher';
 
 const Wrap = styled.div`
 margin: 1rem 0;
@@ -17,7 +17,9 @@ export const CommentContext = createContext({
     content: null,
     createdDate: null,
     updatedDate: null
-  }
+  },
+  onClickDelete: () => { },
+  onClickEditing: () => { }
 });
 
 const Comment = ({ username, comment }) => {
@@ -25,10 +27,10 @@ const Comment = ({ username, comment }) => {
   const { data, mutate } = useSWRInfinite(getKey(boardId), commentFetcher);
 
   const onClickDelete = useCallback(commentId => () => deleteComment(mutate, { data, commentId }), [data]);
-  const onClickModify = useCallback(commentId => () => enableModifying(mutate, { data, commentId }), [data]);
+  const onClickEditing = useCallback(commentId => () => enableEditing(mutate, { data, commentId }), [data]);
 
   return <>
-    <CommentContext.Provider value={{ comment, onClickDelete, onClickModify }}>
+    <CommentContext.Provider value={{ comment, onClickDelete, onClickEditing }}>
       <Wrap>
         {username === comment.username ? <RightCard /> : <LeftCard />}
       </Wrap>

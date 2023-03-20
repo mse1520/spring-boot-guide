@@ -28,6 +28,7 @@ public class CommentService {
   private final UserRepository userRepository;
   private final BoardRepository boardRepository;
 
+  /** 댓글 작성 */
   @Transactional
   public DataBox<CommentInfo> wirte(CommentWriteForm form, Long userId) {
     Board findBoard = boardRepository.findById(form.getBoardId()).orElse(null);
@@ -43,6 +44,7 @@ public class CommentService {
     return new DataBox<>(DataBoxType.SUCCESS, "저장 성공.", commentInfo);
   }
 
+  /** 댓글 리스트 */
   public DataBox<List<CommentInfo>> list(Long boardId, Integer page) {
     PageRequest pageRequest = PageRequest.of(page, 20);
     Board board = boardRepository.findById(boardId).orElse(null);
@@ -56,6 +58,7 @@ public class CommentService {
     return new DataBox<>(DataBoxType.SUCCESS, pageComment.isLast(), pageComment.getTotalElements(), commentInfos);
   }
 
+  /** 댓글 삭제 */
   @Transactional
   public DataBox<CommentInfo> delete(Long commentId, Long userId) {
     Comment findComment = commentRepository.findWithUserById(commentId).orElse(null);
@@ -71,8 +74,9 @@ public class CommentService {
     return new DataBox<>(DataBoxType.SUCCESS, "삭제 성공.", commentInfo);
   }
 
+  /** 댓글 수정 */
   @Transactional
-  public DataBox<CommentInfo> modify(Long commentId, Long userId, String content) {
+  public DataBox<CommentInfo> update(Long commentId, Long userId, String content) {
     Comment findComment = commentRepository.findWithUserById(commentId).orElse(null);
     User findUser = userRepository.findById(userId).orElse(new User(null, null, null));
 
