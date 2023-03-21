@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 module.exports = {
-  name: 'webpack',
+  name: 'webpack-client',
   target: ['web', 'es5'],
   // mode, // 실서비스는 production
   // devtool, // 실서비스는 hidden-source-map
@@ -21,7 +21,7 @@ module.exports = {
   // 합쳐질 파일의 시작점
   // 파일이 서로 연결된경우 알아서 찾아준다
   entry: {
-    app: path.resolve('src')
+    client: path.resolve('src', 'client')
   },
   // 하나로 합쳐실 출력 파일의 설정입니다
   output: {
