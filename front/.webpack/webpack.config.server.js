@@ -1,4 +1,5 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 
@@ -52,4 +53,5 @@ module.exports = {
   // plugin은 번들링 된 파일에 작업이 필요할 때
   plugins: [
   ],
+  externals: [nodeExternals()]
 };

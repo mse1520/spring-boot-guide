@@ -60,10 +60,10 @@ module.exports = {
   },
   // plugin은 번들링 된 파일에 작업이 필요할 때
   plugins: [
-    new HtmlWebpackPlugin({
-      cache: false, // 변경된 경우에만 파일을 내보냅니다
-      template: path.resolve('src', 'index.html') // 번들링 파일과 연결할 파일의 경로
-    })
+    // new HtmlWebpackPlugin({
+    //   cache: false, // 변경된 경우에만 파일을 내보냅니다
+    //   template: path.resolve('src', 'index.html') // 번들링 파일과 연결할 파일의 경로
+    // })
   ],
   // devServer 관련 설정
   devServer: {

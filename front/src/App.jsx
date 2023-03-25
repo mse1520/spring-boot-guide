@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Loading from './components/common/Loading';
+import Test from './pages/Test';
 
 const App = () => <>
   <html>
     <head>
-      <title>Server Rendered App</title>
+      <meta charSet='UTF-8' />
+      <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
+      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+      <title>My app</title>
     </head>
     <body>
-      <Routes>
-        <Route path='/' element={<div>Home</div>} />
-        <Route path='/about' element={<div>About</div>} />
-      </Routes>
-      <script src='./client.js' />
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path='/' element={<Test />} />
+          <Route path='/about' element={<div>About</div>} />
+        </Routes>
+      </Suspense>
     </body>
   </html>
 </>
