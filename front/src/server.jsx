@@ -1,24 +1,28 @@
+import path from 'path';
 import express from 'express';
 import React from 'react';
-import { renderToPipeableStream, renderToString } from 'react-dom/server';
+import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
-import App from './App';
+import { ServerStyleSheet } from 'styled-components';
+import Document from './Document';
 
 const app = express();
 const port = 3000;
+const sheet = new ServerStyleSheet();
 
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
-  // let html = renderToString(
-  //   <StaticRouter location={req.url}>
-  //     <App />
-  //   </StaticRouter>
-  // );
-  // res.send('<!DOCTYPE html>' + html);
+  renderToPipeableStream(sheet.collectStyles(
+    <StaticRouter location={req.url}>
+      <Document />
+    </StaticRouter>
+  ));
+
+  const styleElement = sheet.getStyleElement();
   const { pipe } = renderToPipeableStream(
     <StaticRouter location={req.url}>
-      <App />
+      <Document styleElement={styleElement} />
     </StaticRouter>,
     {
       bootstrapScripts: ['/client.js'],
@@ -30,6 +34,4 @@ app.get('*', (req, res) => {
   );
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+app.listen(port, () => console.log(`App listening on port ${port}`));

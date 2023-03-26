@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Form, redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { Card } from '../styles/box';
@@ -40,34 +40,45 @@ display: flex;
 justify-content: end;
 `;
 
-export const action = ({ request }) => request.formData()
-  .then(form => Object.fromEntries(form))
-  .then(data => postApi('/api/user/sign-up', data))
-  .then(data => alert(data.message))
-  .then(() => redirect('/sign-in'))
-  .catch(err => (alert(err.message), { ok: true }));
+// export const action = ({ request }) => request.formData()
+//   .then(form => Object.fromEntries(form))
+//   .then(data => postApi('/api/user/sign-up', data))
+//   .then(data => alert(data.message))
+//   .then(() => redirect('/sign-in'))
+//   .catch(err => (alert(err.message), { ok: true }));
 
-const SignUp = () => <>
-  <Aticle>
-    <Form method='post' action='/sign-up'>
-      <StyledCard>
-        <div>
-          <H2>회원가입</H2>
-          <InputWrap>
-            <Label htmlFor='name'>아이디</Label>
-            <DefaultInput id='name' name='name' />
-          </InputWrap>
-          <InputWrap>
-            <Label htmlFor='password'>비밀번호</Label>
-            <DefaultInput id='password' name='password' type='password' />
-          </InputWrap>
-        </div>
-        <ButtonWrap>
-          <DefaultButton>회원 가입</DefaultButton>
-        </ButtonWrap>
-      </StyledCard>
-    </Form>
-  </Aticle>
-</>;
+const SignUp = () => {
+  const onSubmit = useCallback(e => {
+    e.preventDefault();
+
+    const form = new FormData(e.target);
+    console.log(form);
+    console.log(form.get('name'));
+    console.log(form.get('password'));
+  }, []);
+
+  return <>
+    <Aticle>
+      <form onSubmit={onSubmit}>
+        <StyledCard>
+          <div>
+            <H2>회원가입</H2>
+            <InputWrap>
+              <Label htmlFor='name'>아이디</Label>
+              <DefaultInput id='name' name='name' />
+            </InputWrap>
+            <InputWrap>
+              <Label htmlFor='password'>비밀번호</Label>
+              <DefaultInput id='password' name='password' type='password' />
+            </InputWrap>
+          </div>
+          <ButtonWrap>
+            <DefaultButton>회원 가입</DefaultButton>
+          </ButtonWrap>
+        </StyledCard>
+      </form>
+    </Aticle>
+  </>;
+};
 
 export default SignUp;

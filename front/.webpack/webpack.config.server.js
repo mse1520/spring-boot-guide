@@ -26,7 +26,7 @@ module.exports = {
   // 하나로 합쳐실 출력 파일의 설정입니다
   output: {
     publicPath: '/',
-    path: path.resolve('dist'),
+    path: path.resolve('build'),
     filename: '[name].js',
   },
   // loader 설정
@@ -40,7 +40,7 @@ module.exports = {
       // use: [{}, {}],
       loader: 'babel-loader',
       options: {
-        presets: ['@babel/preset-env', '@babel/preset-react'],
+        presets: ['@babel/preset-env', '@babel/preset-react']
       }
     }, {
       test: /\.(png|svg)/,

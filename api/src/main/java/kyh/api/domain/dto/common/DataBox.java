@@ -52,6 +52,11 @@ public class DataBox<T> {
 
   /** 실패 메시지를 생성합니다 */
   public static <T> DataBox<T> failed(BindingResult bindingResult) {
+    // bindingResult.getFieldErrors().stream().forEach(err -> {
+    //   System.out.println(err.getField());
+    //   System.out.println(err.getDefaultMessage());
+    // });
+
     String message = bindingResult.getAllErrors().stream()
         .map(err -> err.getDefaultMessage())
         .findFirst()

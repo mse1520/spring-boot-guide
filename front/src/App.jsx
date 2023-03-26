@@ -1,25 +1,37 @@
-import React, { Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { createGlobalStyle } from 'styled-components';
 import Loading from './components/common/Loading';
-import Test from './pages/Test';
+
+const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
+
+const GlobalStyle = createGlobalStyle`
+html, body, #root {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(30, 30, 30);
+  color: whitesmoke;
+  color-scheme: dark;
+}
+input {
+  color: rgb(30, 30, 30);
+}
+button {
+  cursor: pointer;
+}
+a {
+  color: inherit;
+  text-decoration-line: none;
+}`;
 
 const App = () => <>
-  <html>
-    <head>
-      <meta charSet='UTF-8' />
-      <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
-      <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-      <title>My app</title>
-    </head>
-    <body>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path='/' element={<Test />} />
-          <Route path='/about' element={<div>About</div>} />
-        </Routes>
-      </Suspense>
-    </body>
-  </html>
+  <GlobalStyle />
+  <Suspense fallback={<Loading />}>
+    <Routes>
+      <Route path='/sign-up' element={<SignUp />} />
+    </Routes>
+  </Suspense>
 </>
 
 export default App;

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=development webpack && cross-env NODE_ENV=development webpack --config ./.webpack/webpack.config.server.js"
+    "build": "cross-env NODE_ENV=development webpack && cross-env NODE_ENV=development webpack --config ./.webpack/webpack.config.server.js",
+    "test": "node ./build/server.js"
   },
   "author": "kyh",
   "license": "MIT",
@@ -15,6 +16,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "babel-loader": "^9.1.0",
+    "babel-plugin-styled-components": "^2.0.7",
     "cross-env": "^7.0.3",
     "html-webpack-plugin": "^5.5.0",
     "webpack": "^5.75.0",
