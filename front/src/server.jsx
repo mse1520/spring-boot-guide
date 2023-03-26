@@ -3,26 +3,19 @@ import express from 'express';
 import React from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
-import { ServerStyleSheet } from 'styled-components';
 import Document from './Document';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const app = express();
 const port = 3000;
-const sheet = new ServerStyleSheet();
 
+app.use('/api', createProxyMiddleware({ target: 'http://localhost:4001' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
-  renderToPipeableStream(sheet.collectStyles(
-    <StaticRouter location={req.url}>
-      <Document />
-    </StaticRouter>
-  ));
-
-  const styleElement = sheet.getStyleElement();
   const { pipe } = renderToPipeableStream(
     <StaticRouter location={req.url}>
-      <Document styleElement={styleElement} />
+      <Document />
     </StaticRouter>,
     {
       bootstrapScripts: ['/client.js'],

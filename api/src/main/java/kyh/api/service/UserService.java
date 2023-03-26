@@ -39,11 +39,11 @@ public class UserService implements UserDetailsService {
   /** 회원 가입 */
   @Transactional
   public DataBox<UserInfo> signUp(SignUpForm form) {
-    if (userRepository.findByName(form.getName()).orElse(null) != null)
+    if (userRepository.findByName(form.getUsername()).orElse(null) != null)
       return new DataBox<>(DataBoxType.FAILURE, "이미 존재하는 회원입니다.\n다른 아이디를 사용해주세요.");
 
     Authority auth = authorityRepository.findByRole(UserRole.USER).orElseThrow();
-    User user = new User(form.getName(), passwordEncoder.encode(form.getPassword()), auth);
+    User user = new User(form.getUsername(), passwordEncoder.encode(form.getPassword()), auth);
     User savedUser = userRepository.save(user);
     UserInfo userInfo = UserInfo.generate(savedUser);
 

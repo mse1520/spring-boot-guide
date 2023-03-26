@@ -44,7 +44,7 @@ public class SecurityConfig {
             .accessDeniedHandler((request, response, accessDeniedException) -> response
                 .sendRedirect(request.getContextPath() + "/user/error?message=" + accessDeniedMessage)))
         .formLogin(form -> form
-            .usernameParameter("name")
+            .usernameParameter("username")
             .passwordParameter("password")
             .loginProcessingUrl("/user/sign-in")
             .defaultSuccessUrl("/user/sign-in")

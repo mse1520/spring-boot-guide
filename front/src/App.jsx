@@ -1,11 +1,12 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { createGlobalStyle } from 'styled-components';
+import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 
+const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 
-const GlobalStyle = createGlobalStyle`
+const styles = css`
 html, body, #root {
   margin: 0;
   width: 100vw;
@@ -26,9 +27,10 @@ a {
 }`;
 
 const App = () => <>
-  <GlobalStyle />
+  <Global styles={styles} />
   <Suspense fallback={<Loading />}>
     <Routes>
+      <Route path='/sign-in' element={<SignIn />} />
       <Route path='/sign-up' element={<SignUp />} />
     </Routes>
   </Suspense>

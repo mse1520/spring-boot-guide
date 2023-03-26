@@ -1,12 +1,14 @@
-import React from 'react';
-import { Form, redirect } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useCallback, useRef } from 'react';
+import styled from '@emotion/styled';
+import useSWR from 'swr';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
 import { getApi, postApi } from '../utils/api';
+import { Navigate } from 'react-router-dom';
+import Loading from '../components/common/Loading';
 
-const Aticle = styled.article`
+const Article = styled.article`
 width: 100%;
 height: 100%;
 display: flex;
@@ -40,35 +42,48 @@ display: flex;
 justify-content: end;
 `;
 
-export const loader = () => getApi('/api/user/info').then(({ user }) => user ? redirect('/') : { ok: true });
+const SignIn = () => {
+  const { data: user } = useSWR('/api/user/info', url => getApi(url));
+  const usernameRef = useRef();
+  const passwordRef = useRef();
 
-export const action = ({ request }) => request.formData()
-  .then(form => postApi('/api/user/sign-in', form))
-  .then(data => alert(data.message))
-  .catch(err => alert(err.message))
-  .then(() => ({ ok: true }));
+  const onSubmit = useCallback(e => {
+    e.preventDefault();
 
-const SignIn = () => <>
-  <Aticle>
-    <Form method='post' action='/sign-in'>
-      <StyledCard>
-        <div>
-          <H2>로그인</H2>
-          <InputWrap>
-            <Label htmlFor='name'>아이디</Label>
-            <DefaultInput id='name' name='name' />
-          </InputWrap>
-          <InputWrap>
-            <Label htmlFor='password'>비밀번호</Label>
-            <DefaultInput id='password' name='password' type='password' />
-          </InputWrap>
-        </div>
-        <ButtonWrap>
-          <DefaultButton>로그인</DefaultButton>
-        </ButtonWrap>
-      </StyledCard>
-    </Form>
-  </Aticle>
-</>;
+    const form = new FormData();
+    form.set('username', usernameRef.current.value);
+    form.set('password', passwordRef.current.value);
+
+    postApi('/api/user/sign-in', form)
+      .then(data => alert(data.message))
+      .catch(err => err.message ? alert(err.message) : console.error(err));
+  }, []);
+
+  if (user === undefined) return <Loading />;
+  if (user) return <Navigate to='/' />;
+
+  return <>
+    <Article>
+      <form onSubmit={onSubmit}>
+        <StyledCard>
+          <div>
+            <H2>로그인</H2>
+            <InputWrap>
+              <Label htmlFor='username'>아이디</Label>
+              <DefaultInput ref={usernameRef} id='username' />
+            </InputWrap>
+            <InputWrap>
+              <Label htmlFor='password'>비밀번호</Label>
+              <DefaultInput ref={passwordRef} id='password' type='password' />
+            </InputWrap>
+          </div>
+          <ButtonWrap>
+            <DefaultButton>로그인</DefaultButton>
+          </ButtonWrap>
+        </StyledCard>
+      </form>
+    </Article>
+  </>;
+};
 
 export default SignIn;

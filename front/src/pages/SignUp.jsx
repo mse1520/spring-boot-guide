@@ -1,12 +1,12 @@
-import React, { useCallback } from 'react';
-import { Form, redirect } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useCallback, useRef } from 'react';
+import styled from '@emotion/styled';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
 import { postApi } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
-const Aticle = styled.article`
+const Article = styled.article`
 width: 100%;
 height: 100%;
 display: flex;
@@ -40,36 +40,38 @@ display: flex;
 justify-content: end;
 `;
 
-// export const action = ({ request }) => request.formData()
-//   .then(form => Object.fromEntries(form))
-//   .then(data => postApi('/api/user/sign-up', data))
-//   .then(data => alert(data.message))
-//   .then(() => redirect('/sign-in'))
-//   .catch(err => (alert(err.message), { ok: true }));
-
 const SignUp = () => {
+  const navigate = useNavigate();
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+
   const onSubmit = useCallback(e => {
     e.preventDefault();
 
-    const form = new FormData(e.target);
-    console.log(form);
-    console.log(form.get('name'));
-    console.log(form.get('password'));
+    const param = {
+      username: usernameRef.current.value,
+      password: passwordRef.current.value
+    };
+
+    postApi('/api/user/sign-up', param)
+      .then(data => alert(data.message))
+      .then(() => navigate('/sign-in'))
+      .catch(err => err.message ? alert(err.message) : console.error(err));
   }, []);
 
   return <>
-    <Aticle>
+    <Article>
       <form onSubmit={onSubmit}>
         <StyledCard>
           <div>
             <H2>회원가입</H2>
             <InputWrap>
-              <Label htmlFor='name'>아이디</Label>
-              <DefaultInput id='name' name='name' />
+              <Label htmlFor='username'>아이디</Label>
+              <DefaultInput ref={usernameRef} id='username' />
             </InputWrap>
             <InputWrap>
               <Label htmlFor='password'>비밀번호</Label>
-              <DefaultInput id='password' name='password' type='password' />
+              <DefaultInput ref={passwordRef} id='password' type='password' />
             </InputWrap>
           </div>
           <ButtonWrap>
@@ -77,7 +79,7 @@ const SignUp = () => {
           </ButtonWrap>
         </StyledCard>
       </form>
-    </Aticle>
+    </Article>
   </>;
 };
 
