@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 
 const IMG_WIDTH = '1.2rem';
 const IMG_PADDING = '.3rem';

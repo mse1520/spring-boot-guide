@@ -1,12 +1,14 @@
 import React, { Suspense, useCallback, useState } from 'react';
-import { Outlet, useFetcher, useLoaderData } from 'react-router-dom';
-import styled from 'styled-components';
+import { Outlet } from 'react-router-dom';
+import styled from '@emotion/styled';
 import Loading from '../components/common/Loading';
 import MenuImg from '../components/common/MenuImg';
 import SideMenu from '../components/Main/SideMenu';
 import SignedButtonGroup from '../components/Main/SignedButtonGroup';
 import UnsignedButtonGroup from '../components/Main/UnSignedButtonGroup';
-import { getApi, postApi } from '../utils/api';
+import { postApi } from '../utils/api';
+import useSWR from 'swr';
+import { userFetcher } from '../fetcher';
 
 const Aticle = styled.article`
 width: 100%;
@@ -43,15 +45,11 @@ const Content = styled.article`
   }
 }`;
 
-export const loader = () => getApi('/api/user/info');
-export const action = () => postApi('/api/user/sign-out');
-
 const Main = () => {
-  const { user, menuList } = useLoaderData();
-  const fetcher = useFetcher();
+  const { data, isLoading, mutate } = useSWR('/api/user/info', userFetcher);
   const [menuActive, setMenuActive] = useState(true);
 
-  const onClickSignOut = useCallback(() => fetcher.submit(null, { method: 'post', action: '/' }), []);
+  const onClickSignOut = useCallback(() => postApi('/api/user/sign-out').then(() => mutate()), []);
 
   const onClickMenu = useCallback(() => setMenuActive(!menuActive), [menuActive]);
 
@@ -60,18 +58,18 @@ const Main = () => {
       <Header>
         <MenuImg onClick={onClickMenu} />
         <ButtonGroup>
-          {user
-            ? <SignedButtonGroup name={user.name} onClick={onClickSignOut} />
+          {data?.user
+            ? <SignedButtonGroup name={data.user.name} onClick={onClickSignOut} />
             : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />}
         </ButtonGroup>
       </Header>
       <Section>
-        <SideMenu links={menuList} active={menuActive} />
+        <SideMenu links={data?.menuList ?? []} active={menuActive} />
         <ContentWrap>
           <Content>
-            <Suspense fallback={<Loading />}>
+            {/* <Suspense fallback={<Loading />}>
               <Outlet />
-            </Suspense>
+            </Suspense> */}
           </Content>
         </ContentWrap>
       </Section>

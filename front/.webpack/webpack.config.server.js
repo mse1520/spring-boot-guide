@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 
@@ -52,6 +53,9 @@ module.exports = {
   },
   // plugin은 번들링 된 파일에 작업이 필요할 때
   plugins: [
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.resolve('src', 'resources'), to: 'resources' }],
+    })
   ],
   externals: [nodeExternals()]
 };

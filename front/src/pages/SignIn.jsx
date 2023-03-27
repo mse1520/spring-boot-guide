@@ -4,9 +4,10 @@ import useSWR from 'swr';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { getApi, postApi } from '../utils/api';
+import { postApi } from '../utils/api';
 import { Navigate } from 'react-router-dom';
 import Loading from '../components/common/Loading';
+import { userFetcher } from '../fetcher';
 
 const Article = styled.article`
 width: 100%;
@@ -43,7 +44,7 @@ justify-content: end;
 `;
 
 const SignIn = () => {
-  const { data: user } = useSWR('/api/user/info', url => getApi(url));
+  const { data, isLoading, mutate } = useSWR('/api/user/info', userFetcher);
   const usernameRef = useRef();
   const passwordRef = useRef();
 
@@ -56,11 +57,12 @@ const SignIn = () => {
 
     postApi('/api/user/sign-in', form)
       .then(data => alert(data.message))
+      .then(mutate)
       .catch(err => err.message ? alert(err.message) : console.error(err));
   }, []);
 
-  if (user === undefined) return <Loading />;
-  if (user) return <Navigate to='/' />;
+  if (isLoading) return <Loading />;
+  if (data.user) return <Navigate to='/' />;
 
   return <>
     <Article>

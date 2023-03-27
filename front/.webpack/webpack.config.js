@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 
@@ -28,7 +29,7 @@ module.exports = {
     publicPath: '/',
     path: path.resolve('build', 'public'),
     filename: '[name].js',
-    clean: true
+    // clean: true
   },
   // loader 설정
   module: {
@@ -63,7 +64,10 @@ module.exports = {
     // new HtmlWebpackPlugin({
     //   cache: false, // 변경된 경우에만 파일을 내보냅니다
     //   template: path.resolve('src', 'index.html') // 번들링 파일과 연결할 파일의 경로
-    // })
+    // }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.resolve('src', 'resources'), to: 'resources' }],
+    })
   ],
   // devServer 관련 설정
   devServer: {
