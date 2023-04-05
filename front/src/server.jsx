@@ -7,7 +7,7 @@ import Document from './Document';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const app = express();
-const port = 3000;
+const port = 4005;
 
 app.use('/api', createProxyMiddleware({ target: 'http://localhost:4001' }));
 app.use(express.static(path.join(__dirname, 'public')));

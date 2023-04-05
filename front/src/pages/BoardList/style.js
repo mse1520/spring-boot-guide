@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import DeleteImg from '../../components/common/DeleteImg';
 import { Card } from '../../styles/box';
 import { DefaultButton } from '../../styles/button';
@@ -49,8 +49,11 @@ cursor: pointer;
   box-shadow: 0 .7rem 2rem rgba(0, 0, 0, .3);
 }`;
 
-export const FakeCard = styled(StyledCard)`
+export const FakeCard = styled.div`
 opacity: 0;
+display: block;
+flex: 1;
+min-width: 19rem;
 `;
 
 export const StyledDeleteImg = styled(DeleteImg)`

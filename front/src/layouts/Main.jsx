@@ -67,9 +67,9 @@ const Main = () => {
         <SideMenu links={data?.menuList ?? []} active={menuActive} />
         <ContentWrap>
           <Content>
-            {/* <Suspense fallback={<Loading />}>
+            <Suspense fallback={<Loading />}>
               <Outlet />
-            </Suspense> */}
+            </Suspense>
           </Content>
         </ContentWrap>
       </Section>

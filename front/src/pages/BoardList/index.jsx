@@ -11,10 +11,10 @@ const getKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list',
 const boardFetcher = ([url, page]) => getApi(url, { page });
 
 const BoardList = () => {
-  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey, boardFetcher);
+  const { data: boards, isLoading, setSize, mutate } = useSWRInfinite(getKey, boardFetcher);
   const loaderRef = useRef();
 
-  const isLast = useMemo(() => data?.[data.length - 1].isLast, [data]);
+  const isLast = useMemo(() => boards?.[boards.length - 1].isLast, [boards]);
 
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
@@ -28,7 +28,7 @@ const BoardList = () => {
 
     if (!confirm('게시글을 삭제하시겠습니까?')) return;
 
-    const newData = data.map(item => {
+    const newData = boards.map(item => {
       const body = item.body.filter(board => board.id !== boardId);
       return { ...item, body };
     });
@@ -38,7 +38,7 @@ const BoardList = () => {
       .then(v => alert(v.message))
       .catch(err => err.message ? alert(err.message) : console.error(err))
       .then(() => mutate());
-  }, [data]);
+  }, [boards]);
 
   return <>
     <Header>
@@ -49,7 +49,7 @@ const BoardList = () => {
       </SearchGroup>
     </Header>
     <Section>
-      {data?.map(({ body }) => body.map((board, i) =>
+      {boards?.map(({ body }) => body.map((board, i) =>
         <StyledLink key={i} to={`/board/info/${board.id}`}>
           <StyledCard>
             <StyledDeleteImg onClick={onClickDelete(board.id)} />

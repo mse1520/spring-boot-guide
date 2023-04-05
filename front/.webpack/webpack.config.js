@@ -70,17 +70,17 @@ module.exports = {
     })
   ],
   // devServer 관련 설정
-  devServer: {
-    // BrowserRouter url 인식 설정
-    historyApiFallback: true,
-    // 코드 변화 감지 변경 옵션
-    hot: true,
-    port: 4005,
-    // 브라우저 열기
-    open: true,
-    proxy: {
-      '/api': { target: 'http://localhost:4001' }
-    },
-    static: { directory: path.join('src', 'resources') }
-  }
+  // devServer: {
+  //   // BrowserRouter url 인식 설정
+  //   historyApiFallback: true,
+  //   // 코드 변화 감지 변경 옵션
+  //   hot: true,
+  //   port: 4005,
+  //   // 브라우저 열기
+  //   open: true,
+  //   proxy: {
+  //     '/api': { target: 'http://localhost:4001' }
+  //   },
+  //   static: { directory: path.join('src', 'resources') }
+  // }
 };

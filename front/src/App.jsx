@@ -3,7 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 
-import Main from './layouts/Main';
+const Main = lazy(() => import(/* webpackChunkName: 'Main' */ './layouts/Main'));
+const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
+const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 
@@ -31,7 +33,10 @@ const App = () => <>
   <Global styles={styles} />
   <Suspense fallback={<Loading />}>
     <Routes>
-      <Route path='/' element={<Main />} />
+      <Route path='/' element={<Main />}>
+        <Route path='/' element={<Home />} />
+        <Route path='/board/list' element={<BoardList />} />
+      </Route>
       <Route path='/sign-in' element={<SignIn />} />
       <Route path='/sign-up' element={<SignUp />} />
     </Routes>
