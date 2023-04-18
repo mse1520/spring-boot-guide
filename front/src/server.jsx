@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
 import React from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
@@ -14,6 +15,7 @@ const apiAxios = axios.create({ baseURL: API_SERVER });
 const app = express();
 
 app.use('/api', createProxyMiddleware({ target: API_SERVER, cookiePathRewrite: { '/api': '/' } }));
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

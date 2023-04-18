@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import useSWRInfinite from 'swr/infinite'
-import { deleteApi, getApi } from '../../utils/api';
 import {
   Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section,
   StyledButton, StyledCard, StyledInput, Title, Username, StyledLink
 } from './style';
 import useIntersection from '../../hooks/useIntersection';
+import axios from 'axios';
 
 export const getKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
-const boardFetcher = ([url, page]) => getApi(url, { page });
+const boardFetcher = ([url, page]) => axios.get(url, { params: { page } }).then(res => res.data);
 
 const BoardList = () => {
   const { data: boards, isLoading, setSize, mutate } = useSWRInfinite(getKey, boardFetcher);
@@ -34,9 +34,10 @@ const BoardList = () => {
     });
 
     mutate(newData, { revalidate: false });
-    deleteApi(`/api/board/info/${boardId}`)
-      .then(v => alert(v.message))
-      .catch(err => err.message ? alert(err.message) : console.error(err))
+    axios.delete(`/api/board/info/${boardId}`)
+      .then(res => res.data)
+      .then(data => alert(data.message))
+      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
       .then(() => mutate());
   }, [boards]);
 

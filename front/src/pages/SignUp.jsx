@@ -3,8 +3,8 @@ import styled from '@emotion/styled';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { postApi } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Article = styled.article`
 width: 100%;
@@ -53,10 +53,11 @@ const SignUp = () => {
       password: passwordRef.current.value
     };
 
-    postApi('/api/user/sign-up', param)
+    axios.post('/api/user/sign-up', param)
+      .then(res => res.data)
       .then(data => alert(data.message))
       .then(() => navigate('/sign-in'))
-      .catch(err => err.message ? alert(err.message) : console.error(err));
+      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
   }, []);
 
   return <>

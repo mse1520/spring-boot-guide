@@ -4,10 +4,10 @@ import useSWR from 'swr';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { postApi } from '../utils/api';
 import { Navigate } from 'react-router-dom';
 import Loading from '../components/common/Loading';
-import { userFetcher } from '../fetcher';
+import { userFetcher } from '../utils/fetcher';
+import axios from 'axios';
 
 const Article = styled.article`
 width: 100%;
@@ -55,10 +55,11 @@ const SignIn = () => {
     form.set('username', usernameRef.current.value);
     form.set('password', passwordRef.current.value);
 
-    postApi('/api/user/sign-in', form)
+    axios.post('/api/user/sign-in', form)
+      .then(res => res.data)
       .then(data => alert(data.message))
       .then(mutate)
-      .catch(err => err.message ? alert(err.message) : console.error(err));
+      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
   }, []);
 
   if (isLoading) return <Loading />;

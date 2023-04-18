@@ -4,10 +4,12 @@ import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 import { SWRConfig } from 'swr';
 import { getKey as boardListKey } from './pages/BoardList';
+import { getServerData } from './utils/preload';
 
 const Main = lazy(() => import(/* webpackChunkName: 'Main' */ './layouts/Main'));
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
+const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 
@@ -31,8 +33,6 @@ a {
   text-decoration-line: none;
 }`;
 
-const getServerData = () => JSON.parse(document.querySelector('#preload-data').value);
-
 const App = ({ data }) => <>
   <Global styles={styles} />
   <SWRConfig value={{
@@ -46,6 +46,7 @@ const App = ({ data }) => <>
         <Route path='/' element={<Main />}>
           <Route path='/' element={<Home />} />
           <Route path='/board/list' element={<BoardList />} />
+          <Route path='/board/write' element={<BoardWrite />} />
         </Route>
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />

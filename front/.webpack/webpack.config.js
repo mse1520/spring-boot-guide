@@ -1,5 +1,4 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const IS_DEV = process.env.NODE_ENV === 'development';
@@ -61,26 +60,8 @@ module.exports = {
   },
   // plugin은 번들링 된 파일에 작업이 필요할 때
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   cache: false, // 변경된 경우에만 파일을 내보냅니다
-    //   template: path.resolve('src', 'index.html') // 번들링 파일과 연결할 파일의 경로
-    // }),
     new CopyWebpackPlugin({
       patterns: [{ from: path.resolve('src', 'resources'), to: 'resources' }],
     })
   ],
-  // devServer 관련 설정
-  // devServer: {
-  //   // BrowserRouter url 인식 설정
-  //   historyApiFallback: true,
-  //   // 코드 변화 감지 변경 옵션
-  //   hot: true,
-  //   port: 4005,
-  //   // 브라우저 열기
-  //   open: true,
-  //   proxy: {
-  //     '/api': { target: 'http://localhost:4001' }
-  //   },
-  //   static: { directory: path.join('src', 'resources') }
-  // }
 };

@@ -1,0 +1,1 @@
+export const getServerData = () => JSON.parse(document.querySelector('#server-data').value);

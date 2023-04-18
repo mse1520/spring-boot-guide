@@ -6,9 +6,9 @@ import MenuImg from '../components/common/MenuImg';
 import SideMenu from '../components/Main/SideMenu';
 import SignedButtonGroup from '../components/Main/SignedButtonGroup';
 import UnsignedButtonGroup from '../components/Main/UnSignedButtonGroup';
-import { postApi } from '../utils/api';
 import useSWR from 'swr';
-import { userFetcher } from '../fetcher';
+import { userFetcher } from '../utils/fetcher';
+import axios from 'axios';
 
 const Aticle = styled.article`
 width: 100%;
@@ -49,7 +49,7 @@ const Main = () => {
   const { data: session, mutate } = useSWR('/api/user/info', userFetcher);
   const [menuActive, setMenuActive] = useState(true);
 
-  const onClickSignOut = useCallback(() => postApi('/api/user/sign-out').then(() => mutate()), []);
+  const onClickSignOut = useCallback(() => axios.post('/api/user/sign-out').then(() => mutate()), []);
 
   const onClickMenu = useCallback(() => setMenuActive(!menuActive), [menuActive]);
 

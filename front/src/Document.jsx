@@ -10,7 +10,7 @@ const Document = ({ data }) => <>
       <title>Guide</title>
     </head>
     <body>
-      <input id='preload-data' defaultValue={JSON.stringify(data)} hidden />
+      <input id='server-data' defaultValue={JSON.stringify(data)} hidden />
       <div id='root'><App data={data} /></div>
     </body>
   </html>
