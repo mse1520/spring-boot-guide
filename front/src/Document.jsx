@@ -1,7 +1,7 @@
 import React from 'react';
 import App from './App';
 
-const Document = () => <>
+const Document = ({ data }) => <>
   <html>
     <head>
       <meta charSet='UTF-8' />
@@ -10,7 +10,8 @@ const Document = () => <>
       <title>Guide</title>
     </head>
     <body>
-      <div id='root'><App /></div>
+      <input id='preload-data' defaultValue={JSON.stringify(data)} hidden />
+      <div id='root'><App data={data} /></div>
     </body>
   </html>
 </>;

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development concurrently \"npm run watch-client\" \"npm run watch-server\" \"npm run dev-server\"",
-    "dev-server": "nodemon -i ./build/server.js ./build/server.js",
+    "dev-server": "nodemon -i ./src/server.js ./build/server.js",
     "build-client": "webpack",
     "build-server": "webpack --config ./.webpack/webpack.config.server.js",
     "watch-client": "webpack -w",
@@ -34,6 +34,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "axios": "^1.2.0",
+    "cookie-parser": "^1.4.6",
     "core-js": "^3.26.1",
     "express": "^4.18.2",
     "react": "^18.2.0",

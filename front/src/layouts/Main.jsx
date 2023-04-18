@@ -46,7 +46,7 @@ const Content = styled.article`
 }`;
 
 const Main = () => {
-  const { data, isLoading, mutate } = useSWR('/api/user/info', userFetcher);
+  const { data: session, mutate } = useSWR('/api/user/info', userFetcher);
   const [menuActive, setMenuActive] = useState(true);
 
   const onClickSignOut = useCallback(() => postApi('/api/user/sign-out').then(() => mutate()), []);
@@ -58,13 +58,13 @@ const Main = () => {
       <Header>
         <MenuImg onClick={onClickMenu} />
         <ButtonGroup>
-          {data?.user
-            ? <SignedButtonGroup name={data.user.name} onClick={onClickSignOut} />
+          {session?.user
+            ? <SignedButtonGroup name={session.user.name} onClick={onClickSignOut} />
             : <UnsignedButtonGroup signInTo='sign-in' signUpTo='sign-up' />}
         </ButtonGroup>
       </Header>
       <Section>
-        <SideMenu links={data?.menuList ?? []} active={menuActive} />
+        <SideMenu links={session?.menuList ?? []} active={menuActive} />
         <ContentWrap>
           <Content>
             <Suspense fallback={<Loading />}>

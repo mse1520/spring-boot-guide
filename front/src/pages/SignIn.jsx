@@ -44,7 +44,7 @@ justify-content: end;
 `;
 
 const SignIn = () => {
-  const { data, isLoading, mutate } = useSWR('/api/user/info', userFetcher);
+  const { data: session, isLoading, mutate } = useSWR('/api/user/info', userFetcher);
   const usernameRef = useRef();
   const passwordRef = useRef();
 
@@ -62,7 +62,7 @@ const SignIn = () => {
   }, []);
 
   if (isLoading) return <Loading />;
-  if (data.user) return <Navigate to='/' />;
+  if (session.user) return <Navigate to='/' />;
 
   return <>
     <Article>

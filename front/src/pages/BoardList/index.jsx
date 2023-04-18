@@ -7,7 +7,7 @@ import {
 } from './style';
 import useIntersection from '../../hooks/useIntersection';
 
-const getKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
+export const getKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
 const boardFetcher = ([url, page]) => getApi(url, { page });
 
 const BoardList = () => {

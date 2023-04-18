@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
+import { SWRConfig } from 'swr';
+import { getKey as boardListKey } from './pages/BoardList';
 
 const Main = lazy(() => import(/* webpackChunkName: 'Main' */ './layouts/Main'));
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
@@ -29,19 +31,28 @@ a {
   text-decoration-line: none;
 }`;
 
-const App = () => <>
+const getServerData = () => JSON.parse(document.querySelector('#preload-data').value);
+
+const App = ({ data }) => <>
   <Global styles={styles} />
-  <Suspense fallback={<Loading />}>
-    <Routes>
-      <Route path='/' element={<Main />}>
-        <Route path='/' element={<Home />} />
-        <Route path='/board/list' element={<BoardList />} />
-      </Route>
-      <Route path='/sign-in' element={<SignIn />} />
-      <Route path='/sign-up' element={<SignUp />} />
-    </Routes>
-  </Suspense>
-</>
+  <SWRConfig value={{
+    fallback: {
+      '/api/user/info': data?.session ?? getServerData().session,
+      [boardListKey]: null
+    }
+  }}>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path='/' element={<Main />}>
+          <Route path='/' element={<Home />} />
+          <Route path='/board/list' element={<BoardList />} />
+        </Route>
+        <Route path='/sign-in' element={<SignIn />} />
+        <Route path='/sign-up' element={<SignUp />} />
+      </Routes>
+    </Suspense>
+  </SWRConfig>
+</>;
 
 export default App;
 
