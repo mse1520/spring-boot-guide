@@ -1,20 +1,21 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
 import Comment from '../../components/BoardInfo/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
-import { boardFetcher, commentFetcher, createComment, getCommentKey } from './fetcher';
+import { commentFetcher, createComment, getCommentKey } from './fetcher';
 import { Content, CreatedDate, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup, Info } from './style';
-import { userFetcher } from '../../utils/fetcher';
+import { boardFetcher, userFetcher } from '../../utils/fetcher';
 import useSWR from 'swr';
 import axios from 'axios';
 
 const BoardInfo = () => {
   const { boardId } = useParams();
+  const navigate = useNavigate();
   const { data: session } = useSWR('/api/user/info', userFetcher);
-  const { data: board, isLoading: isBoardLoading, mutate: boardMutate } = useSWR(`/api/board/info/${boardId}`, boardFetcher);
-  const { data: comments, isLoading: IsCommentsLoading, setSize, mutate: commentsMutate } = useSWRInfinite(getCommentKey(boardId), commentFetcher);
+  const { data: board } = useSWR(`/api/board/info/${boardId}`, boardFetcher);
+  const { data: comments, isLoading, setSize, mutate } = useSWRInfinite(getCommentKey(boardId), commentFetcher);
   const textareaRef = useRef();
   const loaderRef = useRef();
 
@@ -23,12 +24,12 @@ const BoardInfo = () => {
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
     if (isLast) return;
-    if (IsCommentsLoading) return;
+    if (isLoading) return;
     setSize(size => size + 1);
   }, [comments]);
 
   const onClickCreateComment = useCallback(() => {
-    createComment(commentsMutate, { data: comments, boardId, content: textareaRef.current.innerText, username: session.user.name });
+    createComment(mutate, { data: comments, boardId, content: textareaRef.current.innerText, username: session.user.name });
     textareaRef.current.innerText = '';
   }, [comments]);
 
@@ -36,12 +37,9 @@ const BoardInfo = () => {
     axios.delete(`/api/board/info/${boardId}`)
       .then(res => res.data)
       .then(data => alert(data.message))
-      .then(() => boardMutate(undefined, { revalidate: false }))
+      .then(() => navigate('/board/list', { replace: true }))
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
   }, []);
-
-  if (!board && !isBoardLoading)
-    return <Navigate to='/board/list' replace={true} />;
 
   return <>
     <Header>

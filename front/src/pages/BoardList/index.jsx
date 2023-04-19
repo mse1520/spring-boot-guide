@@ -7,7 +7,7 @@ import {
 import useIntersection from '../../hooks/useIntersection';
 import axios from 'axios';
 
-export const getBoardsKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
+const getBoardsKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
 const boardsFetcher = ([url, page]) => axios.get(url, { params: { page } }).then(res => res.data);
 
 const BoardList = () => {
@@ -40,7 +40,7 @@ const BoardList = () => {
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
       .then(() => mutate());
   }, [boards]);
-  
+
   return <>
     <Header>
       <h2>전체글 보기</h2>

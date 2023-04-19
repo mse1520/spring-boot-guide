@@ -13,7 +13,6 @@ const getNow = () => {
   return `${year}-${month}-${date} ${hour}:${minute}:${second}`;
 };
 
-export const boardFetcher = url => axios.get(url).then(res => res.data.body);
 export const getCommentKey = boardId => (page, prevData) => prevData?.isLast ? null : ['/api/comment/list', boardId, page];
 export const commentFetcher = ([url, boardId, page]) => axios.get(url, { params: { boardId, page } }).then(res => res.data);
 
