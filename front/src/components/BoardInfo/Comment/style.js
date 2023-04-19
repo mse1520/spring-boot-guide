@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import DeleteImg from '../../common/DeleteImg';
 import EditingImg from '../../common/EditingImg';
 

@@ -1,6 +1,6 @@
 import CommentMode from '../../types/BoardDetail/CommentMode';
-import { deleteApi, getApi, postApi, putApi } from '../../utils/api';
 import { lPad } from '../../utils';
+import axios from 'axios';
 
 const getNow = () => {
   const now = new Date();
@@ -13,8 +13,9 @@ const getNow = () => {
   return `${year}-${month}-${date} ${hour}:${minute}:${second}`;
 };
 
-export const getKey = boardId => (page, prevData) => prevData?.isLast ? null : ['/api/comment/list', boardId, page];
-export const commentFetcher = ([url, boardId, page]) => getApi(url, { boardId, page });
+export const boardFetcher = url => axios.get(url).then(res => res.data.body);
+export const getCommentKey = boardId => (page, prevData) => prevData?.isLast ? null : ['/api/comment/list', boardId, page];
+export const commentFetcher = ([url, boardId, page]) => axios.get(url, { params: { boardId, page } }).then(res => res.data);
 
 export const deleteComment = (mutate, { data, commentId }) => {
   const _data = data.map(item => {
@@ -23,8 +24,8 @@ export const deleteComment = (mutate, { data, commentId }) => {
   });
 
   mutate(_data, { revalidate: false });
-  deleteApi(`/api/comment/info/${commentId}`)
-    .catch(err => err.message ? alert(err.message) : console.error(err))
+  axios.delete(`/api/comment/info/${commentId}`)
+    .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
     .then(() => mutate());
 };
 export const enableEditing = (mutate, { data, commentId }) => {
@@ -58,8 +59,8 @@ export const updateComment = (mutate, { data, commentId, content }) => {
   })
 
   mutate(_data, { revalidate: false });
-  putApi(`/api/comment/info/${commentId}`, { content })
-    .catch(err => err.message ? alert(err.message) : console.error(err))
+  axios.put(`/api/comment/info/${commentId}`, { content })
+    .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
     .then(() => mutate());
 };
 
@@ -71,7 +72,7 @@ export const createComment = (mutate, { data, boardId, content, username }) => {
       : { ...item });
 
   mutate(_data, { revalidate: false });
-  postApi('/api/comment/write', { boardId, content })
-    .catch(err => err.message ? alert(err.message) : console.error(err))
+  axios.post('/api/comment/write', { boardId, content })
+    .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
     .then(() => mutate());
 };

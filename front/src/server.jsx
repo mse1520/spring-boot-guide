@@ -9,13 +9,15 @@ import Document from './Document';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import axios from 'axios';
 
+const IS_DEV = process.env.NODE_ENV === 'development';
 const PORT = 4005;
 const API_SERVER = 'http://localhost:4001';
 const apiAxios = axios.create({ baseURL: API_SERVER });
 const app = express();
 
-app.use('/api', createProxyMiddleware({ target: API_SERVER, cookiePathRewrite: { '/api': '/' } }));
-app.use(morgan('dev'));
+if (IS_DEV)
+  app.use('/api', createProxyMiddleware({ target: API_SERVER, cookiePathRewrite: { '/api': '/' } }));
+app.use(morgan(IS_DEV ? 'dev' : 'combined'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

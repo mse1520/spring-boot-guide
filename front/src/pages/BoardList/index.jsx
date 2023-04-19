@@ -7,11 +7,11 @@ import {
 import useIntersection from '../../hooks/useIntersection';
 import axios from 'axios';
 
-export const getKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
-const boardFetcher = ([url, page]) => axios.get(url, { params: { page } }).then(res => res.data);
+export const getBoardsKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/list', page];
+const boardsFetcher = ([url, page]) => axios.get(url, { params: { page } }).then(res => res.data);
 
 const BoardList = () => {
-  const { data: boards, isLoading, setSize, mutate } = useSWRInfinite(getKey, boardFetcher);
+  const { data: boards, isLoading, setSize, mutate } = useSWRInfinite(getBoardsKey, boardsFetcher);
   const loaderRef = useRef();
 
   const isLast = useMemo(() => boards?.[boards.length - 1].isLast, [boards]);
@@ -21,7 +21,7 @@ const BoardList = () => {
     if (isLast) return;
     if (isLoading) return;
     setSize(size => size + 1);
-  }, [isLoading, isLast]);
+  }, [boards]);
 
   const onClickDelete = useCallback(boardId => e => {
     e.preventDefault();
@@ -40,7 +40,7 @@ const BoardList = () => {
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
       .then(() => mutate());
   }, [boards]);
-
+  
   return <>
     <Header>
       <h2>전체글 보기</h2>

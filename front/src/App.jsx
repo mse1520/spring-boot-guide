@@ -3,13 +3,14 @@ import { Route, Routes } from 'react-router-dom';
 import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 import { SWRConfig } from 'swr';
-import { getKey as boardListKey } from './pages/BoardList';
+import { getBoardsKey } from './pages/BoardList';
 import { getServerData } from './utils/preload';
 
 const Main = lazy(() => import(/* webpackChunkName: 'Main' */ './layouts/Main'));
 const Home = lazy(() => import(/* webpackChunkName: 'Home' */ './pages/Home'));
 const BoardList = lazy(() => import(/* webpackChunkName: 'BoardList' */ './pages/BoardList'));
 const BoardWrite = lazy(() => import(/* webpackChunkName: 'BoardWrite' */ './pages/BoardWrite'));
+const BoardInfo = lazy(() => import(/* webpackChunkName: 'BoardInfo' */ './pages/BoardInfo'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 
@@ -33,27 +34,30 @@ a {
   text-decoration-line: none;
 }`;
 
-const App = ({ data }) => <>
-  <Global styles={styles} />
-  <SWRConfig value={{
-    fallback: {
-      '/api/user/info': data?.session ?? getServerData().session,
-      [boardListKey]: null
-    }
-  }}>
-    <Suspense fallback={<Loading />}>
-      <Routes>
-        <Route path='/' element={<Main />}>
-          <Route path='/' element={<Home />} />
-          <Route path='/board/list' element={<BoardList />} />
-          <Route path='/board/write' element={<BoardWrite />} />
-        </Route>
-        <Route path='/sign-in' element={<SignIn />} />
-        <Route path='/sign-up' element={<SignUp />} />
-      </Routes>
-    </Suspense>
-  </SWRConfig>
-</>;
+const App = ({ data }) => {
+  return <>
+    <Global styles={styles} />
+    <SWRConfig value={{
+      fallback: {
+        '/api/user/info': data?.session ?? getServerData().session,
+        [getBoardsKey]: null
+      }
+    }}>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path='/' element={<Main />}>
+            <Route path='/' element={<Home />} />
+            <Route path='/board/list' element={<BoardList />} />
+            <Route path='/board/write' element={<BoardWrite />} />
+            <Route path='/board/info/:boardId' element={<BoardInfo />} />
+          </Route>
+          <Route path='/sign-in' element={<SignIn />} />
+          <Route path='/sign-up' element={<SignUp />} />
+        </Routes>
+      </Suspense>
+    </SWRConfig>
+  </>;
+};
 
 export default App;
 

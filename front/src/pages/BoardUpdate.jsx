@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { redirect, useFetcher, useLoaderData, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';

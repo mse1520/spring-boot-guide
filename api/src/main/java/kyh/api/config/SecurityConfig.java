@@ -34,7 +34,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/comment/write", "/comment/info/*").authenticated()
-            .requestMatchers(HttpMethod.POST, "/board/write", "/board/info/**").hasAnyRole(
+            .requestMatchers(HttpMethod.POST, "/board/write", "/board/info/**").hasAnyAuthority(
                 UserRole.SUPER.getValue(),
                 UserRole.ADMIN.getValue())
             .anyRequest().permitAll())

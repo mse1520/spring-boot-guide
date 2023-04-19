@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { CommentContext } from '.';
 import CommentMode from '../../../types/BoardDetail/CommentMode';
 import EditingForm from './EditingForm';

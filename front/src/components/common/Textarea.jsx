@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 const StyledTextarea = styled.div`
 background-color: whitesmoke;

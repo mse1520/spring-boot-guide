@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
@@ -39,8 +39,8 @@ const BoardWrite = () => {
     axios.post('/api/board/write', data)
       .then(res => res.data)
       .then(data => alert(data.message))
-      .then(() => setDisabled(false))
-      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
+      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
+      .finally(() => setDisabled(false));
   }, []);
 
   if (!AUTH_LIST.includes(session.user?.role))

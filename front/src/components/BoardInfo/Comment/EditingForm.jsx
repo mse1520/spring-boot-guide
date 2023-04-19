@@ -1,11 +1,11 @@
 import React, { useCallback, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { CommentContext } from '.';
 import { DefaultButton } from '../../../styles/button';
 import Textarea from '../../common/Textarea';
-import { cancelEditing, commentFetcher, getKey, updateComment } from '../../../pages/BoardInfo/fetcher';
+import { cancelEditing, commentFetcher, getCommentKey, updateComment } from '../../../pages/BoardInfo/fetcher';
 
 const Wrap = styled.div`
 display: flex;
@@ -24,7 +24,7 @@ justify-content: end;
 
 const EditingForm = () => {
   const { boardId } = useParams();
-  const { data, mutate } = useSWRInfinite(getKey(boardId), commentFetcher, { revalidateOnMount: false });
+  const { data, mutate } = useSWRInfinite(getCommentKey(boardId), commentFetcher, { revalidateOnMount: false });
   const { comment } = useContext(CommentContext);
   const cotentRef = useRef();
 

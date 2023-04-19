@@ -1,52 +1,52 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
 import Comment from '../../components/BoardInfo/Comment';
 import useIntersection from '../../hooks/useIntersection';
 import { DefaultButton } from '../../styles/button';
-import { deleteApi, getApi } from '../../utils/api';
-import { commentFetcher, createComment, getKey } from './fetcher';
+import { boardFetcher, commentFetcher, createComment, getCommentKey } from './fetcher';
 import { Content, CreatedDate, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup, Info } from './style';
-
-export const loader = ({ params }) => Promise
-  .all([
-    getApi('/api/user/info'),
-    getApi(`/api/board/info/${params.boardId}`)])
-  .then(([{ user, menuList }, { body }]) => ({ user, menuList, board: body }));
+import { userFetcher } from '../../utils/fetcher';
+import useSWR from 'swr';
+import axios from 'axios';
 
 const BoardInfo = () => {
   const { boardId } = useParams();
-  const navigate = useNavigate();
-  const { user, board } = useLoaderData();
-  const { data, isLoading, setSize, mutate } = useSWRInfinite(getKey(boardId), commentFetcher);
+  const { data: session } = useSWR('/api/user/info', userFetcher);
+  const { data: board, isLoading: isBoardLoading, mutate: boardMutate } = useSWR(`/api/board/info/${boardId}`, boardFetcher);
+  const { data: comments, isLoading: IsCommentsLoading, setSize, mutate: commentsMutate } = useSWRInfinite(getCommentKey(boardId), commentFetcher);
   const textareaRef = useRef();
   const loaderRef = useRef();
 
-  const isLast = useMemo(() => data?.[data.length - 1].isLast, [data]);
+  const isLast = useMemo(() => comments?.[comments.length - 1].isLast, [comments]);
 
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
     if (isLast) return;
-    if (isLoading) return;
+    if (IsCommentsLoading) return;
     setSize(size => size + 1);
-  }, [isLoading, isLast]);
+  }, [comments]);
 
   const onClickCreateComment = useCallback(() => {
-    createComment(mutate, { data, boardId, content: textareaRef.current.innerText, username: user.name });
+    createComment(commentsMutate, { data: comments, boardId, content: textareaRef.current.innerText, username: session.user.name });
     textareaRef.current.innerText = '';
-  }, [data]);
+  }, [comments]);
 
   const onClickDeleteBoard = useCallback(() => {
-    deleteApi(`/api/board/info/${boardId}`)
-      .then(v => alert(v.message))
-      .then(() => navigate('/board/list', { replace: true }))
-      .catch(err => err.message ? alert(err.message) : console.error(err));
+    axios.delete(`/api/board/info/${boardId}`)
+      .then(res => res.data)
+      .then(data => alert(data.message))
+      .then(() => boardMutate(undefined, { revalidate: false }))
+      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
   }, []);
+
+  if (!board && !isBoardLoading)
+    return <Navigate to='/board/list' replace={true} />;
 
   return <>
     <Header>
       <TitleWrap>
-        <h2>{board.title}</h2>
+        <h2>{board?.title}</h2>
         <TitleButtonGroup>
           <Link to={`/board/info/${boardId}/update`}><DefaultButton>수정</DefaultButton></Link>
           <DefaultButton onClick={onClickDeleteBoard}>삭제</DefaultButton>
@@ -54,17 +54,17 @@ const BoardInfo = () => {
       </TitleWrap>
       <Info>
         <div>
-          <Username>{board.username}</Username>
-          <CreatedDate>{board.createdDate}</CreatedDate>
+          <Username>{board?.username}</Username>
+          <CreatedDate>{board?.createdDate}</CreatedDate>
         </div>
-        <div>댓글수: {data?.[data.length - 1].total}</div>
+        <div>댓글수: {comments?.[comments.length - 1].total}</div>
       </Info>
     </Header>
     <section>
-      <Content>{board.content}</Content>
+      <Content>{board?.content}</Content>
       <Hr />
-      {data?.map(({ body }) => body.map((comment, i) =>
-        <Comment key={i} username={user ? user.name : board.username} comment={comment} />))}
+      {comments?.map(({ body }) => body.map((comment, i) =>
+        <Comment key={i} username={session.user ? session.user.name : board?.username} comment={comment} />))}
       <div ref={loaderRef} />
     </section>
     <Footer>
