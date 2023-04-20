@@ -1,7 +1,7 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import styled from '@emotion/styled';
 
-const StyledTextarea = styled.div`
+const Div = styled.div`
 background-color: whitesmoke;
 color: rgb(30, 30, 30);
 width: 100%;
@@ -18,6 +18,13 @@ word-break: break-all;
   color: dimgray;
 }`;
 
-const Textarea = forwardRef((props, ref) => <StyledTextarea contentEditable suppressContentEditableWarning ref={ref} {...props} />);
+const Textarea = forwardRef((props, ref) => {
+  const onInput = useCallback(e => {
+    e.target.value = e.target.innerText;
+    props.onChange?.(e);
+  }, [props.onChange]);
+
+  return <Div {...props} contentEditable suppressContentEditableWarning ref={ref} onInput={onInput} defaultValue={props.value} />;
+});
 
 export default Textarea;

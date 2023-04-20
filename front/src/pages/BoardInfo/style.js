@@ -60,6 +60,7 @@ margin-bottom: .5rem;
 
 export const StyledTextarea = styled(Textarea)`
 height: 5rem;
+overflow: auto;
 `;
 
 export const Footer = styled.footer`

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useTransition } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import useSWRInfinite from 'swr/infinite'
 import Comment from '../../components/BoardInfo/Comment';
@@ -16,8 +16,9 @@ const BoardInfo = () => {
   const { data: session } = useSWR('/api/user/info', userFetcher);
   const { data: board } = useSWR(`/api/board/info/${boardId}`, boardFetcher);
   const { data: comments, isLoading, setSize, mutate } = useSWRInfinite(getCommentKey(boardId), commentFetcher);
-  const textareaRef = useRef();
+  const [content, setContent] = useState('');
   const loaderRef = useRef();
+  const [isPending, startTransition] = useTransition();
 
   const isLast = useMemo(() => comments?.[comments.length - 1].isLast, [comments]);
 
@@ -28,10 +29,12 @@ const BoardInfo = () => {
     setSize(size => size + 1);
   }, [comments]);
 
+  const onChangeContent = useCallback(e => startTransition(() => setContent(e.target.value)), []);
+
   const onClickCreateComment = useCallback(() => {
-    createComment(mutate, { data: comments, boardId, content: textareaRef.current.innerText, username: session.user.name });
-    textareaRef.current.innerText = '';
-  }, [comments]);
+    createComment(mutate, { data: comments, boardId, content, username: session.user.name });
+    setContent('');
+  }, [comments, content]);
 
   const onClickDeleteBoard = useCallback(() => {
     axios.delete(`/api/board/info/${boardId}`)
@@ -66,7 +69,7 @@ const BoardInfo = () => {
       <div ref={loaderRef} />
     </section>
     <Footer>
-      <StyledTextarea ref={textareaRef} placeholder='댓글을 남겨보세요.' />
+      <StyledTextarea placeholder='댓글을 남겨보세요.' value={content} onChange={onChangeContent} />
       <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
     </Footer>
   </>;

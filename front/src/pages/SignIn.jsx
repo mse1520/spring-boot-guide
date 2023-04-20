@@ -5,7 +5,6 @@ import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
 import { Navigate } from 'react-router-dom';
-import Loading from '../components/common/Loading';
 import { userFetcher } from '../utils/fetcher';
 import axios from 'axios';
 
@@ -44,7 +43,7 @@ justify-content: end;
 `;
 
 const SignIn = () => {
-  const { data: session, isLoading, mutate } = useSWR('/api/user/info', userFetcher);
+  const { data: session, mutate } = useSWR('/api/user/info', userFetcher);
   const usernameRef = useRef();
   const passwordRef = useRef();
 
@@ -62,7 +61,6 @@ const SignIn = () => {
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
   }, []);
 
-  if (isLoading) return <Loading />;
   if (session.user) return <Navigate to='/' />;
 
   return <>
