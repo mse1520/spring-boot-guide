@@ -64,7 +64,7 @@ const Main = () => {
         </ButtonGroup>
       </Header>
       <Section>
-        <SideMenu links={session?.menuList ?? []} active={menuActive} />
+        <SideMenu links={session.menuList} active={menuActive} />
         <ContentWrap>
           <Content>
             <Suspense fallback={<Loading />}>

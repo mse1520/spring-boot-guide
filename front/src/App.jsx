@@ -55,7 +55,6 @@ const App = ({ data }) => {
           <Route path='/sign-in' element={<SignIn />} />
           <Route path='/sign-up' element={<SignUp />} />
           <Route path='/404' element={<NotFound />} />
-          <Route path='*' element={<Navigate to='/404' replace={true} />} />
         </Routes>
       </Suspense>
     </SWRConfig>

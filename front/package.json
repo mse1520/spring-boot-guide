@@ -1,10 +1,11 @@
 {
-  "name": "make-a-general",
+  "name": "spring-boot-guide",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development concurrently \"npm run watch-client\" \"npm run watch-server\" \"npm run dev-server\"",
+    "build": "concurrently \"npm run build-client\" \"npm run build-server\"",
     "dev-server": "nodemon -i ./src/server.js ./build/server.js",
     "build-client": "webpack",
     "build-server": "webpack --config ./.webpack/webpack.config.server.js",
@@ -14,31 +15,31 @@
   "author": "kyh",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.19.3",
-    "@babel/core": "^7.20.2",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
-    "babel-loader": "^9.1.0",
+    "babel-loader": "^9.1.2",
     "concurrently": "^7.6.0",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "http-proxy-middleware": "^2.0.6",
     "nodemon": "^2.0.22",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.0",
+    "webpack": "^5.80.0",
+    "webpack-cli": "^5.0.2",
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
-    "axios": "^1.2.0",
+    "axios": "^1.3.6",
     "cookie-parser": "^1.4.6",
-    "core-js": "^3.26.1",
+    "core-js": "^3.30.1",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.3",
-    "swr": "^2.1.0"
+    "react-router-dom": "^6.10.0",
+    "swr": "^2.1.3"
   }
 }
