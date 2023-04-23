@@ -21,16 +21,10 @@ app.use(morgan(IS_DEV ? 'dev' : 'combined'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('*', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
-    .then(res => res.data);
-
+const generateHtml = (req, res, data) => {
   const { pipe } = renderToPipeableStream(
     <StaticRouter location={req.url}>
-      <Document data={{ session }} />
+      <Document data={data} />
     </StaticRouter>,
     {
       bootstrapScripts: ['/client.js'],
@@ -40,6 +34,85 @@ app.get('*', async (req, res) => {
       }
     }
   );
+};
+
+app.get('/', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
 });
+
+app.get('/sign-in', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  if (session.user) res.redirect('/');
+
+  generateHtml(req, res, { session });
+});
+
+app.get('/sign-up', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
+});
+
+app.get('/board/list', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
+});
+
+app.get('/board/write', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
+});
+
+app.get('/board/info/:boardId', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
+});
+
+app.get('/board/info/:boardId/update', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', {
+      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
+    })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
+});
+
+app.get('/404', (req, res) => {
+  res.status(404);
+  generateHtml(req, res, {});
+});
+
+app.use((req, res) => res.redirect('/404'));
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));

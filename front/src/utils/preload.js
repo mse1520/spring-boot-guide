@@ -1,1 +1,1 @@
-export const getServerData = () => JSON.parse(document.querySelector('#server-data').value);
+export const getServerData = () => JSON.parse(typeof document !== 'undefined' ? document.querySelector('#server-data').value : '{}');

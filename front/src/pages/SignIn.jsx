@@ -1,12 +1,10 @@
 import React, { useCallback, useRef } from 'react';
 import styled from '@emotion/styled';
-import useSWR from 'swr';
 import { Card } from '../styles/box';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { Navigate } from 'react-router-dom';
-import { userFetcher } from '../utils/fetcher';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Article = styled.article`
 width: 100%;
@@ -43,7 +41,7 @@ justify-content: end;
 `;
 
 const SignIn = () => {
-  const { data: session, mutate } = useSWR('/api/user/info', userFetcher);
+  const navigate = useNavigate();
   const usernameRef = useRef();
   const passwordRef = useRef();
 
@@ -57,11 +55,9 @@ const SignIn = () => {
     axios.post('/api/user/sign-in', form)
       .then(res => res.data)
       .then(data => alert(data.message))
-      .then(mutate)
+      .then(() => navigate('/'))
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
   }, []);
-
-  if (session.user) return <Navigate to='/' />;
 
   return <>
     <Article>

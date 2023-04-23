@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes, useParams } from 'react-router-dom';
 import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 import { SWRConfig } from 'swr';
@@ -35,16 +35,28 @@ a {
   text-decoration-line: none;
 }`;
 
-const App = ({ data }) => {
+const AppLayout = ({ data }) => {
+  const { boardId } = useParams();
+
+  console.log(boardId)
+
   return <>
-    <Global styles={styles} />
     <SWRConfig value={{
       fallback: {
         '/api/user/info': data?.session ?? getServerData().session,
       }
     }}>
-      <Suspense fallback={<Loading />}>
-        <Routes>
+      <Outlet />
+    </SWRConfig>
+  </>;
+};
+
+const App = ({ data }) => {
+  return <>
+    <Global styles={styles} />
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path='/' element={<AppLayout data={data} />}>
           <Route path='/' element={<Main />}>
             <Route path='/' element={<Home />} />
             <Route path='/board/list' element={<BoardList />} />
@@ -55,9 +67,9 @@ const App = ({ data }) => {
           <Route path='/sign-in' element={<SignIn />} />
           <Route path='/sign-up' element={<SignUp />} />
           <Route path='/404' element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </SWRConfig>
+        </Route>
+      </Routes>
+    </Suspense>
   </>;
 };
 

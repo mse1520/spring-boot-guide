@@ -26,7 +26,7 @@ const Textarea = forwardRef((props, ref) => {
 
   useEffect(() => {
     const wrapEl = wrapRef.current.querySelector('div');
-    if (wrapEl.innerText !== props.value) wrapEl.innerText = props.value;
+    if (wrapEl.innerText !== (props.value ?? '')) wrapEl.innerText = props.value;
   }, [props.value]);
 
   const onInput = useCallback(e => {
