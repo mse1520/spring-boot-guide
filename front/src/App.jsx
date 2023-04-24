@@ -38,7 +38,7 @@ a {
 const AppLayout = ({ data }) => {
   const { boardId } = useParams();
 
-  console.log(boardId)
+  // console.log(boardId)
 
   return <>
     <SWRConfig value={{

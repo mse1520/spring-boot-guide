@@ -33,7 +33,7 @@ const BoardWrite = () => {
 
     const data = {
       title: titleRef.current.value,
-      content: contentRef.current.innerText
+      content: contentRef.current.value
     };
 
     axios.post('/api/board/write', data)

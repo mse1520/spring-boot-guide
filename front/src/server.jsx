@@ -36,11 +36,11 @@ const generateHtml = (req, res, data) => {
   );
 };
 
+const cookieToString = cookies => Object.entries(cookies).map(cookie => cookie.join('=')).join('; ');
+
 app.get('/', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   generateHtml(req, res, { session });
@@ -48,9 +48,7 @@ app.get('/', async (req, res) => {
 
 app.get('/sign-in', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   if (session.user) res.redirect('/');
@@ -60,9 +58,7 @@ app.get('/sign-in', async (req, res) => {
 
 app.get('/sign-up', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   generateHtml(req, res, { session });
@@ -70,9 +66,7 @@ app.get('/sign-up', async (req, res) => {
 
 app.get('/board/list', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   generateHtml(req, res, { session });
@@ -80,9 +74,7 @@ app.get('/board/list', async (req, res) => {
 
 app.get('/board/write', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   generateHtml(req, res, { session });
@@ -90,9 +82,7 @@ app.get('/board/write', async (req, res) => {
 
 app.get('/board/info/:boardId', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   generateHtml(req, res, { session });
@@ -100,9 +90,7 @@ app.get('/board/info/:boardId', async (req, res) => {
 
 app.get('/board/info/:boardId/update', async (req, res) => {
   const session = await apiAxios
-    .get('/api/user/info', {
-      headers: { Cookie: Object.entries(req.cookies).map(cookie => cookie.join('=')).join('; ') }
-    })
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
   generateHtml(req, res, { session });

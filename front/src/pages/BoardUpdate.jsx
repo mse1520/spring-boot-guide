@@ -31,12 +31,12 @@ const BoardUpdate = () => {
   const titleRef = useRef();
   const contentRef = useRef();
 
-  const onClick = useCallback(e => {
+  const onClick = useCallback(() => {
     setDisabled(true);
 
     const data = {
       title: titleRef.current.value,
-      content: contentRef.current.innerText
+      content: contentRef.current.value
     };
 
     axios.put(`/api/board/info/${boardId}/update`, data)
@@ -56,7 +56,7 @@ const BoardUpdate = () => {
       <DefaultButton onClick={onClick} disabled={disabled}>등록</DefaultButton>
     </Header>
     <DefaultInput ref={titleRef} placeholder='제목을 입력하세요.' defaultValue={board?.title} />
-    <StyledTextarea ref={contentRef} placeholder='내용을 입력하세요.'>{board?.content}</StyledTextarea>
+    <StyledTextarea ref={contentRef} placeholder='내용을 입력하세요.' value={board?.content} />
   </>;
 };
 

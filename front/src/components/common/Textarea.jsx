@@ -25,8 +25,12 @@ const Textarea = forwardRef((props, ref) => {
   const wrapRef = useRef();
 
   useEffect(() => {
-    const wrapEl = wrapRef.current.querySelector('div');
-    if (wrapEl.innerText !== (props.value ?? '')) wrapEl.innerText = props.value;
+    const childEl = wrapRef.current.querySelector('div');
+    if (childEl.value === undefined) childEl.value = childEl.innerText;
+    if (childEl.innerText !== (props.value ?? '')) {
+      childEl.innerText = props.value;
+      childEl.value = childEl.innerText;
+    }
   }, [props.value]);
 
   const onInput = useCallback(e => {
@@ -36,7 +40,14 @@ const Textarea = forwardRef((props, ref) => {
 
   return <>
     <Wrap ref={wrapRef}>
-      <Div {...props} contentEditable suppressContentEditableWarning ref={ref} onInput={onInput} defaultValue={props.value} />
+      <Div
+        {...props}
+        contentEditable
+        suppressContentEditableWarning
+        ref={ref}
+        onInput={onInput}
+        defaultValue={props.value ?? ''}
+      />
     </Wrap>
   </>;
 });
