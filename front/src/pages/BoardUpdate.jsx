@@ -1,12 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
 import useSWR from 'swr';
 import axios from 'axios';
-import { boardFetcher, userFetcher } from '../utils/fetcher';
+import { boardFetcher } from '../utils/fetcher';
 
 const Header = styled.header`
 display: flex;
@@ -20,12 +20,9 @@ min-height: 20rem;
 margin: 1rem 0;
 `;
 
-const AUTH_LIST = ['SUPER', 'ADMIN'];
-
 const BoardUpdate = () => {
   const { boardId } = useParams();
   const navigate = useNavigate();
-  const { data: session } = useSWR('/api/user/info', userFetcher);
   const { data: board } = useSWR(`/api/board/info/${boardId}`, boardFetcher);
   const [disabled, setDisabled] = useState(false);
   const titleRef = useRef();
@@ -46,9 +43,6 @@ const BoardUpdate = () => {
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
       .finally(() => setDisabled(false));
   }, []);
-
-  if (!AUTH_LIST.includes(session.user?.role))
-    return <Navigate to='/' replace={true} />;
 
   return <>
     <Header>

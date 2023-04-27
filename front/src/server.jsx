@@ -8,6 +8,7 @@ import { StaticRouter } from 'react-router-dom/server';
 import Document from './Document';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import axios from 'axios';
+import { getPaths, routes } from './route';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 const PORT = 4005;
@@ -37,6 +38,23 @@ const generateHtml = (req, res, data) => {
 };
 
 const cookieToString = cookies => Object.entries(cookies).map(cookie => cookie.join('=')).join('; ');
+
+const objRoutes = getPaths(routes).reduce((acc, cur) => {
+  acc[cur] = (req, res) => apiAxios
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
+    .then(res => res.data)
+    .then(session => generateHtml(req, res, { session }));
+
+  return acc;
+}, {});
+
+app.get('/', async (req, res) => {
+  const session = await apiAxios
+    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
+    .then(res => res.data);
+
+  generateHtml(req, res, { session });
+});
 
 app.get('/', async (req, res) => {
   const session = await apiAxios
@@ -76,6 +94,9 @@ app.get('/board/write', async (req, res) => {
   const session = await apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
+
+  if (!session.menuList.map(menu => menu.path).includes(req.url))
+    return res.redirect('/');
 
   generateHtml(req, res, { session });
 });

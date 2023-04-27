@@ -3,9 +3,6 @@ import styled from '@emotion/styled';
 import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
-import { userFetcher } from '../utils/fetcher';
-import useSWR from 'swr';
-import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Header = styled.header`
@@ -20,10 +17,7 @@ min-height: 20rem;
 margin: 1rem 0;
 `;
 
-const AUTH_LIST = ['SUPER', 'ADMIN'];
-
 const BoardWrite = () => {
-  const { data: session } = useSWR('/api/user/info', userFetcher);
   const [disabled, setDisabled] = useState(false);
   const titleRef = useRef();
   const contentRef = useRef();
@@ -42,9 +36,6 @@ const BoardWrite = () => {
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
       .finally(() => setDisabled(false));
   }, []);
-
-  if (!AUTH_LIST.includes(session.user?.role))
-    return <Navigate to='/' replace={true} />;
 
   return <>
     <Header>
