@@ -3,7 +3,7 @@ import { Outlet, Route, Routes, useParams } from 'react-router-dom';
 import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 import { SWRConfig } from 'swr';
-import { getServerData } from './utils/preload';
+import { ServerProvider, useServerData } from './utils/preload';
 import { createRouter } from './route';
 
 const styles = css`
@@ -26,15 +26,16 @@ a {
   text-decoration-line: none;
 }`;
 
-const AppLayout = ({ data }) => {
+const AppLayout = () => {
+  const data = useServerData();
   const { boardId } = useParams();
 
-  // console.log(boardId)
+  console.log(boardId)
 
   return <>
     <SWRConfig value={{
       fallback: {
-        '/api/user/info': data?.session ?? getServerData()?.session,
+        '/api/user/info': data?.session,
       }
     }}>
       <Outlet />
@@ -42,17 +43,17 @@ const AppLayout = ({ data }) => {
   </>;
 };
 
-const App = ({ data }) => {
-  return <>
-    <Global styles={styles} />
+const App = ({ data }) => <>
+  <Global styles={styles} />
+  <ServerProvider value={data}>
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route path='/' element={<AppLayout data={data} />}>
+        <Route path='/' element={<AppLayout />}>
           {createRouter()}
         </Route>
       </Routes>
     </Suspense>
-  </>;
-};
+  </ServerProvider>
+</>;
 
 export default App;

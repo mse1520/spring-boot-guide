@@ -1,1 +1,0 @@
-export const getServerData = () => JSON.parse(typeof document !== 'undefined' ? document.querySelector('#server-data').value : null);

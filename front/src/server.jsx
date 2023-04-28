@@ -10,6 +10,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import axios from 'axios';
 import { getPaths } from './route';
 import { BOARD_WRITABLE } from './utils/auth';
+import { cookieToString } from './utils';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 const PORT = 4005;
@@ -38,9 +39,7 @@ const generateHtml = (req, res, data) => {
   );
 };
 
-const cookieToString = cookies => Object.entries(cookies).map(cookie => cookie.join('=')).join('; ');
-
-const objRoutes = getPaths().reduce((acc, cur) => {
+const routes = getPaths().reduce((acc, cur) => {
   acc[cur] = (req, res) => apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data)
@@ -49,7 +48,7 @@ const objRoutes = getPaths().reduce((acc, cur) => {
   return acc;
 }, {});
 
-objRoutes['/board/write'] = async (req, res) => {
+routes['/board/write'] = async (req, res) => {
   const session = await apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
@@ -60,7 +59,7 @@ objRoutes['/board/write'] = async (req, res) => {
   generateHtml(req, res, { session });
 };
 
-objRoutes['/board/info/:boardId/update'] = async (req, res) => {
+routes['/board/info/:boardId/update'] = async (req, res) => {
   const session = await apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
@@ -71,12 +70,12 @@ objRoutes['/board/info/:boardId/update'] = async (req, res) => {
   generateHtml(req, res, { session });
 };
 
-objRoutes['/not-found'] = (req, res) => {
+routes['/not-found'] = (req, res) => {
   res.status(404);
   generateHtml(req, res, {});
 };
 
-Object.entries(objRoutes).forEach(([path, handler]) => app.get(path, handler));
+Object.entries(routes).forEach(([path, handler]) => app.get(path, handler));
 
 app.use((req, res) => res.redirect('/not-found'));
 
