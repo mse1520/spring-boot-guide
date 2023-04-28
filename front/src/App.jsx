@@ -30,6 +30,7 @@ const AppLayout = () => {
   const data = useServerData();
   const { boardId } = useParams();
 
+  // `/api/board/info/${boardId}`
   console.log(boardId)
 
   return <>

@@ -44,7 +44,7 @@ public class BoardController {
   }
 
   /** 게시글 조회 api */
-  @GetMapping(value = "/list")
+  @GetMapping(value = "/info")
   public DataBox<List<BoardInfo>> list(@RequestParam Integer page) {
     return boardService.list(page);
   }

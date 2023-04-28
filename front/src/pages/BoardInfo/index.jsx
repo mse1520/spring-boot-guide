@@ -1,77 +1,72 @@
-import React, { useCallback, useMemo, useRef, useState, useTransition } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import React, { useCallback, useMemo, useRef } from 'react';
 import useSWRInfinite from 'swr/infinite'
-import Comment from '../../components/BoardInfo/Comment';
+import {
+  Content, ContentWrap, FakeCard, Header, StyledDeleteImg, SearchGroup, Section,
+  StyledButton, StyledCard, StyledInput, Title, Username, StyledLink
+} from './style';
 import useIntersection from '../../hooks/useIntersection';
-import { DefaultButton } from '../../styles/button';
-import { commentFetcher, createComment, getCommentKey } from './fetcher';
-import { Content, CreatedDate, Header, Hr, StyledTextarea, Username, Footer, TitleWrap, TitleButtonGroup, Info } from './style';
-import { boardFetcher, userFetcher } from '../../utils/fetcher';
-import useSWR from 'swr';
 import axios from 'axios';
 
-const BoardInfo = () => {
-  const { boardId } = useParams();
-  const navigate = useNavigate();
-  const { data: session } = useSWR('/api/user/info', userFetcher);
-  const { data: board } = useSWR(`/api/board/info/${boardId}`, boardFetcher);
-  const { data: comments, isLoading, setSize, mutate } = useSWRInfinite(getCommentKey(boardId), commentFetcher);
-  const [content, setContent] = useState('');
-  const loaderRef = useRef();
-  const [isPending, startTransition] = useTransition();
+const getBoardsKey = (page, prevData) => prevData?.isLast ? null : ['/api/board/info', page];
+const boardsFetcher = ([url, page]) => axios.get(url, { params: { page } }).then(res => res.data);
 
-  const isLast = useMemo(() => comments?.[comments.length - 1].isLast, [comments]);
+const BoardInfo = () => {
+  const { data: boards, isLoading, setSize, mutate } = useSWRInfinite(getBoardsKey, boardsFetcher);
+  const loaderRef = useRef();
+
+  const isLast = useMemo(() => boards?.[boards.length - 1].isLast, [boards]);
 
   useIntersection(loaderRef, ([entry]) => {
     if (!entry.isIntersecting) return;
     if (isLast) return;
     if (isLoading) return;
     setSize(size => size + 1);
-  }, [comments]);
+  }, [boards]);
 
-  const onChangeContent = useCallback(e => startTransition(() => setContent(e.target.value)), []);
+  const onClickDelete = useCallback(boardId => e => {
+    e.preventDefault();
 
-  const onClickCreateComment = useCallback(() => {
-    createComment(mutate, { data: comments, boardId, content, username: session.user.name });
-    setContent('');
-  }, [comments, content]);
+    if (!confirm('게시글을 삭제하시겠습니까?')) return;
 
-  const onClickDeleteBoard = useCallback(() => {
+    const newData = boards.map(item => {
+      const body = item.body.filter(board => board.id !== boardId);
+      return { ...item, body };
+    });
+
+    mutate(newData, { revalidate: false });
     axios.delete(`/api/board/info/${boardId}`)
       .then(res => res.data)
       .then(data => alert(data.message))
-      .then(() => navigate('/board/list', { replace: true }))
-      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err));
-  }, []);
+      .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
+      .then(() => mutate());
+  }, [boards]);
 
   return <>
     <Header>
-      <TitleWrap>
-        <h2>{board?.title}</h2>
-        <TitleButtonGroup>
-          <Link to={`/board/info/${boardId}/update`}><DefaultButton>수정</DefaultButton></Link>
-          <DefaultButton onClick={onClickDeleteBoard}>삭제</DefaultButton>
-        </TitleButtonGroup>
-      </TitleWrap>
-      <Info>
-        <div>
-          <Username>{board?.username}</Username>
-          <CreatedDate>{board?.createdDate}</CreatedDate>
-        </div>
-        <div>댓글수: {comments?.[comments.length - 1].total}</div>
-      </Info>
+      <h2>전체글 보기</h2>
+      <SearchGroup>
+        <StyledInput />
+        <StyledButton>검색</StyledButton>
+      </SearchGroup>
     </Header>
-    <section>
-      <Content>{board?.content}</Content>
-      <Hr />
-      {comments?.map(({ body }) => body.map((comment, i) =>
-        <Comment key={i} username={session.user ? session.user.name : board?.username} comment={comment} />))}
-      <div ref={loaderRef} />
-    </section>
-    <Footer>
-      <StyledTextarea placeholder='댓글을 남겨보세요.' value={content} onChange={onChangeContent} />
-      <DefaultButton onClick={onClickCreateComment}>등록</DefaultButton>
-    </Footer>
+    <Section>
+      {boards?.map(({ body }) => body.map((board, i) =>
+        <StyledLink key={i} to={`/board/info/${board.id}`}>
+          <StyledCard>
+            <StyledDeleteImg onClick={onClickDelete(board.id)} />
+            <Title>{board.title}</Title>
+            <ContentWrap>
+              <Content>{board.content}</Content>
+              <Username>{board.username}</Username>
+              <div>{board.createdDate}</div>
+            </ContentWrap>
+          </StyledCard>
+        </StyledLink>
+      ))}
+      <FakeCard />
+      <FakeCard />
+      <FakeCard ref={loaderRef} />
+    </Section>
   </>;
 };
 

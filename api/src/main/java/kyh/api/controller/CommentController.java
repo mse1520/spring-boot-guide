@@ -49,7 +49,7 @@ public class CommentController {
   }
 
   /** 댓글 리스트 api */
-  @GetMapping(value = "/list")
+  @GetMapping(value = "/info")
   public ResponseEntity<DataBox<List<CommentInfo>>> list(@Validated CommentListForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
