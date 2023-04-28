@@ -8,7 +8,8 @@ import { StaticRouter } from 'react-router-dom/server';
 import Document from './Document';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import axios from 'axios';
-import { getPaths, routes } from './route';
+import { getPaths } from './route';
+import { BOARD_WRITABLE } from './utils/auth';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 const PORT = 4005;
@@ -16,11 +17,11 @@ const API_SERVER = 'http://localhost:4001';
 const apiAxios = axios.create({ baseURL: API_SERVER });
 const app = express();
 
-if (IS_DEV)
-  app.use('/api', createProxyMiddleware({ target: API_SERVER, cookiePathRewrite: { '/api': '/' } }));
 app.use(morgan(IS_DEV ? 'dev' : 'combined'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+if (IS_DEV)
+  app.use('/api', createProxyMiddleware({ target: API_SERVER, cookiePathRewrite: { '/api': '/' } }));
 
 const generateHtml = (req, res, data) => {
   const { pipe } = renderToPipeableStream(
@@ -39,7 +40,7 @@ const generateHtml = (req, res, data) => {
 
 const cookieToString = cookies => Object.entries(cookies).map(cookie => cookie.join('=')).join('; ');
 
-const objRoutes = getPaths(routes).reduce((acc, cur) => {
+const objRoutes = getPaths().reduce((acc, cur) => {
   acc[cur] = (req, res) => apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data)
@@ -48,80 +49,35 @@ const objRoutes = getPaths(routes).reduce((acc, cur) => {
   return acc;
 }, {});
 
-app.get('/', async (req, res) => {
+objRoutes['/board/write'] = async (req, res) => {
   const session = await apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
-  generateHtml(req, res, { session });
-});
-
-app.get('/', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
-
-  generateHtml(req, res, { session });
-});
-
-app.get('/sign-in', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
-
-  if (session.user) res.redirect('/');
-
-  generateHtml(req, res, { session });
-});
-
-app.get('/sign-up', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
-
-  generateHtml(req, res, { session });
-});
-
-app.get('/board/list', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
-
-  generateHtml(req, res, { session });
-});
-
-app.get('/board/write', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
-
-  if (!session.menuList.map(menu => menu.path).includes(req.url))
+  if (!BOARD_WRITABLE.includes(session.user?.role))
     return res.redirect('/');
 
   generateHtml(req, res, { session });
-});
+};
 
-app.get('/board/info/:boardId', async (req, res) => {
+objRoutes['/board/info/:boardId/update'] = async (req, res) => {
   const session = await apiAxios
     .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
     .then(res => res.data);
 
-  generateHtml(req, res, { session });
-});
-
-app.get('/board/info/:boardId/update', async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
+  if (!BOARD_WRITABLE.includes(session.user?.role))
+    return res.redirect('/');
 
   generateHtml(req, res, { session });
-});
+};
 
-app.get('/404', (req, res) => {
+objRoutes['/not-found'] = (req, res) => {
   res.status(404);
   generateHtml(req, res, {});
-});
+};
 
-app.use((req, res) => res.redirect('/404'));
+Object.entries(objRoutes).forEach(([path, handler]) => app.get(path, handler));
+
+app.use((req, res) => res.redirect('/not-found'));
 
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));

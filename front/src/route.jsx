@@ -11,7 +11,7 @@ const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignI
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
 const NotFound = lazy(() => import(/* webpackChunkName: 'NotFound' */ './pages/NotFound'));
 
-export const routes = [
+const routes = [
   {
     path: '/',
     element: <Main />,
@@ -28,19 +28,26 @@ export const routes = [
   { path: '/not-found', element: <NotFound /> },
 ];
 
-export const createRouter = routes => routes.map(route =>
-  <Route key={route.path} path={route.path} element={route.element}>
-    {route?.children ? createRouter(route.children) : undefined}
-  </Route>);
+export const createRouter = () => {
+  const recur = routes => routes.map(route =>
+    <Route key={route.path} path={route.path} element={route.element}>
+      {route?.children ? recur(route.children) : undefined}
+    </Route>);
+
+  return recur(routes);
+};
 
 /**
  * 등록된 라우트의 모든 경로를 반환합니다
- * @param {*} routes 
  * @returns {string[]} 모든경로 배열
  */
-export const getPaths = routes => routes
-  .map(route => route?.children
-    ? getPaths(route.children).map(path => `${route.path}/${path}`)
-    : route.path)
-  .flat(Infinity)
-  .map(path => path.replace(/\/{2,}/g, '/'));
+export const getPaths = () => {
+  const recur = routes => routes
+    .map(route => route?.children
+      ? recur(route.children).map(path => `${route.path}/${path}`)
+      : route.path)
+    .flat(Infinity)
+    .map(path => path.replace(/\/{2,}/g, '/'));
+
+  return recur(routes);
+};

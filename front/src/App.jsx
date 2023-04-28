@@ -4,7 +4,7 @@ import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 import { SWRConfig } from 'swr';
 import { getServerData } from './utils/preload';
-import { createRouter, routes } from './route';
+import { createRouter } from './route';
 
 const styles = css`
 html, body, #root {
@@ -34,7 +34,7 @@ const AppLayout = ({ data }) => {
   return <>
     <SWRConfig value={{
       fallback: {
-        '/api/user/info': data?.session ?? getServerData().session,
+        '/api/user/info': data?.session ?? getServerData()?.session,
       }
     }}>
       <Outlet />
@@ -48,7 +48,7 @@ const App = ({ data }) => {
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route path='/' element={<AppLayout data={data} />}>
-          {createRouter(routes)}
+          {createRouter()}
         </Route>
       </Routes>
     </Suspense>
