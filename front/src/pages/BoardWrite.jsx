@@ -4,7 +4,7 @@ import Textarea from '../components/common/Textarea';
 import { DefaultButton } from '../styles/button';
 import { DefaultInput } from '../styles/input';
 import axios from 'axios';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import useSWR from 'swr';
 import { userFetcher } from '../utils/fetcher';
 import { BOARD_WRITABLE } from '../utils/auth';
@@ -22,7 +22,6 @@ margin: 1rem 0;
 `;
 
 const BoardWrite = () => {
-  const location = useLocation();
   const { data: session } = useSWR('/api/user/info', userFetcher);
   const [disabled, setDisabled] = useState(false);
   const titleRef = useRef();
@@ -42,8 +41,6 @@ const BoardWrite = () => {
       .catch(err => err.response.data?.message ? alert(err.response.data.message) : console.error(err))
       .finally(() => setDisabled(false));
   }, []);
-
-  console.log(location.pathname)
 
   if (!BOARD_WRITABLE.includes(session.user?.role))
     return <Navigate to='/' replace={true} />;

@@ -1,5 +1,5 @@
-import React, { Suspense } from 'react';
-import { Outlet, Route, Routes, useParams } from 'react-router-dom';
+import React, { Suspense, useMemo } from 'react';
+import { Outlet, Route, Routes, useMatch, useParams } from 'react-router-dom';
 import { css, Global } from '@emotion/react'
 import Loading from './components/common/Loading';
 import { SWRConfig } from 'swr';
@@ -29,16 +29,21 @@ a {
 const AppLayout = () => {
   const data = useServerData();
   const { boardId } = useParams();
+  const boardDetailMatch = useMatch('/board/info/:boardId');
 
   // `/api/board/info/${boardId}`
-  console.log(boardId)
+  // console.log(boardId)
+  console.log(boardDetailMatch)
+  // console.log(data)
+
+  const fallback = useMemo(() => {
+    const result = {};
+    result['/api/user/info'] = data?.session;
+    return result;
+  }, []);
 
   return <>
-    <SWRConfig value={{
-      fallback: {
-        '/api/user/info': data?.session,
-      }
-    }}>
+    <SWRConfig value={{ fallback }}>
       <Outlet />
     </SWRConfig>
   </>;

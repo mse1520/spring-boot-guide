@@ -9,7 +9,7 @@ const BoardDetail = lazy(() => import(/* webpackChunkName: 'BoardDetail' */ './p
 const BoardUpdate = lazy(() => import(/* webpackChunkName: 'BoardUpdate' */ './pages/BoardUpdate'));
 const SignIn = lazy(() => import(/* webpackChunkName: 'SignIn' */ './pages/SignIn'));
 const SignUp = lazy(() => import(/* webpackChunkName: 'SignUp' */ './pages/SignUp'));
-const NotFound = lazy(() => import(/* webpackChunkName: 'NotFound' */ './pages/NotFound'));
+const Error = lazy(() => import(/* webpackChunkName: 'Error' */ './pages/Error'));
 
 const routes = [
   {
@@ -25,7 +25,7 @@ const routes = [
   },
   { path: '/sign-in', element: <SignIn /> },
   { path: '/sign-up', element: <SignUp /> },
-  { path: '/not-found', element: <NotFound /> },
+  { path: '/error', element: <Error /> },
 ];
 
 export const createRouter = () => {
