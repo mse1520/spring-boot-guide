@@ -31,11 +31,11 @@ const EditingForm = () => {
   const onClickCancel = useCallback(() => cancelEditing(mutate, { data }), [data]);
 
   const onClickSave = useCallback(commentId => () =>
-    updateComment(mutate, { data, commentId, content: cotentRef.current.innerText }), [data]);
+    updateComment(mutate, { data, commentId, content: cotentRef.current.value }), [data]);
 
   return <>
     <Wrap>
-      <StyledTextarea ref={cotentRef}>{comment.content}</StyledTextarea>
+      <StyledTextarea ref={cotentRef} value={comment.content} />
       <ButtonWrap>
         <DefaultButton onClick={onClickCancel}>취소</DefaultButton>
         <DefaultButton onClick={onClickSave(comment.id)}>등록</DefaultButton>

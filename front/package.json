@@ -35,6 +35,7 @@
     "axios": "^1.4.0",
     "cookie-parser": "^1.4.6",
     "core-js": "^3.30.1",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "react": "^18.2.0",

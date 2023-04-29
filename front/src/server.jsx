@@ -2,28 +2,26 @@ import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import dotenv from 'dotenv';
 import React from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import Document from './Document';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import axios from 'axios';
-import { getPaths } from './route';
+import { routes } from './route';
 import { BOARD_WRITABLE } from './utils/auth';
 import { cookieToString } from './utils';
+import { NOT_FOUND, SERVER_ERROR, StatusCode } from './utils/serverUtil';
+import { createServerRouter } from './utils/reactServerRouter';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
-const PORT = 4005;
-const API_SERVER = 'http://localhost:4001';
+dotenv.config({ path: IS_DEV ? '.env' : '.env.prod' });
+
+const PORT = process.env.PORT;
+const API_SERVER = process.env.API_SERVER;
 const apiAxios = axios.create({ baseURL: API_SERVER });
 const app = express();
-
-const SERVER_ERROR = 'SERVER_ERROR';
-const NOT_FOUND = 'NOT_FOUND';
-const StatusCode = {
-  [SERVER_ERROR]: 500,
-  [NOT_FOUND]: 404
-};
 
 app.use(morgan(IS_DEV ? 'dev' : 'combined'));
 app.use(cookieParser());
@@ -46,64 +44,79 @@ const generateHtml = (req, res, data) => {
   );
 };
 
-const routes = getPaths().reduce((acc, cur) => {
-  acc[cur] = (req, res) => apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data)
-    .then(session => generateHtml(req, res, { session }));
+const router = createServerRouter(routes, async (req, res, next) => {
+  try {
+    const session = await apiAxios
+      .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
+      .then(res => res.data);
 
-  return acc;
-}, {});
+    generateHtml(req, res, { session })
+  } catch (error) {
+    next(error);
+  }
+});
 
-routes['/board/write'] = async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
+router.add('/board/write', async (req, res, next) => {
+  try {
+    const session = await apiAxios
+      .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
+      .then(res => res.data);
 
-  if (!BOARD_WRITABLE.includes(session.user?.role))
-    return res.redirect('/');
+    if (!BOARD_WRITABLE.includes(session.user?.role))
+      return res.redirect('/');
 
-  generateHtml(req, res, { session });
-};
+    generateHtml(req, res, { session });
+  } catch (error) {
+    next(error);
+  }
+});
 
-routes['/board/info/:boardId'] = async (req, res, next) => {
+router.add('/board/info/:boardId', async (req, res, next) => {
   try {
     const sessionApi = apiAxios
       .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
       .then(res => res.data);
 
-    const boardDetailApi = await apiAxios
+    const boardApi = await apiAxios
       .get(`/api/board/info/${req.params.boardId}`, { headers: { Cookie: cookieToString(req.cookies) } })
       .then(res => res.data.body);
 
-    const [session, boardDetail] = await Promise.all([sessionApi, boardDetailApi]);
+    const [session, board] = await Promise.all([sessionApi, boardApi]);
 
-    generateHtml(req, res, { session, boardDetail });
+    generateHtml(req, res, { session, board });
   } catch (error) {
     next(error);
   }
-};
+});
 
-routes['/board/info/:boardId/update'] = async (req, res) => {
-  const session = await apiAxios
-    .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
-    .then(res => res.data);
+router.add('/board/info/:boardId/update', async (req, res) => {
+  try {
+    const sessionApi = apiAxios
+      .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
+      .then(res => res.data);
 
-  if (!BOARD_WRITABLE.includes(session.user?.role))
-    return res.redirect('/');
+    const boardApi = await apiAxios
+      .get(`/api/board/info/${req.params.boardId}`, { headers: { Cookie: cookieToString(req.cookies) } })
+      .then(res => res.data.body);
 
-  generateHtml(req, res, { session });
-};
+    const [session, board] = await Promise.all([sessionApi, boardApi]);
 
-routes['/error'] = (req, res) => {
+    if (!BOARD_WRITABLE.includes(session.user?.role))
+      return res.redirect('/');
+
+    generateHtml(req, res, { session, board });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.add('/error', (req, res) => {
   res.status(StatusCode[req.query?.status ?? NOT_FOUND]);
   generateHtml(req, res, {});
-};
+});
 
-Object.entries(routes).forEach(([path, handler]) => app.get(path, handler));
+router.run(app);
 
-// Request<ParamsDictionary, any, any, QueryString.ParsedQs, Record<string, any>>
-// Response<any, Record<string, any>, number>
 app.use((req, res) => res.redirect(`/error?status=${NOT_FOUND}`));
 
 app.use((err, req, res, next) => {

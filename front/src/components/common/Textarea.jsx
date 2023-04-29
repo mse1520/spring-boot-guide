@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useRef } from 'react';
+import React, { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
 
 const Wrap = styled.div`
@@ -38,16 +38,11 @@ const Textarea = forwardRef((props, ref) => {
     props.onChange?.(e);
   }, [props.onChange]);
 
+  const initValue = useMemo(() => props.value ?? '', []);
+
   return <>
     <Wrap ref={wrapRef}>
-      <Div
-        {...props}
-        contentEditable
-        suppressContentEditableWarning
-        ref={ref}
-        onInput={onInput}
-        defaultValue={props.value ?? ''}
-      />
+      <Div {...props} contentEditable suppressContentEditableWarning ref={ref} onInput={onInput}>{initValue}</Div>
     </Wrap>
   </>;
 });
