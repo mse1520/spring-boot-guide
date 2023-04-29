@@ -1,67 +1,16 @@
-const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const client = require('./webpack.config.client');
+const server = require('./webpack.config.server');
 
-const IS_DEV = process.env.NODE_ENV === 'development';
-
-module.exports = {
-  name: 'webpack-client',
-  target: ['web', 'es5'],
-  // mode, // 실서비스는 production
-  // devtool, // 실서비스는 hidden-source-map
-  mode: IS_DEV ? 'development' : 'production',
-  devtool: IS_DEV ? 'eval-cheap-module-source-map' : 'hidden-source-map',
-  resolve: {
-    // import 구문에서 합쳐질 파일의 확장자를 붙여준다
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.png', '.svg'],
-    // 경로 alias
-    alias: {
-      // '@basic': resolve('src', 'basic'),
-    },
+module.exports = [
+  {
+    ...client,
+    dependencies: [server.name],
   },
-  // 합쳐질 파일의 시작점
-  // 파일이 서로 연결된경우 알아서 찾아준다
-  entry: {
-    client: path.resolve('src', 'client')
-  },
-  // 하나로 합쳐실 출력 파일의 설정입니다
-  output: {
-    publicPath: '/',
-    path: path.resolve('build', 'public'),
-    filename: '[name].js',
-    // clean: true
-  },
-  // loader 설정
-  module: {
-    rules: [{
-      // test는 어떤 파일이 함쳐지는지에 대한 내용입니다
-      test: /\.(js|ts)x?$/, //정규 표현식
-      exclude: /node_modules/,
-      // 다수의 loader를 사용할 시 use 배열로 객체를 정의할 수 있다
-      // style loader를 참고 자료로 검색해볼 것
-      // use: [{}, {}],
-      loader: 'babel-loader',
-      options: {
-        presets: [
-          ['@babel/preset-env', {
-            useBuiltIns: 'usage',
-            corejs: 3,
-            debug: true
-          }],
-          '@babel/preset-react'
-        ]
-      }
-    }, {
-      test: /\.(png|svg)/,
-      type: 'asset/resource',
-      generator: {
-        filename: path.join('resources', 'img', '[name][ext][query]')
-      }
-    }]
-  },
-  // plugin은 번들링 된 파일에 작업이 필요할 때
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [{ from: path.resolve('src', 'resources'), to: 'resources' }],
-    })
-  ],
-};
+  {
+    ...server,
+    output: {
+      ...server.output,
+      clean: true
+    }
+  }
+];

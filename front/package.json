@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run watch-client\" \"npm run watch-server\" \"npm run dev-server\"",
-    "build": "concurrently \"npm run build-client\" \"npm run build-server\"",
-    "dev-server": "nodemon -i ./src/server.js ./build/server.js",
-    "build-client": "webpack",
-    "build-server": "webpack --config ./.webpack/webpack.config.server.js",
-    "watch-client": "webpack -w",
-    "watch-server": "webpack --config ./.webpack/webpack.config.server.js -w"
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run watch-webpack\" \"npm run dev-server\"",
+    "build": "webpack",
+    "start": "pm2 start ./build/server.js --name front -o /dev/null -e /dev/null",
+    "stop": "pm2 stop front",
+    "restart": "pm2 restart front",
+    "delete": "pm2 delete all",
+    "list": "pm2 list",
+    "logs": "pm2 logs front",
+    "dev-server": "nodemon ./build/server.js",
+    "watch-webpack": "webpack -w"
   },
   "author": "kyh",
   "license": "MIT",
@@ -25,6 +28,7 @@
     "cross-env": "^7.0.3",
     "http-proxy-middleware": "^2.0.6",
     "nodemon": "^2.0.22",
+    "pm2": "^5.3.0",
     "webpack": "^5.81.0",
     "webpack-cli": "^5.0.2",
     "webpack-node-externals": "^3.0.0"
