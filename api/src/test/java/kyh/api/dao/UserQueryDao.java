@@ -5,19 +5,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import kyh.api.domain.dto.user.MenuInfo;
 import kyh.api.domain.dto.user.UserDetailInfo;
 import kyh.api.domain.dto.user.UserInfo;
 import kyh.api.domain.type.UserRole;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
 public class UserQueryDao {
 
-  private final SqlSession sqlSession;
+  @Autowired
+  private SqlSession sqlSession;
 
   public Optional<UserInfo> findWithMenuByName(String name) {
     List<Map<String, Object>> datas = sqlSession.selectList("kyh.api.dao.UserDao.findWithMenuByName", name);
