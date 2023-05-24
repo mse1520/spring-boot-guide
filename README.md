@@ -2,6 +2,8 @@
 Spring Boot를 이용하여 프로젝트를 생성할때 기본사용법을 숙지하기위한 예제 프로젝트입니다.
 - [Spring Boot](./docs/springBoot.md)
 
+## 서버 구성
+
 ## 폴더구조
 ```
 api/src

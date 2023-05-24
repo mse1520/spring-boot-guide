@@ -2,6 +2,8 @@ import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import winston from 'winston';
+import 'winston-daily-rotate-file';
 import dotenv from 'dotenv';
 import React from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
@@ -15,6 +17,24 @@ import { cookieToString } from './utils';
 import { NOT_FOUND, SERVER_ERROR, StatusCode } from './utils/serverUtil';
 import { createServerRouter } from './utils/reactServerRouter';
 
+const stream = {
+  write: message => winston
+    .createLogger({
+      format: winston.format.simple(),
+      transports: [
+        new winston.transports.Console(),
+        new winston.transports.DailyRotateFile({
+          level: 'info',
+          filename: 'app.%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          dirname: 'log',
+          maxFiles: '7d',
+        })
+      ]
+    })
+    .info(message)
+};
+
 const IS_DEV = process.env.NODE_ENV === 'development';
 dotenv.config({ path: IS_DEV ? '.env' : '.env.prod' });
 
@@ -23,7 +43,8 @@ const API_SERVER = process.env.API_SERVER;
 const apiAxios = axios.create({ baseURL: API_SERVER });
 const app = express();
 
-app.use(morgan(IS_DEV ? 'dev' : 'combined'));
+// app.use(morgan(IS_DEV ? 'dev' : 'combined', { stream }));
+app.use(morgan(IS_DEV ? 'combined' : 'combined', { stream }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 if (IS_DEV)
@@ -77,7 +98,7 @@ router.add('/board/info/:boardId', async (req, res, next) => {
       .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
       .then(res => res.data);
 
-    const boardApi = await apiAxios
+    const boardApi = apiAxios
       .get(`/api/board/info/${req.params.boardId}`, { headers: { Cookie: cookieToString(req.cookies) } })
       .then(res => res.data.body);
 
@@ -95,7 +116,7 @@ router.add('/board/info/:boardId/update', async (req, res) => {
       .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
       .then(res => res.data);
 
-    const boardApi = await apiAxios
+    const boardApi = apiAxios
       .get(`/api/board/info/${req.params.boardId}`, { headers: { Cookie: cookieToString(req.cookies) } })
       .then(res => res.data.body);
 
