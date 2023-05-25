@@ -1,5 +1,6 @@
 import path from 'path';
 import express from 'express';
+import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import React from 'react';
@@ -11,19 +12,22 @@ import axios from 'axios';
 import { routes } from '../route';
 import { BOARD_WRITABLE } from '../utils/auth';
 import { cookieToString } from '../utils';
-import { NOT_FOUND, SERVER_ERROR, StatusCode } from '../utils/serverUtil';
+import { NOT_FOUND, SERVER_ERROR, StatusCode } from './statusCode';
 import { createServerRouter } from '../utils/reactServerRouter';
-import { logger } from './middleware/logger';
+import { createLogger } from './logger';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
-dotenv.config({ path: IS_DEV ? '.env' : '.env.prod' });
+const COMBINED = `:remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"`;
 
+dotenv.config({ path: IS_DEV ? '.env' : '.env.prod' });
 const PORT = process.env.PORT;
 const API_SERVER = process.env.API_SERVER;
-const apiAxios = axios.create({ baseURL: API_SERVER });
-const app = express();
 
-app.use(logger(false));
+const app = express();
+const { logger, stream } = createLogger(IS_DEV);
+const apiAxios = axios.create({ baseURL: API_SERVER });
+
+app.use(morgan(IS_DEV ? 'dev' : COMBINED, { stream }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 if (IS_DEV)
@@ -120,8 +124,8 @@ router.run(app);
 app.use((req, res) => res.redirect(`/error?status=${NOT_FOUND}`));
 
 app.use((err, req, res, next) => {
-  console.error(err);
+  logger.error(err);
   res.redirect(`/error?status=${SERVER_ERROR}`);
 });
 
-app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+app.listen(PORT, () => logger.info(`App listening on port ${PORT}`));
