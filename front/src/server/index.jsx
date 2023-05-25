@@ -1,21 +1,19 @@
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
-import { createStream } from 'rotating-file-stream';
 import dotenv from 'dotenv';
 import React from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
-import Document from './Document';
+import Document from '../Document';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import axios from 'axios';
-import { routes } from './route';
-import { BOARD_WRITABLE } from './utils/auth';
-import { cookieToString } from './utils';
-import { NOT_FOUND, SERVER_ERROR, StatusCode } from './utils/serverUtil';
-import { createServerRouter } from './utils/reactServerRouter';
-import { lPad } from './utils';
+import { routes } from '../route';
+import { BOARD_WRITABLE } from '../utils/auth';
+import { cookieToString } from '../utils';
+import { NOT_FOUND, SERVER_ERROR, StatusCode } from '../utils/serverUtil';
+import { createServerRouter } from '../utils/reactServerRouter';
+import { logger } from './middleware/logger';
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 dotenv.config({ path: IS_DEV ? '.env' : '.env.prod' });
@@ -25,41 +23,7 @@ const API_SERVER = process.env.API_SERVER;
 const apiAxios = axios.create({ baseURL: API_SERVER });
 const app = express();
 
-const DEV = `:method :url :status :response-time ms - :res[content-length]`;
-const COMBINED = `:remote-addr - :remote-user [:datetime] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"`;
-
-const now = (date = Date.now()) => ({
-  year: date.getFullYear(),
-  month: lPad(date.getMonth() + 1, 2),
-  day: lPad(date.getDate(), 2),
-  hour: lPad(date.getHours(), 2),
-  minute: lPad(date.getMinutes(), 2),
-  second: `${lPad(date.getSeconds(), 2)}.${lPad(date.getMilliseconds(), 3)}`,
-});
-
-const innerStream = createStream(time => {
-  if (!time) return 'app.log';
-  const date = now(time);
-  return `app.${date.year}-${date.month}-${date.day}.log`;
-}, {
-  interval: '1d',
-  path: path.resolve('log'),
-  maxFiles: 7
-});
-
-const stream = {
-  write(message) {
-    console.log(message.replace('\n', ''));
-    innerStream.write(message);
-  }
-};
-
-morgan.token('datetime', () => {
-  const date = now();
-  return `${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}`;
-});
-
-app.use(morgan(IS_DEV ? DEV : COMBINED, { stream }));
+app.use(logger(false));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 if (IS_DEV)

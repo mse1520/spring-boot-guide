@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development concurrently \"npm run watch-webpack\" \"npm run dev-server\"",
     "build": "webpack",
-    "start": "node ./build/server.js",
-    "dev-server": "nodemon ./build/server.js",
+    "start": "node ./build/server",
+    "dev-server": "nodemon ./build/server",
     "watch-webpack": "webpack -w"
   },
   "author": "kyh",
