@@ -47,7 +47,9 @@ const BoardUpdate = () => {
   }, []);
 
   if (!BOARD_WRITABLE.includes(session.user?.role))
-    return <Navigate to={-1} replace={true} />;
+    return <Navigate to='/' replace={true} />;
+  if (board.username !== session.user.name)
+    return <Navigate to='/' replace={true} />;
 
   return <>
     <Header>

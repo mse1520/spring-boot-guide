@@ -93,7 +93,7 @@ router.add('/board/info/:boardId', async (req, res, next) => {
   }
 });
 
-router.add('/board/info/:boardId/update', async (req, res) => {
+router.add('/board/info/:boardId/update', async (req, res, next) => {
   try {
     const sessionApi = apiAxios
       .get('/api/user/info', { headers: { Cookie: cookieToString(req.cookies) } })
@@ -106,6 +106,8 @@ router.add('/board/info/:boardId/update', async (req, res) => {
     const [session, board] = await Promise.all([sessionApi, boardApi]);
 
     if (!BOARD_WRITABLE.includes(session.user?.role))
+      return res.redirect('/');
+    if (board.username !== session.user.name)
       return res.redirect('/');
 
     generateHtml(req, res, { session, board });

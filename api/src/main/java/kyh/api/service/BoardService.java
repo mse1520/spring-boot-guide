@@ -72,14 +72,16 @@ public class BoardService {
 
   /** 게시글(Board) 수정 */
   @Transactional
-  public DataBox<BoardInfo> update(Long boardId, String title, String content) {
-    Board board = boardRepository.findById(boardId).orElse(null);
+  public DataBox<BoardInfo> update(Long boardId, String title, String content, String username) {
+    Board findBoard = boardRepository.findById(boardId).orElse(null);
 
-    if (board == null)
+    if (findBoard == null)
       return new DataBox<>(DataBoxType.FAILURE, "존재하지 않는 게시글입니다.");
+    if (!findBoard.getUser().getName().equals(username))
+      return new DataBox<>(DataBoxType.FAILURE, "게시글을 수정할 권한이 없습니다.");
 
-    board.changeBoard(title, content);
-    Board savedBoard = boardRepository.save(board);
+    findBoard.changeBoard(title, content);
+    Board savedBoard = boardRepository.save(findBoard);
     BoardInfo boardInfo = BoardInfo.generate(savedBoard);
     return new DataBox<>(DataBoxType.SUCCESS, "게시글이 수정 되었습니다.", boardInfo);
   }

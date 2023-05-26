@@ -73,11 +73,12 @@ public class BoardController {
   /** 게시글 수정 api */
   @PutMapping(value = "/info/{boardId}/update")
   public ResponseEntity<DataBox<BoardInfo>> update(@PathVariable Long boardId, @RequestBody BoardWriteForm form,
-      BindingResult bindingResult) {
+      BindingResult bindingResult, @AuthenticationPrincipal UserInfo userInfo) {
     if (bindingResult.hasErrors())
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DataBox.failed(bindingResult));
 
-    DataBox<BoardInfo> result = boardService.update(boardId, form.getTitle(), form.getContent());
+    DataBox<BoardInfo> result = boardService.update(boardId, form.getTitle(), form.getContent(),
+        userInfo.getUsername());
 
     return result.getType() == DataBoxType.SUCCESS
         ? ResponseEntity.ok(result)

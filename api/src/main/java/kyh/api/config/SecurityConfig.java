@@ -24,6 +24,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kyh.api.domain.type.UserRole;
+import kyh.api.repository.AuthorityRepository;
+import kyh.api.repository.UserRepository;
+import kyh.api.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -62,6 +65,11 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  }
+
+  @Bean
+  public UserService userService(AuthorityRepository authorityRepository, UserRepository userRepository) {
+    return new UserService(authorityRepository, userRepository, passwordEncoder());
   }
 
   private CorsConfigurationSource corsConfigurationSource() {

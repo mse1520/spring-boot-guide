@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @Profile("local")
-@DependsOn("initailizer")
+@DependsOn("dataService")
 @RequiredArgsConstructor
 public class DummyDataService {
 
