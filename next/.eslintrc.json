@@ -1,6 +1,23 @@
 {
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
   "extends": [
     "next/core-web-vitals",
+    "airbnb",
+    "airbnb/hooks",
+    "eslint:recommended",
     "plugin:prettier/recommended"
-  ]
+  ],
+  "rules": {
+    "no-var": "error",
+    "func-style": [ "error", "expression" ],
+    "func-names": "error",
+    "prefer-arrow-callback": "error",
+    "camelcase": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/function-component-definition": "off"
+  }
 }
