@@ -1,3 +1,4 @@
+import './global.css';
 import PropTypes from 'prop-types';
 
 const RootLayout = ({ children }) => {
@@ -14,7 +15,7 @@ const RootLayout = ({ children }) => {
 };
 
 RootLayout.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default RootLayout;
